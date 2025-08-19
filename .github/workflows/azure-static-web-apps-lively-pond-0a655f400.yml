@@ -43,6 +43,38 @@ jobs:
           echo "All files in dist/advert-ui/browser:"
           find dist/advert-ui/browser/ -type f
       
+      - name: Check staticwebapp.config.json
+        run: |
+          echo "=== STATIC WEB APP CONFIG CHECK ==="
+          echo "Current directory: $(pwd)"
+          echo "Repository root files:"
+          ls -la
+          echo ""
+          echo "staticwebapp.config.json content:"
+          cat staticwebapp.config.json
+          echo ""
+          echo "File permissions:"
+          ls -la staticwebapp.config.json
+          echo ""
+          echo "Git status of config file:"
+          git status staticwebapp.config.json
+          echo ""
+          echo "Git log for config file:"
+          git log --oneline -3 -- staticwebapp.config.json
+      
+      - name: Verify deployment structure
+        run: |
+          echo "=== DEPLOYMENT STRUCTURE VERIFICATION ==="
+          echo "App location path: dist/advert-ui/browser/browser"
+          echo "Checking if path exists:"
+          ls -la dist/advert-ui/browser/browser/
+          echo ""
+          echo "Checking for index.html:"
+          ls -la dist/advert-ui/browser/browser/index.html
+          echo ""
+          echo "Checking file contents of index.html (first 5 lines):"
+          head -5 dist/advert-ui/browser/browser/index.html
+      
       - name: Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -56,6 +88,14 @@ jobs:
           api_location: "" # Api source code path - optional
           skip_app_build: true # We already built above
           ###### End of Repository/Build Configurations ######
+      
+      - name: Deployment Summary
+        run: |
+          echo "=== DEPLOYMENT SUMMARY ==="
+          echo "Deployment completed with app_location: dist/advert-ui/browser/browser"
+          echo "staticwebapp.config.json should be applied from repository root"
+          echo "Check Azure portal for configuration status"
+          echo "Test URL: https://lively-pond-0a655f400.1.azurestaticapps.net/dashboard"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
