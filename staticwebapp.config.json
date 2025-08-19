@@ -12,7 +12,8 @@
             "/images/*",
             "/css/*",
             "/js/*",
-            "/api/*"
+            "/api/*",
+            "/*.{png,jpg,gif,svg,css,js,ico,woff,woff2,ttf,eot}"
         ]
     },
     "responseOverrides": {
