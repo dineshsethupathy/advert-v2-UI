@@ -15,11 +15,35 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
-      - name: Build And Deploy
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+      
+      - name: List build output
+        run: |
+          echo "Build output directory:"
+          ls -la dist/
+          echo "Contents of dist/advert-ui directory:"
+          ls -la dist/advert-ui/
+          echo "HTML files in dist/advert-ui/browser:"
+          find dist/advert-ui/browser/ -type f -name "*.html"
+          echo "All files in dist/advert-ui/browser:"
+          find dist/advert-ui/browser/ -type f
+      
+      - name: Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -28,9 +52,9 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
+          app_location: "dist/advert-ui/browser" # Built app content directory
           api_location: "" # Api source code path - optional
-          output_location: "dist/advert-ui/browser" # Built app content directory - optional
+          skip_app_build: true # We already built above
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
