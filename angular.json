@@ -25,6 +25,11 @@
                 "input": "public"
               },
               {
+                "glob": "staticwebapp.config.json",
+                "input": ".",
+                "output": "."
+              },
+              {
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
@@ -91,6 +96,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "staticwebapp.config.json",
+                "input": ".",
+                "output": "."
               },
               {
                 "glob": "**/*",
