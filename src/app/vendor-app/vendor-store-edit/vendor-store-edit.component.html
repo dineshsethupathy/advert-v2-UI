@@ -1,0 +1,183 @@
+<!-- Mobile Back Button -->
+<button class="mobile-back-btn" (click)="goBack()" type="button">
+    <span class="material-icons">arrow_back</span>
+    Back
+</button>
+
+<app-vendor-header></app-vendor-header>
+
+<div class="store-edit-container">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+        <p>Loading store form...</p>
+    </div>
+
+    <!-- Store Form -->
+    <div class="store-form-container" *ngIf="!loading && storeAssignment">
+        <!-- Header -->
+        <!-- <div class="form-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Store Form</h1>
+                    <p>{{ storeAssignment.storeName }}</p>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Store Info -->
+        <div class="store-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Store Name</label>
+                    <span>{{ storeAssignment.storeName }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Address</label>
+                    <span>{{ storeAssignment.storeAddress }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Current Status</label>
+                    <span class="status-badge" [class]="'status-' + getStatusColor(storeAssignment.vendorWorkStatus)">
+                        {{ storeAssignment.vendorWorkStatus }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="storeForm" (ngSubmit)="onSubmit()" class="store-form">
+            <!-- Board Details -->
+            <div class="form-section">
+                <h3>Board Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="boardWidth">Board Width (inches) *</label>
+                        <input type="number" id="boardWidth" formControlName="boardWidth"
+                            placeholder="Enter board width" step="0.1" min="1" max="1000">
+                        <div class="error-message"
+                            *ngIf="storeForm.get('boardWidth')?.invalid && storeForm.get('boardWidth')?.touched">
+                            <span *ngIf="storeForm.get('boardWidth')?.errors?.['required']">Board width is
+                                required</span>
+                            <span *ngIf="storeForm.get('boardWidth')?.errors?.['min']">Board width must be at least 1
+                                inch</span>
+                            <span *ngIf="storeForm.get('boardWidth')?.errors?.['max']">Board width cannot exceed 1000
+                                inches</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="boardHeight">Board Height (inches) *</label>
+                        <input type="number" id="boardHeight" formControlName="boardHeight"
+                            placeholder="Enter board height" step="0.1" min="1" max="1000">
+                        <div class="error-message"
+                            *ngIf="storeForm.get('boardHeight')?.invalid && storeForm.get('boardHeight')?.touched">
+                            <span *ngIf="storeForm.get('boardHeight')?.errors?.['required']">Board height is
+                                required</span>
+                            <span *ngIf="storeForm.get('boardHeight')?.errors?.['min']">Board height must be at least 1
+                                inch</span>
+                            <span *ngIf="storeForm.get('boardHeight')?.errors?.['max']">Board height cannot exceed 1000
+                                inches</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Image -->
+            <div class="form-section">
+                <h3>Banner Image</h3>
+                <div class="image-upload-container">
+                    <div class="image-preview" *ngIf="bannerImagePreview">
+                        <img [src]="bannerImagePreview" alt="Banner Image">
+                        <button type="button" class="remove-btn" (click)="removeImage('banner')">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                    <div class="upload-area" *ngIf="!bannerImagePreview">
+                        <input type="file" id="bannerImage" accept="image/*" (change)="onBannerImageSelected($event)"
+                            class="file-input">
+                        <label for="bannerImage" class="upload-label">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>Upload Banner Image</span>
+                            <!-- <small>JPG, PNG, GIF up to 5MB</small> -->
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Before Execution Image -->
+            <div class="form-section">
+                <h3>Before Execution Image</h3>
+                <div class="image-upload-container">
+                    <div class="image-preview" *ngIf="beforeExecutionImagePreview">
+                        <img [src]="beforeExecutionImagePreview" alt="Before Execution Image">
+                        <button type="button" class="remove-btn" (click)="removeImage('before')">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                    <div class="upload-area" *ngIf="!beforeExecutionImagePreview">
+                        <input type="file" id="beforeExecutionImage" accept="image/*"
+                            (change)="onBeforeExecutionImageSelected($event)" class="file-input">
+                        <label for="beforeExecutionImage" class="upload-label">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>Upload Before Execution Image</span>
+                            <!-- <small>JPG, PNG, GIF up to 5MB</small> -->
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After Execution Image -->
+            <div class="form-section" *ngIf="canShowAfterExecution()">
+                <h3>After Execution Image</h3>
+                <div class="image-upload-container">
+                    <div class="image-preview" *ngIf="afterExecutionImagePreview">
+                        <img [src]="afterExecutionImagePreview" alt="After Execution Image">
+                        <button type="button" class="remove-btn" (click)="removeImage('after')">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                    <div class="upload-area" *ngIf="!afterExecutionImagePreview">
+                        <input type="file" id="afterExecutionImage" accept="image/*"
+                            (change)="onAfterExecutionImageSelected($event)" class="file-input">
+                        <label for="afterExecutionImage" class="upload-label">
+                            <span class="material-icons">cloud_upload</span>
+                            <span>Upload After Execution Image</span>
+                            <!-- <small>JPG, PNG, GIF up to 5MB</small> -->
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-section">
+                <h3>Notes</h3>
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" formControlName="notes" placeholder="Enter any additional notes or comments..."
+                        rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div class="actions-left">
+                    <button type="button" class="btn btn-secondary" (click)="goBack()" [disabled]="formLoading">
+                        Cancel
+                    </button>
+                </div>
+                <div class="actions-right">
+                    <button type="submit" class="btn btn-primary" [disabled]="formLoading || storeForm.invalid">
+                        <span class="material-icons" *ngIf="!formLoading">save</span>
+                        <l-tail-chase *ngIf="formLoading" size="20" speed="1.75" color="white"></l-tail-chase>
+                        {{ formLoading ? 'Saving...' : 'Save Changes' }}
+                    </button>
+                    <button type="button" class="btn btn-success" (click)="markAsComplete()"
+                        [disabled]="formLoading || !canMarkAsComplete()" *ngIf="canMarkAsComplete()">
+                        <span class="material-icons">check_circle</span>
+                        Mark as Complete
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

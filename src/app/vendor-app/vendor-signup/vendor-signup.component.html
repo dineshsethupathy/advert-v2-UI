@@ -1,0 +1,107 @@
+<div class="signup-container">
+    <div class="signup-card">
+        <!-- Header -->
+        <div class="signup-header">
+            <div class="logo">
+                <img src="assets/images/22.png" alt="Advert App Logo" class="app-logo">
+            </div>
+            <!-- <h2>Complete Your Vendor Profile</h2> -->
+            <!-- <p>Please provide your details to complete your vendor account setup</p> -->
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-container" *ngIf="checkingInvitation">
+            <div class="loading-spinner"></div>
+            <p>Validating your invitation...</p>
+        </div>
+
+        <!-- Signup Form -->
+        <form *ngIf="!checkingInvitation && isValidInvitation" [formGroup]="signupForm" (ngSubmit)="onSubmit()"
+            class="signup-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" formControlName="email" placeholder="Enter your email address"
+                    class="form-control disabled">
+                <!-- <div class="form-hint">This email was provided in your invitation</div> -->
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" formControlName="firstName" placeholder="Enter your first name"
+                        class="form-control" [class.error]="signupForm.get('firstName')?.invalid && submitted">
+                    <div class="error-message" *ngIf="signupForm.get('firstName')?.invalid && submitted">
+                        First name is required and must be at least 2 characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" formControlName="lastName" placeholder="Enter your last name"
+                        class="form-control" [class.error]="signupForm.get('lastName')?.invalid && submitted">
+                    <div class="error-message" *ngIf="signupForm.get('lastName')?.invalid && submitted">
+                        Last name is required and must be at least 2 characters
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number *</label>
+                <input type="tel" id="phoneNumber" formControlName="phoneNumber" placeholder="Enter your phone number"
+                    maxlength="10" (input)="onPhoneNumberInput($event)" class="form-control"
+                    [class.error]="signupForm.get('phoneNumber')?.invalid && submitted">
+                <div class="error-message" *ngIf="signupForm.get('phoneNumber')?.invalid && submitted">
+                    <span *ngIf="signupForm.get('phoneNumber')?.errors?.['required']">Phone number is required</span>
+                    <span *ngIf="signupForm.get('phoneNumber')?.errors?.['pattern']">Please enter exactly 10
+                        digits</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" formControlName="password" placeholder="Enter your password"
+                    class="form-control" [class.error]="signupForm.get('password')?.invalid && submitted">
+                <div class="error-message" *ngIf="signupForm.get('password')?.invalid && submitted">
+                    Password must be at least 6 characters long
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                    placeholder="Confirm your password" class="form-control"
+                    [class.error]="signupForm.get('confirmPassword')?.invalid && submitted">
+                <div class="error-message" *ngIf="signupForm.get('confirmPassword')?.invalid && submitted">
+                    Please confirm your password
+                </div>
+                <div class="error-message" *ngIf="signupForm.errors?.['passwordMismatch'] && submitted">
+                    Passwords do not match
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="signupForm.invalid || loading">
+                    <span class="loading-spinner-small" *ngIf="loading"></span>
+                    <span *ngIf="!loading">Complete Signup</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- Invalid Invitation -->
+        <div *ngIf="!checkingInvitation && !isValidInvitation" class="invalid-invitation">
+            <div class="error-icon">
+                <span class="material-icons">error</span>
+            </div>
+            <h3>Invalid Invitation</h3>
+            <p>This invitation link is invalid or has already been used.</p>
+            <button class="btn btn-secondary" (click)="goToLogin()">
+                Go to Login
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <!-- <div class="signup-footer">
+            <p>Already have an account? <a href="/vendor-login">Sign in here</a></p>
+        </div> -->
+    </div>
+</div>

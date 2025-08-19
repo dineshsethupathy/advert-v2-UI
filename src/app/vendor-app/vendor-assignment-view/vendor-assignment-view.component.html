@@ -1,0 +1,128 @@
+<div class="assignment-view-container">
+    <!-- Shared Header -->
+    <app-vendor-header></app-vendor-header>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+        <p>Loading assignment details...</p>
+    </div>
+
+    <!-- Assignment Content -->
+    <div class="assignment-content" *ngIf="!loading && assignment">
+        <!-- Assignment Info -->
+        <div class="assignment-info">
+            <div class="assignment-row">
+                <div class="assignment-name">
+                    <h2>{{ assignment.name }}</h2>
+                </div>
+                <div class="assignment-description">
+                    <p>{{ assignment.description || 'No description available' }}</p>
+                </div>
+                <div class="assignment-date">
+                    <span class="material-icons">calendar_today</span>
+                    <span>{{ formatDate(assignment.createdDt) }}</span>
+                </div>
+                <div class="assignment-stores">
+                    <span class="material-icons">store</span>
+                    <span>{{ assignment.totalStores }} stores</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Store Assignments -->
+        <div class="stores-section">
+            <h3>Store Assignments</h3>
+
+            <!-- Desktop Table View -->
+            <div class="stores-table-container">
+                <table class="stores-table">
+                    <thead>
+                        <tr>
+                            <th>Store Name</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let store of storeAssignments">
+                            <td class="store-name">{{ store.storeName }}</td>
+                            <td class="store-address">{{ store.storeAddress }}</td>
+                            <td class="store-status">
+                                <span class="status-badge" [class]="'status-' + getStatusColor(store.vendorWorkStatus)">
+                                    {{ store.vendorWorkStatus }}
+                                </span>
+                            </td>
+                            <td class="store-actions">
+                                <!-- Start Work Button (for Pending stores) -->
+                                <button class="action-btn start-btn" (click)="updateStoreStatus(store, 'Started')"
+                                    *ngIf="store.vendorWorkStatus === 'Pending'" title="Start Work">
+                                    <span class="material-icons">play_arrow</span>
+                                    Start
+                                </button>
+
+                                <!-- Continue Work Button (for Started/Before Execution/After Execution stores) -->
+                                <button class="action-btn continue-btn" (click)="openStoreForm(store)"
+                                    *ngIf="store.vendorWorkStatus !== 'Pending' && store.vendorWorkStatus !== 'Completed'"
+                                    title="Continue Work">
+                                    <span class="material-icons">edit</span>
+                                    Continue
+                                </button>
+
+                                <!-- View Completed Button (for Completed stores) -->
+                                <button class="action-btn view-btn" (click)="openStoreForm(store)"
+                                    *ngIf="store.vendorWorkStatus === 'Completed'" title="View Details">
+                                    <span class="material-icons">visibility</span>
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="stores-mobile-grid">
+                <div class="store-mobile-card" *ngFor="let store of storeAssignments">
+                    <div class="store-mobile-header">
+                        <div class="store-mobile-name">{{ store.storeName }}</div>
+                        <div class="store-mobile-status">
+                            <span class="status-badge" [class]="'status-' + getStatusColor(store.vendorWorkStatus)">
+                                {{ store.vendorWorkStatus }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="store-mobile-layout">
+                        <div class="store-mobile-info">
+                            <div class="store-mobile-address">{{ store.storeAddress }}</div>
+                        </div>
+                        <div class="store-mobile-actions">
+                            <!-- Start Work Button (for Pending stores) -->
+                            <button class="action-btn start-btn" (click)="updateStoreStatus(store, 'Started')"
+                                *ngIf="store.vendorWorkStatus === 'Pending'" title="Start Work">
+                                <span class="material-icons">play_arrow</span>
+                                Start
+                            </button>
+
+                            <!-- Continue Work Button (for Started/Before Execution/After Execution stores) -->
+                            <button class="action-btn continue-btn" (click)="openStoreForm(store)"
+                                *ngIf="store.vendorWorkStatus !== 'Pending' && store.vendorWorkStatus !== 'Completed'"
+                                title="Continue Work">
+                                <span class="material-icons">edit</span>
+                                Continue
+                            </button>
+
+                            <!-- View Completed Button (for Completed stores) -->
+                            <button class="action-btn view-btn" (click)="openStoreForm(store)"
+                                *ngIf="store.vendorWorkStatus === 'Completed'" title="View Details">
+                                <span class="material-icons">visibility</span>
+                                View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

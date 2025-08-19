@@ -1,0 +1,151 @@
+<div class="assignments-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Assignments</h1>
+                <p class="page-description">Manage your store assignments and workflows</p>
+            </div>
+            <div class="header-actions">
+                <button class="add-btn" (click)="createNewAssignment()">
+                    <span class="material-icons">add</span>
+                    <span>Add New Assignment</span>
+                </button>
+                <button class="manage-btn" (click)="manageWorkflows()">
+                    <span class="material-icons">settings</span>
+                    <span>Manage Workflows</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-section" *ngIf="!loading && assignments.length > 0">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">assignment_ind</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ assignments.length }}</div>
+                    <div class="stat-label">Total Assignments</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">forward</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getActiveAssignments() }}</div>
+                    <div class="stat-label">Active Assignments</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">store</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getTotalStores() }}</div>
+                    <div class="stat-label">Total Stores</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">check_circle</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getCompletedStores() }}</div>
+                    <div class="stat-label">Completed Stores</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignments Section -->
+    <div class="assignments-section">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+            <p>Loading assignments...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && assignments.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <span class="material-icons">assignment</span>
+            </div>
+            <h3>No Assignments Found</h3>
+            <p>Create your first assignment to get started</p>
+            <!-- <button class="btn btn-primary" (click)="createNewAssignment()">
+                <span class="material-icons">add</span>
+                Create Assignment
+            </button> -->
+        </div>
+
+        <!-- Assignments Table -->
+        <div *ngIf="!loading && assignments.length > 0" class="assignments-table">
+            <div class="table-header">
+                <div class="table-cell header-cell">Assignment Name</div>
+                <div class="table-cell header-cell">Vendor</div>
+                <div class="table-cell header-cell">Workflow</div>
+                <div class="table-cell header-cell">Progress</div>
+                <div class="table-cell header-cell">Status</div>
+                <div class="table-cell header-cell">Assigned By</div>
+                <div class="table-cell header-cell">Created Date</div>
+                <div class="table-cell header-cell actions-cell">Actions</div>
+            </div>
+            <div class="table-body">
+                <div *ngFor="let assignment of assignments" class="table-row">
+                    <div class="table-cell">
+                        <div class="assignment-info">
+                            <span class="assignment-name" (click)="viewAssignment(assignment.id)">{{ assignment.name
+                                }}</span>
+                            <span *ngIf="assignment.description" class="assignment-description">{{
+                                assignment.description }}</span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <span class="vendor-name">{{ assignment.vendorName }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="workflow-name">{{ assignment.workflowName }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="progress-container">
+                            <div class="progress-text">
+                                {{ assignment.completedStores }}/{{ assignment.totalStores }} stores
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" [style.width.%]="getProgressPercentage(assignment)"
+                                    [class]="'progress-' + getProgressColor(assignment)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <span class="status-chip" [class]="'status-' + getStatusColor(assignment.status)">
+                            {{ assignment.status }}
+                        </span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="assigned-by">{{ assignment.assignedByName }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="created-date">{{ formatDate(assignment.createdDt) }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="action-btn view-btn" (click)="viewAssignment(assignment.id)"
+                                title="View Assignment">
+                                <span class="material-icons">visibility</span>
+                            </button>
+                            <button class="action-btn delete-btn" (click)="deleteAssignment(assignment.id)"
+                                title="Delete Assignment">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

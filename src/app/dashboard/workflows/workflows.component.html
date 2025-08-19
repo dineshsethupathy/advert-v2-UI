@@ -1,0 +1,140 @@
+<div class="workflows-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Workflow Management</h1>
+                <p class="page-description">Create and manage your approval workflows</p>
+            </div>
+            <div class="header-actions">
+                <button class="add-btn" (click)="createNewWorkflow()">
+                    <span class="material-icons">add</span>
+                    <span>Create Workflow</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <!-- <div class="stats-section" *ngIf="!loading && workflows.length > 0">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">workflow</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ workflows.length }}</div>
+                    <div class="stat-label">Total Workflows</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">pending</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getActiveWorkflows() }}</div>
+                    <div class="stat-label">Active Workflows</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">layers</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getAverageStages() }}</div>
+                    <div class="stat-label">Avg Stages/Workflow</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <span class="material-icons">assignment</span>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ getTotalAssignments() }}</div>
+                    <div class="stat-label">Total Assignments</div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Workflows Section -->
+    <div class="workflows-section">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="loading-spinner">
+                <span class="material-icons">refresh</span>
+            </div>
+            <p>Loading workflows...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && workflows.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <span class="material-icons">art_track</span>
+            </div>
+            <h3>No Workflows Found</h3>
+            <p>Create your first workflow to get started</p>
+            <!-- <button class="btn btn-primary" (click)="createNewWorkflow()">
+                <span class="material-icons">add</span>
+                Create Workflow
+            </button> -->
+        </div>
+
+        <!-- Workflows Table -->
+        <div *ngIf="!loading && workflows.length > 0" class="workflows-table">
+            <div class="table-header">
+                <div class="table-cell header-cell">Workflow Name</div>
+                <div class="table-cell header-cell">Stages</div>
+                <div class="table-cell header-cell">Assignments</div>
+                <div class="table-cell header-cell">Created By</div>
+                <div class="table-cell header-cell">Created Date</div>
+                <div class="table-cell header-cell actions-cell">Actions</div>
+            </div>
+            <div class="table-body">
+                <div *ngFor="let workflow of workflows" class="table-row">
+                    <div class="table-cell">
+                        <div class="workflow-info">
+                            <span class="workflow-name" (click)="viewWorkflow(workflow.id)">{{ workflow.name }}</span>
+                            <span *ngIf="workflow.description" class="workflow-description">{{ workflow.description
+                                }}</span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="stages-info">
+                            <span class="stage-count">{{ getFormattedStages(workflow) }}</span>
+                            <span *ngIf="getStageCount(workflow) === 0" class="status-chip status-warning">No
+                                Stages</span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="assignments-info">
+                            <span class="assignment-count">{{ workflow.assignmentCount }}</span>
+                            <span *ngIf="workflow.assignmentCount > 0" class="status-chip status-primary">Active</span>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <span class="created-by">{{ workflow.createdByName }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="created-date">{{ formatDate(workflow.createdDt) }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <!-- <button class="action-btn view-btn" (click)="viewWorkflow(workflow.id)"
+                                title="View Workflow">
+                                <span class="material-icons">visibility</span>
+                            </button> -->
+                            <button class="action-btn edit-btn" (click)="editWorkflow(workflow.id)" title="Edit">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete-btn" (click)="deleteWorkflow(workflow)"
+                                title="Delete Workflow" [disabled]="workflow.assignmentCount > 0">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,221 @@
+<div class="create-assignment-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">Create New Assignment</h1>
+            <p class="form-subtitle">Assign stores to a vendor with a specific workflow</p>
+        </div>
+
+        <form class="assignment-form" [formGroup]="assignmentForm" (ngSubmit)="onSubmit()">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3 class="section-title">Basic Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="assignmentName" class="form-label">Assignment Name *</label>
+                        <input type="text" id="assignmentName" name="assignmentName" formControlName="name"
+                            class="form-input" placeholder="Enter assignment name">
+                        <div class="error-message"
+                            *ngIf="assignmentForm.get('name')?.invalid && assignmentForm.get('name')?.touched">
+                            Assignment name is required
+                        </div>
+                    </div>
+
+                    <div class="form-group half-width">
+                        <label for="assignmentDescription" class="form-label">Description</label>
+                        <input type="text" id="assignmentDescription" name="assignmentDescription"
+                            formControlName="description" class="form-input" placeholder="Enter description (optional)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vendor and Workflow Selection -->
+            <div class="form-section">
+                <h3 class="section-title">Vendor & Workflow</h3>
+
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="vendorSelect" class="form-label">Select Vendor *</label>
+                        <div class="custom-select" [class.open]="vendorDropdownOpen" (click)="toggleVendorDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!selectedVendor">
+                                    {{ selectedVendor || 'Choose a vendor' }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="vendorDropdownOpen" (click)="$event.stopPropagation()">
+                                <div class="dropdown-option" *ngFor="let vendor of vendors"
+                                    [class.selected]="selectedVendorId === vendor.id" (click)="selectVendor(vendor)">
+                                    {{ (vendor.firstName && vendor.lastName) ? (vendor.firstName + ' ' +
+                                    vendor.lastName) : vendor.email }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message"
+                            *ngIf="assignmentForm.get('vendorId')?.invalid && assignmentForm.get('vendorId')?.touched">
+                            Vendor is required
+                        </div>
+                        <div *ngIf="vendorsLoading" class="loading-overlay">
+                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
+                        </div>
+                    </div>
+
+                    <div class="form-group half-width">
+                        <label for="workflowSelect" class="form-label">Select Workflow *</label>
+                        <div class="custom-select" [class.open]="workflowDropdownOpen"
+                            (click)="toggleWorkflowDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!selectedWorkflow">
+                                    {{ selectedWorkflow || 'Choose a workflow' }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="workflowDropdownOpen"
+                                (click)="$event.stopPropagation()">
+                                <div class="dropdown-option" *ngFor="let workflow of workflows"
+                                    [class.selected]="selectedWorkflowId === workflow.id"
+                                    (click)="selectWorkflow(workflow)">
+                                    {{ workflow.name }} ({{ workflow.stageCount }} stages)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message"
+                            *ngIf="assignmentForm.get('workflowDefinitionId')?.invalid && assignmentForm.get('workflowDefinitionId')?.touched">
+                            Workflow is required
+                        </div>
+                        <div *ngIf="workflowsLoading" class="loading-overlay">
+                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Selection -->
+            <div class="form-section">
+                <h3 class="section-title">Store Selection</h3>
+
+                <!-- Filters -->
+                <div class="filters-container" [formGroup]="filterForm">
+                    <div class="filter-group">
+                        <label for="regionFilter" class="form-label">Region Filter</label>
+                        <div class="custom-select" [class.open]="regionDropdownOpen" (click)="toggleRegionDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!selectedRegionName">
+                                    {{ selectedRegionName || 'All Regions' }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="regionDropdownOpen" (click)="$event.stopPropagation()">
+                                <div class="dropdown-option" (click)="selectRegion(null)">
+                                    All Regions
+                                </div>
+                                <div class="dropdown-option" *ngFor="let region of regions"
+                                    [class.selected]="selectedRegion === region.id" (click)="selectRegion(region)">
+                                    {{ region.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="regionsLoading" class="loading-overlay">
+                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="cityFilter" class="form-label">City Filter</label>
+                        <input type="text" id="cityFilter" name="cityFilter" formControlName="cityFilter"
+                            class="form-input" placeholder="Search by city...">
+                    </div>
+                </div>
+
+                <!-- Store Selection Interface -->
+                <div class="store-selection-section">
+                    <!-- Loading State -->
+                    <div *ngIf="storesLoading" class="loading-state">
+                        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+                        <p>Loading stores...</p>
+                    </div>
+
+                    <!-- Store Grid -->
+                    <div *ngIf="!storesLoading" class="store-selection-content">
+                        <!-- Store Grid Header -->
+                        <div class="store-grid-header">
+                            <div class="selection-controls">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" [checked]="selectAllPages" (change)="selectAllStores()">
+                                    <span class="checkmark"></span>
+                                    Select All Stores
+                                </label>
+
+                                <!-- <label class="checkbox-label">
+                                    <input type="checkbox" [checked]="selectCurrentPage"
+                                        (change)="selectCurrentPageStores()">
+                                    <span class="checkmark"></span>
+                                    Select Current Page
+                                </label> -->
+                            </div>
+
+                            <div class="pagination-info">
+                                Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} stores
+                            </div>
+                        </div>
+
+                        <!-- Store Grid -->
+                        <div class="store-grid">
+                            <div *ngFor="let store of currentPageStores" class="store-item">
+                                <label class="store-checkbox">
+                                    <input type="checkbox" [checked]="isStoreSelected(store.id)"
+                                        (change)="toggleStoreSelection(store.id)">
+                                    <span class="checkmark"></span>
+                                    <div class="store-info">
+                                        <span class="store-name">{{ store.name }}</span>
+                                        <span class="store-address">{{ store.address }}</span>
+                                        <span class="store-region">{{ store.regionName }}</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination" *ngIf="totalPages > 1">
+                            <button type="button" class="btn btn-secondary" [disabled]="currentPage === 1"
+                                (click)="previousPage()">
+                                Previous
+                            </button>
+                            <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+                            <button type="button" class="btn btn-secondary" [disabled]="currentPage === totalPages"
+                                (click)="nextPage()">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected Stores Info -->
+                    <div class="selected-stores-info" *ngIf="selectedStoreIds.length > 0">
+                        <div class="selected-count">
+                            {{ selectedStoreIds.length }} store(s) selected
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" (click)="cancel()">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary"
+                    [disabled]="assignmentForm.invalid || selectedStoreIds.length === 0 || submitting">
+                    <l-tail-chase *ngIf="submitting" size="20" speed="1.75" color="white"></l-tail-chase>
+                    <span *ngIf="!submitting">Create Assignment</span>
+                    <span *ngIf="submitting">Creating...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

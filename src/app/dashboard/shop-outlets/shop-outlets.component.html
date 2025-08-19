@@ -1,0 +1,261 @@
+<div class="shop-outlets-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Shop Outlets</h1>
+                <p class="page-description">Manage your retail locations and store outlets</p>
+            </div>
+            <div class="header-actions">
+                <div class="import-controls">
+                    <button class="download-btn" (click)="downloadTemplate()" title="Download Template">
+                        <span class="material-icons">download</span>
+                    </button>
+                    <div class="file-input-group">
+                        <input type="file" accept=".csv" (change)="onFileSelected($event)" class="file-input"
+                            id="csvFile">
+                        <label for="csvFile" class="file-label">
+                            <span class="material-icons">upload_file</span>
+                            <span *ngIf="!selectedFile">Choose CSV File</span>
+                            <span *ngIf="selectedFile" class="selected-file-name">{{ selectedFile.name }}</span>
+                        </label>
+                        <!-- <button *ngIf="selectedFile" type="button" class="clear-file-btn" (click)="clearFileSelection()"
+                            title="Clear file selection">
+                            <span class="material-icons">close</span>
+                        </button> -->
+                    </div>
+                    <button class="import-btn" (click)="importShops()" [disabled]="!selectedFile || importLoading">
+                        <span class="material-icons" *ngIf="!importLoading">upload</span>
+                        <l-tail-chase *ngIf="importLoading" size="20" speed="1.75" color="white"></l-tail-chase>
+                        {{ importLoading ? 'Importing...' : 'Import' }}
+                    </button>
+                </div>
+                <button class="add-btn" (click)="showAddForm()">
+                    <span class="material-icons">add</span>
+                    Add Shop
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Messages -->
+    <div class="messages" *ngIf="errorMessage || successMessage">
+        <div class="error-text" *ngIf="errorMessage" (click)="clearMessages()">
+            {{ errorMessage }}
+        </div>
+        <div class="success-text" *ngIf="successMessage" (click)="clearMessages()">
+            {{ successMessage }}
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()"></div>
+
+    <!-- Add/Edit Form Modal -->
+    <div class="form-modal" *ngIf="showForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>{{ editingShop ? 'Edit Shop' : 'Add New Shop' }}</h2>
+                <button class="close-btn" (click)="closeForm()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form [formGroup]="shopForm" (ngSubmit)="onSubmit()" class="shop-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Shop Name *</label>
+                        <input type="text" id="name" formControlName="name" class="form-input"
+                            placeholder="Enter shop name">
+                        <div class="error-message" *ngIf="formSubmitted && shopForm.get('name')?.invalid">
+                            <span *ngIf="shopForm.get('name')?.errors?.['required']">Shop name is required</span>
+                            <span *ngIf="shopForm.get('name')?.errors?.['minlength']">Shop name must be at least 2
+                                characters</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sapId" class="form-label">SAP ID *</label>
+                        <input type="text" id="sapId" formControlName="sapId" class="form-input"
+                            placeholder="Enter SAP ID">
+                        <div class="error-message" *ngIf="formSubmitted && shopForm.get('sapId')?.invalid">
+                            <span *ngIf="shopForm.get('sapId')?.errors?.['required']">SAP ID is required</span>
+                            <span *ngIf="shopForm.get('sapId')?.errors?.['minlength']">SAP ID must be at least 1
+                                character</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" id="phoneNumber" formControlName="phoneNumber" class="form-input"
+                            placeholder="Enter phone number" maxlength="10" (input)="onPhoneNumberInput($event)">
+                        <div class="error-message" *ngIf="formSubmitted && shopForm.get('phoneNumber')?.invalid">
+                            <span *ngIf="shopForm.get('phoneNumber')?.errors?.['pattern']">Please enter exactly 10
+                                digits</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" id="address" formControlName="address" class="form-input"
+                            placeholder="Enter shop address">
+                        <div class="error-message" *ngIf="formSubmitted && shopForm.get('address')?.invalid">
+                            <span *ngIf="shopForm.get('address')?.errors?.['maxlength']">Address must be less than 500
+                                characters</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regionId" class="form-label">Region *</label>
+                        <div class="custom-select" [class.open]="isRegionDropdownOpen" (click)="toggleRegionDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!shopForm.get('regionId')?.value">
+                                    {{ getSelectedRegionText() }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isRegionDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let region of regions"
+                                    (click)="selectRegion(region.id, region.name, $event)"
+                                    [class.selected]="shopForm.get('regionId')?.value === region.id">
+                                    {{ region.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" *ngIf="formSubmitted && shopForm.get('regionId')?.invalid">
+                            <span *ngIf="shopForm.get('regionId')?.errors?.['required']">Region is required</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="submit" class="btn btn-primary" [disabled]="shopForm.invalid || formLoading">
+                            <span class="material-icons" *ngIf="!formLoading">{{ editingShop ? 'update' : 'add'
+                                }}</span>
+                            <l-tail-chase *ngIf="formLoading" size="20" speed="1.75" color="white"></l-tail-chase>
+                            {{ formLoading ? 'Saving...' : (editingShop ? 'Update Shop' : 'Create Shop') }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shops Grid -->
+    <div class="shops-section">
+        <div class="shops-card">
+            <div class="shops-header">
+                <h3>Shop Outlets ({{ filteredShops.length }})</h3>
+                <div class="filter-group">
+                    <label class="filter-label">Filter by Region:</label>
+                    <div class="multi-select-dropdown" [class.open]="isFilterDropdownOpen"
+                        (click)="toggleFilterDropdown()">
+                        <div class="filter-display">
+                            <span class="filter-text">
+                                {{ getFilterDisplayText() }}
+                            </span>
+                            <span class="filter-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="filter-dropdown" *ngIf="isFilterDropdownOpen" (click)="$event.stopPropagation()">
+                            <div class="filter-option" *ngFor="let region of regions">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" [checked]="isRegionSelected(region.id)"
+                                        (click)="$event.stopPropagation()"
+                                        (change)="onRegionFilterChange(region.id, $event.target.checked)">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">{{ region.name }}</span>
+                                </label>
+                            </div>
+                            <div class="filter-actions" *ngIf="selectedRegionFilters.length > 0">
+                                <button class="clear-filters-btn" (click)="clearFilters(); $event.stopPropagation()">
+                                    Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state" *ngIf="loading">
+                <l-tail-chase size="40" speed="1.75" color="#6366f1"></l-tail-chase>
+                <p>Loading shops...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" *ngIf="!loading && filteredShops.length === 0">
+                <div class="empty-icon">
+                    <span class="material-icons">store</span>
+                </div>
+                <h3>No shops found</h3>
+                <p>Get started by adding your first shop outlet or importing from CSV.</p>
+            </div>
+
+            <!-- Shops Grid -->
+            <div class="shops-grid" *ngIf="!loading && filteredShops.length > 0">
+                <div class="shops-table">
+                    <div class="table-header">
+                        <div class="header-cell">Shop Name</div>
+                        <div class="header-cell">SAP ID</div>
+                        <div class="header-cell">Contact</div>
+                        <div class="header-cell">Region</div>
+                        <div class="header-cell">Created By</div>
+                        <div class="header-cell actions-header">Actions</div>
+                    </div>
+                    <div class="table-body">
+                        <div class="table-row" *ngFor="let shop of filteredShops">
+                            <div class="table-cell">
+                                <div class="shop-info">
+                                    <div class="shop-name">{{ shop.name }}</div>
+                                    <div class="shop-address" *ngIf="shop.address">{{ shop.address }}</div>
+                                </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="sap-id">{{ shop.sapId }}</div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="contact-info">
+                                    <div class="phone-number" *ngIf="shop.phoneNumber">
+                                        <span class="material-icons">phone</span>
+                                        {{ shop.phoneNumber }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="region-badge"
+                                    [style.background-color]="getRegionBadgeColor(shop.regionName).bg"
+                                    [style.color]="getRegionBadgeColor(shop.regionName).text"
+                                    [style.border-color]="getRegionBadgeColor(shop.regionName).border">
+                                    {{ shop.regionName }}
+                                </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="created-by">{{ shop.createdBy }}</div>
+                            </div>
+                            <div class="table-cell actions-cell">
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" (click)="showEditForm(shop)" title="Edit Shop">
+                                        <span class="material-icons">edit</span>
+                                    </button>
+                                    <button class="action-btn delete-btn" (click)="deleteShop(shop)"
+                                        title="Delete Shop">
+                                        <span class="material-icons">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

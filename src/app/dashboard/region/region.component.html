@@ -1,0 +1,125 @@
+<div class="region-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Regions</h1>
+                <p class="page-description">Manage your business regions and territories</p>
+            </div>
+            <button class="add-btn" (click)="showAddRegionForm()">
+                <span class="material-icons">add</span>
+                <span>Add Region</span>
+            </button>
+        </div>
+    </div>
+
+
+
+    <!-- Add/Edit Form Section -->
+    <div class="form-section" *ngIf="showAddForm">
+        <div class="form-card">
+            <div class="form-header">
+                <h2 class="form-title">{{ getFormTitle() }}</h2>
+                <button class="close-btn" (click)="cancelForm()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form class="region-form" (ngSubmit)="saveRegion()">
+                <div class="form-group">
+                    <label for="regionName" class="form-label">Region Name *</label>
+                    <input type="text" id="regionName" name="regionName" [(ngModel)]="regionForm.name"
+                        class="form-input" placeholder="Enter region name" required>
+                </div>
+                <div class="form-group">
+                    <label for="regionDescription" class="form-label">Description</label>
+                    <textarea id="regionDescription" name="regionDescription" [(ngModel)]="regionForm.description"
+                        class="form-textarea" placeholder="Enter region description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <div *ngIf="showError" class="error-text">{{ errorMessage }}</div>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons">save</span>
+                            {{ getSaveButtonText() }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Regions List Section -->
+    <div class="regions-section">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="loading-spinner">
+                <!-- <span class="material-icons">refresh</span> -->
+            </div>
+            <p>Loading regions...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && regions.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <span class="material-icons">public</span>
+            </div>
+            <h3>No Regions Found</h3>
+            <p>Get started by creating your first region</p>
+            <button class="btn btn-primary" (click)="showAddRegionForm()">
+                <span class="material-icons">add</span>
+                Create First Region
+            </button>
+        </div>
+
+        <!-- Regions Grid -->
+        <div *ngIf="!loading && regions.length > 0" class="regions-grid">
+            <div class="grid-header">
+                <h3 class="grid-title">All Regions ({{ regions.length }})</h3>
+            </div>
+            <div class="regions-table">
+                <div class="table-header">
+                    <div class="table-cell header-cell">Region Name</div>
+                    <div class="table-cell header-cell">Description</div>
+                    <div class="table-cell header-cell">Created Date</div>
+                    <div class="table-cell header-cell actions-cell">Actions</div>
+                </div>
+                <div class="table-body">
+                    <div *ngFor="let region of regions" class="table-row">
+                        <div class="table-cell">
+                            <div class="region-info">
+                                <span class="region-name">{{ region.name }}</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <span class="region-description">{{ region.description || 'No description' }}</span>
+                        </div>
+                        <div class="table-cell">
+                            <span class="created-date">{{ region.createdDate | date:'mediumDate' }}</span>
+                        </div>
+                        <div class="table-cell actions-cell">
+                            <div class="action-buttons">
+                                <button class="action-btn edit-btn" (click)="showEditRegionForm(region)"
+                                    title="Edit Region">
+                                    <span class="material-icons">edit</span>
+                                </button>
+                                <button class="action-btn delete-btn" (click)="deleteRegion(region)"
+                                    title="Delete Region">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>

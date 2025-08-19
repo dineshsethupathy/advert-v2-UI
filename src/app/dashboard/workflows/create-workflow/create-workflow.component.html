@@ -1,0 +1,128 @@
+<div class="create-workflow-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">{{ isEditMode ? 'Edit Workflow' : 'Create New Workflow' }}</h1>
+            <p class="form-subtitle">{{ isEditMode ? 'Modify workflow stages and approval roles' : 'Define workflow
+                stages with approval roles' }}</p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="loading-spinner">
+                <span class="material-icons">refresh</span>
+            </div>
+            <p>{{ isEditMode ? 'Loading workflow for editing...' : 'Loading...' }}</p>
+        </div>
+
+        <form class="workflow-form" [formGroup]="workflowForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3 class="section-title">Basic Information</h3>
+
+                <div class="form-group">
+                    <label for="workflowName" class="form-label">Workflow Name *</label>
+                    <input type="text" id="workflowName" name="workflowName" formControlName="name" class="form-input"
+                        placeholder="Enter workflow name">
+                    <div class="error-message"
+                        *ngIf="workflowForm.get('name')?.invalid && workflowForm.get('name')?.touched">
+                        Workflow name is required
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="workflowDescription" class="form-label">Description</label>
+                    <textarea id="workflowDescription" name="workflowDescription" formControlName="description"
+                        class="form-textarea" placeholder="Enter description (optional)" rows="3"></textarea>
+                </div>
+            </div>
+
+            <!-- Stage Management -->
+            <div class="form-section">
+                <h3 class="section-title">Workflow Stages</h3>
+
+                <!-- Stages List -->
+                <div class="stages-container" *ngIf="stages.length > 0">
+                    <h4 class="stages-title">Workflow Stages ({{ stages.length }} stages)</h4>
+
+                    <div class="stages-list">
+                        <div *ngFor="let stage of stages; let i = index" class="stage-item">
+                            <div class="stage-header">
+                                <div class="stage-order">
+                                    <span class="order-number">{{ i + 1 }}</span>
+                                </div>
+                                <div class="stage-content">
+                                    <div class="stage-inputs">
+                                        <div class="input-group">
+                                            <label class="input-label">Stage Name</label>
+                                            <input type="text" class="stage-input" [(ngModel)]="stage.stageName"
+                                                [ngModelOptions]="{standalone: true}" placeholder="Enter stage name">
+                                        </div>
+                                        <div class="input-group">
+                                            <label class="input-label">Required Role</label>
+                                            <select class="stage-select" [(ngModel)]="stage.roleRequired"
+                                                [ngModelOptions]="{standalone: true}">
+                                                <option [value]="0">Select Role</option>
+                                                <option *ngFor="let role of roles" [value]="role.id">
+                                                    {{ role.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="stage-actions">
+                                        <div class="action-buttons">
+                                            <button type="button" class="action-btn move-btn" (click)="moveStageUp(i)"
+                                                [disabled]="i === 0" title="Move Up">
+                                                <span class="material-icons">keyboard_arrow_up</span>
+                                            </button>
+                                            <button type="button" class="action-btn move-btn" (click)="moveStageDown(i)"
+                                                [disabled]="i === stages.length - 1" title="Move Down">
+                                                <span class="material-icons">keyboard_arrow_down</span>
+                                            </button>
+                                            <button type="button" class="action-btn delete-btn" (click)="removeStage(i)"
+                                                title="Remove Stage">
+                                                <span class="material-icons">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stage-footer" *ngIf="i === stages.length - 1">
+                                <span class="final-stage-chip">Final Stage</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add New Stage -->
+                <div class="add-stage-section">
+                    <button type="button" class="btn btn-secondary" (click)="addStage()">
+                        <span class="material-icons">add</span>
+                        Add Stage
+                    </button>
+                </div>
+
+                <!-- No Stages Message -->
+                <div class="no-stages-message" *ngIf="stages.length === 0">
+                    <div class="message-content">
+                        <span class="material-icons">info</span>
+                        <p>No stages defined yet. Click "Add Stage" to start building your workflow.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" (click)="cancel()">
+                    <span class="material-icons">cancel</span>
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary"
+                    [disabled]="isSubmitting || workflowForm.invalid || stages.length === 0">
+                    <span class="material-icons" *ngIf="!isSubmitting">{{ isEditMode ? 'save' : 'add' }}</span>
+                    <span class="material-icons loading-icon" *ngIf="isSubmitting">refresh</span>
+                    {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Workflow' : 'Create Workflow') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

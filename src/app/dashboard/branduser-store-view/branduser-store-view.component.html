@@ -1,0 +1,249 @@
+<div class="store-view-container" *ngIf="!loading && storeViewData">
+    <!-- Page Header Section -->
+    <div class="content-header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" (click)="goBack()">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div class="header-info">
+                    <h2 class="page-title">{{ storeViewData.storeAssignment.storeName }}</h2>
+                    <p class="page-description">{{ storeViewData.assignment.name }}</p>
+                </div>
+            </div>
+            <div class="header-status">
+                <div class="status-item">
+                    <span class="label">Vendor Status:</span>
+                    <span class="status-chip"
+                        [class]="'status-' + getVendorStatusColor(storeViewData.storeAssignment.vendorWorkStatus)">
+                        {{ storeViewData.storeAssignment.vendorWorkStatus }}
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Approval Status:</span>
+                    <span class="status-chip"
+                        [class]="'status-' + getApprovalStatusColor(storeViewData.storeAssignment.approvalStatus)">
+                        {{ storeViewData.storeAssignment.approvalStatus }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Details Card -->
+    <div class="details-card">
+        <div class="card-header">
+            <h3 class="card-title">Store Information</h3>
+        </div>
+        <div class="details-table-container">
+            <table class="details-table">
+                <tbody>
+                    <tr>
+                        <td class="detail-label">Store Name:</td>
+                        <td class="detail-value">{{ storeViewData.storeAssignment.storeName }}</td>
+                        <td class="detail-label">SAP ID:</td>
+                        <td class="detail-value">{{ storeViewData.storeAssignment.sapId }}</td>
+                        <td class="detail-label">Address:</td>
+                        <td class="detail-value">{{ storeViewData.storeAssignment.storeAddress || 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="detail-label">Region:</td>
+                        <td class="detail-value">{{ storeViewData.storeAssignment.regionName || 'N/A' }}</td>
+                        <td class="detail-label">Phone:</td>
+                        <td class="detail-value">{{ storeViewData.storeAssignment.storePhoneNumber || 'N/A' }}</td>
+                        <td class="detail-label">Vendor:</td>
+                        <td class="detail-value">{{ storeViewData.assignment.vendorName }}</td>
+                    </tr>
+                    <tr>
+                        <td class="detail-label">Workflow:</td>
+                        <td class="detail-value">{{ storeViewData.assignment.workflowName }}</td>
+                        <td class="detail-label">Assigned By:</td>
+                        <td class="detail-value">{{ storeViewData.assignment.assignedByName }}</td>
+                        <td class="detail-label">Assigned Date:</td>
+                        <td class="detail-value">{{ formatDate(storeViewData.assignment.assignedDate) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Images Section -->
+    <div class="images-card" *ngIf="hasImages()">
+        <div class="card-header">
+            <h3 class="card-title">Execution Images</h3>
+        </div>
+        <div class="images-grid">
+            <div class="image-item" *ngIf="storeViewData.storeAssignment.bannerImageUrl">
+                <h4>Banner Image</h4>
+                <div class="image-container">
+                    <div class="image-loading" *ngIf="!bannerImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeViewData.storeAssignment.bannerImageUrl" alt="Banner Image"
+                        (load)="onBannerImageLoad()" (error)="onBannerImageError()" [class.hidden]="!bannerImageLoaded"
+                        [class.loaded]="bannerImageLoaded"
+                        (click)="openImageModal(storeViewData.storeAssignment.bannerImageUrl)">
+                </div>
+            </div>
+            <div class="image-item" *ngIf="storeViewData.storeAssignment.beforeExecutionImageUrl">
+                <h4>Before Execution</h4>
+                <div class="image-container">
+                    <div class="image-loading" *ngIf="!beforeImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeViewData.storeAssignment.beforeExecutionImageUrl" alt="Before Execution"
+                        (load)="onBeforeImageLoad()" (error)="onBeforeImageError()" [class.hidden]="!beforeImageLoaded"
+                        [class.loaded]="beforeImageLoaded"
+                        (click)="openImageModal(storeViewData.storeAssignment.beforeExecutionImageUrl)">
+                </div>
+                <p class="image-date" *ngIf="storeViewData.storeAssignment.beforeExecutionDate">
+                    {{ formatDateOnly(storeViewData.storeAssignment.beforeExecutionDate) }}
+                </p>
+            </div>
+            <div class="image-item" *ngIf="storeViewData.storeAssignment.afterExecutionImageUrl">
+                <h4>After Execution</h4>
+                <div class="image-container">
+                    <div class="image-loading" *ngIf="!afterImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeViewData.storeAssignment.afterExecutionImageUrl" alt="After Execution"
+                        (load)="onAfterImageLoad()" (error)="onAfterImageError()" [class.hidden]="!afterImageLoaded"
+                        [class.loaded]="afterImageLoaded"
+                        (click)="openImageModal(storeViewData.storeAssignment.afterExecutionImageUrl)">
+                </div>
+                <p class="image-date" *ngIf="storeViewData.storeAssignment.afterExecutionDate">
+                    {{ formatDateOnly(storeViewData.storeAssignment.afterExecutionDate) }}
+                </p>
+            </div>
+        </div>
+        <div class="board-details"
+            *ngIf="storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight">
+            <h4>Board Specifications</h4>
+            <p>{{ storeViewData.storeAssignment.boardWidth }}cm × {{ storeViewData.storeAssignment.boardHeight }}cm</p>
+        </div>
+    </div>
+
+    <!-- Vendor Workflow Progress -->
+    <div class="workflow-card" *ngIf="storeViewData.vendorWorkflow.length > 0">
+        <div class="card-header">
+            <h3 class="card-title">Vendor Workflow Progress</h3>
+            <div class="progress-info">
+                <span class="progress-text">{{ getVendorWorkflowProgress().toFixed(1) }}% Complete</span>
+            </div>
+        </div>
+        <div class="workflow-stages">
+            <div *ngFor="let stage of storeViewData.vendorWorkflow" class="stage-item">
+                <div class="stage-header">
+                    <div class="stage-info">
+                        <h4 class="stage-name">{{ stage.stageName }}</h4>
+                        <span class="stage-status" [class]="'status-' + getWorkflowStatusColor(stage.status)">
+                            {{ stage.status }}
+                        </span>
+                    </div>
+                    <div class="stage-dates">
+                        <span class="date-label" *ngIf="stage.startedAt">Started: {{ formatDateOnly(stage.startedAt)
+                            }}</span>
+                        <span class="date-label" *ngIf="stage.completedAt">Completed: {{
+                            formatDateOnly(stage.completedAt) }}</span>
+                    </div>
+                </div>
+                <div class="stage-comment" *ngIf="stage.comment">
+                    <span class="comment-label">Comment:</span>
+                    <span class="comment-text">{{ stage.comment }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Workflow Progress -->
+    <div class="workflow-card" *ngIf="storeViewData.approvalWorkflow.length > 0">
+        <div class="card-header">
+            <h3 class="card-title">Approval Workflow Progress</h3>
+            <div class="progress-info">
+                <span class="progress-text">{{ getApprovalWorkflowProgress().toFixed(1) }}% Complete</span>
+            </div>
+        </div>
+        <div class="workflow-stages">
+            <div *ngFor="let stage of storeViewData.approvalWorkflow" class="stage-item">
+                <div class="stage-header">
+                    <div class="stage-info">
+                        <h4 class="stage-name">{{ stage.stageName }}</h4>
+                        <span class="stage-role">{{ stage.roleName }}</span>
+                        <span class="stage-status" [class]="'status-' + getWorkflowStatusColor(stage.status)">
+                            {{ stage.status }}
+                        </span>
+                    </div>
+                    <div class="stage-dates">
+                        <span class="date-label" *ngIf="stage.startedAt">Started: {{ formatDateOnly(stage.startedAt)
+                            }}</span>
+                        <span class="date-label" *ngIf="stage.completedAt">Completed: {{
+                            formatDateOnly(stage.completedAt) }}</span>
+                        <span class="date-label" *ngIf="stage.assignedToUserName">By: {{ stage.assignedToUserName
+                            }}</span>
+                    </div>
+                </div>
+                <div class="stage-comment" *ngIf="stage.comment">
+                    <span class="comment-label">Comment:</span>
+                    <span class="comment-text">{{ stage.comment }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Notes -->
+    <div class="notes-card" *ngIf="storeViewData.storeAssignment.vendorNotes">
+        <div class="card-header">
+            <h3 class="card-title">Vendor Notes</h3>
+        </div>
+        <div class="notes-content">
+            <p>{{ storeViewData.storeAssignment.vendorNotes }}</p>
+        </div>
+    </div>
+
+    <!-- Visual Workflow -->
+    <div class="workflow-card">
+        <div class="card-header">
+            <h3 class="card-title">Workflow Overview</h3>
+        </div>
+        <div class="workflow-visual">
+            <div class="workflow-timeline">
+                <div *ngFor="let stage of storeViewData.workflowStages" class="timeline-stage">
+                    <div class="stage-marker" [class]="'stage-' + stage.workflowName.toLowerCase().replace(' ', '-')">
+                        <span class="stage-number">{{ stage.stageOrder }}</span>
+                    </div>
+                    <div class="stage-info">
+                        <h4>{{ stage.stageName }}</h4>
+                        <p class="role-name">{{ stage.roleName }}</p>
+                        <span class="final-badge" *ngIf="stage.isFinalStage">Final Stage</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading store details...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="!loading && !storeViewData">
+    <div class="error-content">
+        <span class="material-icons error-icon">error_outline</span>
+        <h3>Unable to load store details</h3>
+        <p>Please try again or contact support if the problem persists.</p>
+        <button class="retry-btn" (click)="loadStoreViewData()">Retry</button>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal-backdrop" *ngIf="showImageModal" (click)="closeImageModal()">
+    <div class="image-modal" (click)="$event.stopPropagation()">
+        <button class="close-modal-btn" (click)="closeImageModal()" title="Close">
+            <span class="material-icons">close</span>
+        </button>
+        <img [src]="modalImageUrl" alt="Full Image" />
+    </div>
+</div>

@@ -1,0 +1,147 @@
+<div class="users-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Users Management</h1>
+                <p class="page-description">Manage internal users and their roles</p>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn secondary" (click)="navigateToRoles()">
+                    <span class="material-icons">admin_panel_settings</span>
+                    <span>Manage Roles</span>
+                </button>
+                <button class="add-btn" (click)="showAddUserModal()">
+                    <span class="material-icons">add</span>
+                    <span>Add User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <l-tail-chase size="40" speed="1.75" color="#6366f1"></l-tail-chase>
+        <p>Loading users...</p>
+    </div>
+
+    <!-- Users Grid -->
+    <div *ngIf="!loading" class="users-grid">
+        <div class="grid-header">
+            <div class="grid-cell header-cell">Name</div>
+            <div class="grid-cell header-cell">Email</div>
+            <div class="grid-cell header-cell">Role</div>
+            <div class="grid-cell header-cell">Actions</div>
+        </div>
+
+        <div *ngIf="users.length === 0" class="no-data">
+            <span class="material-icons">people</span>
+            <p>No users found</p>
+            <!-- <button class="btn primary" (click)="showAddUserModal()">Add First User</button> -->
+        </div>
+
+        <div *ngFor="let user of users" class="grid-row">
+            <div class="grid-cell">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <span class="material-icons">person</span>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-cell">{{ user.email }}</div>
+            <div class="grid-cell">
+                <span class="role-badge">{{ getRoleName(user.roleId) }}</span>
+            </div>
+            <div class="grid-cell">
+                <div class="action-buttons">
+                    <button class="action-btn edit" (click)="showEditUserModal(user)" title="Edit User">
+                        <span class="material-icons">edit</span>
+                    </button>
+                    <button class="action-btn delete" (click)="deleteUser(user)" title="Delete User">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div *ngIf="showAddModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>{{ getFormTitle() }}</h2>
+                <button class="modal-close" (click)="closeModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="modal-form">
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" formControlName="email" placeholder="Enter email address"
+                        [class.error]="formSubmitted && userForm.get('email')?.invalid">
+                    <div *ngIf="formSubmitted && userForm.get('email')?.invalid" class="error-message">
+                        Please enter a valid email address
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" formControlName="firstName" placeholder="Enter first name"
+                            [class.error]="formSubmitted && userForm.get('firstName')?.invalid">
+                        <div *ngIf="formSubmitted && userForm.get('firstName')?.invalid" class="error-message">
+                            First name is required (minimum 2 characters)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" formControlName="lastName" placeholder="Enter last name"
+                            [class.error]="formSubmitted && userForm.get('lastName')?.invalid">
+                        <div *ngIf="formSubmitted && userForm.get('lastName')?.invalid" class="error-message">
+                            Last name is required (minimum 2 characters)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="roleId">Role *</label>
+                    <div class="custom-select" [class.open]="isRoleDropdownOpen" (click)="toggleRoleDropdown()">
+                        <div class="select-display">
+                            <span class="select-text" [class.placeholder]="!userForm.get('roleId')?.value">
+                                {{ getSelectedRoleText() }}
+                            </span>
+                            <span class="select-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="select-dropdown" *ngIf="isRoleDropdownOpen">
+                            <div class="dropdown-option" *ngFor="let role of roles"
+                                (click)="selectRole(role.id, role.name, $event)"
+                                [class.selected]="userForm.get('roleId')?.value === role.id">
+                                {{ role.name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="formSubmitted && userForm.get('roleId')?.invalid" class="error-message">
+                        Please select a role
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+                    <button type="submit" class="btn primary" [disabled]="userForm.invalid">
+                        {{ getSubmitButtonText() }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

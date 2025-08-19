@@ -1,0 +1,21 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onBackdropClick($event)">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ title }}</h3>
+            <button class="modal-close-btn" (click)="onCancel()" type="button">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">{{ message }}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn {{ cancelButtonClass }}" (click)="onCancel()" type="button">
+                {{ cancelText }}
+            </button>
+            <button class="btn {{ confirmButtonClass }}" (click)="onConfirm()" type="button">
+                {{ confirmText }}
+            </button>
+        </div>
+    </div>
+</div>

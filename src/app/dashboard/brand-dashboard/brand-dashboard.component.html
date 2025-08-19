@@ -1,0 +1,362 @@
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1 class="brand-title">{{ getTenantName() }}</h1>
+                <!-- <p class="brand-subtitle">{{ getUserType() }}</p> -->
+            </div>
+
+            <div class="header-actions">
+                <button class="header-btn">
+                    <span class="material-icons btn-icon">notifications</span>
+                    <!-- <span class="notification-badge">3</span> -->
+                </button>
+
+                <!-- <button class="header-btn">
+                    <span class="material-icons btn-icon">settings</span>
+                </button> -->
+
+                <div class="user-info">
+                    <div class="profile-dropdown" (click)="toggleProfileMenu()">
+                        <button class="header-btn profile-btn">
+                            <span class="material-icons btn-icon">account_circle</span>
+                        </button>
+                        <div class="dropdown-menu" [class.show]="showProfileMenu">
+                            <div class="dropdown-header">
+                                <div class="user-email">{{ getCurrentUserEmail() }}</div>
+                                <div class="user-role">{{ getUserType() }}</div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item logout-item" (click)="logout()">
+                                <span class="material-icons">logout</span>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <!-- <div class="nav-title">Navigation</div> -->
+                <ul class="nav-list">
+                    <li *ngFor="let item of getVisibleSidebarItems()" class="nav-item" [class.active]="item.active"
+                        (click)="selectItem(item)">
+                        <a class="nav-link">
+                            <span class="material-icons nav-icon">{{ item.icon }}</span>
+                            <span class="nav-text">{{ item.name }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Dashboard Content -->
+            <div *ngIf="currentRoute === '/dashboard'">
+                <div class="content-header">
+                    <h2 class="page-title">Dashboard Overview</h2>
+                    <p class="page-description">Welcome back! Here's what's happening today.</p>
+                </div>
+
+                <!-- Enhanced Analytics Dashboard -->
+                <div class="dashboard-content" *ngIf="dashboardAnalytics && !loading">
+                    <!-- Assignment Analytics Section -->
+                    <div class="analytics-section">
+                        <div class="section-header">
+                            <h3 class="section-title">Assignment Analytics</h3>
+                            <button class="view-all-btn" (click)="navigateToAssignments()">
+                                View All Assignments
+                            </button>
+                        </div>
+
+                        <div class="analytics-grid">
+                            <!-- Assignment Stats Cards -->
+                            <div class="stats-cards">
+                                <div class="stat-card primary">
+                                    <div class="stat-icon">
+                                        <span class="material-icons">assignment</span>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">{{ dashboardAnalytics.assignmentStats.totalAssignments
+                                            }}</div>
+                                        <div class="stat-label">Total Assignments</div>
+                                        <div class="stat-breakdown">
+                                            <span class="breakdown-item active">{{
+                                                dashboardAnalytics.assignmentStats.activeAssignments }} Active</span>
+                                            <span class="breakdown-item completed">{{
+                                                dashboardAnalytics.assignmentStats.completedAssignments }}
+                                                Completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card success">
+                                    <div class="stat-icon">
+                                        <span class="material-icons">store</span>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">{{ dashboardAnalytics.assignmentStats.totalStores }}
+                                        </div>
+                                        <div class="stat-label">Total Stores</div>
+                                        <div class="stat-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill"
+                                                    [style.width.%]="dashboardAnalytics.assignmentStats.overallProgress">
+                                                </div>
+                                            </div>
+                                            <span class="progress-text">{{
+                                                dashboardAnalytics.assignmentStats.completedStores }}/{{
+                                                dashboardAnalytics.assignmentStats.totalStores }} completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card info">
+                                    <div class="stat-icon">
+                                        <span class="material-icons">trending_up</span>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number">{{
+                                            dashboardAnalytics.assignmentStats.overallProgress.toFixed(1) }}%</div>
+                                        <div class="stat-label">Overall Progress</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities & Pending Actions -->
+                    <div class="activities-section">
+                        <div class="activities-grid">
+                            <!-- Recent Activities -->
+                            <div class="activity-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Recent Activities</h4>
+                                    <span class="activity-count">{{ dashboardAnalytics.recentActivities.length }}</span>
+                                </div>
+                                <div class="activity-list">
+                                    <div *ngFor="let activity of dashboardAnalytics.recentActivities.slice(0, 5)"
+                                        class="activity-item">
+                                        <div class="activity-icon">
+                                            <span class="material-icons">
+                                                {{ activity.type === 'assignment_created' ? 'assignment' :
+                                                activity.type === 'status_updated' ? 'update' :
+                                                activity.type === 'approval_given' ? 'check_circle' : 'store' }}
+                                            </span>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">{{ activity.title }}</div>
+                                            <div class="activity-description">{{ activity.description }}</div>
+                                            <div class="activity-meta">
+                                                <span class="activity-user">{{ activity.userName }}</span>
+                                                <span class="activity-time">{{ activity.timestamp | date:'short'
+                                                    }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pending Actions -->
+                            <div class="pending-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Pending Actions</h4>
+                                    <span class="pending-count">{{ dashboardAnalytics.pendingActions.length }}</span>
+                                </div>
+                                <div class="pending-list">
+                                    <div *ngFor="let action of dashboardAnalytics.pendingActions.slice(0, 5)"
+                                        class="pending-item">
+                                        <div class="pending-icon" [class]="'priority-' + action.priority">
+                                            <span class="material-icons">
+                                                {{ action.type === 'approval' ? 'approval' :
+                                                action.type === 'status_update' ? 'update' : 'assignment' }}
+                                            </span>
+                                        </div>
+                                        <div class="pending-content">
+                                            <div class="pending-title">{{ action.title }}</div>
+                                            <div class="pending-description">{{ action.description }}</div>
+                                            <div class="pending-meta">
+                                                <span class="priority-badge" [class]="'priority-' + action.priority">{{
+                                                    action.priority }}</span>
+                                                <span class="assignment-name" *ngIf="action.assignmentName">{{
+                                                    action.assignmentName }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions-section">
+                        <h4 class="section-title">Quick Actions</h4>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn secondary" (click)="navigateToAssignments()">
+                                <span class="material-icons">add</span>
+                                <span>Create Assignment</span>
+                            </button>
+                            <button class="quick-action-btn secondary" (click)="navigateToShopOutlets()">
+                                <span class="material-icons">store</span>
+                                <span>View Stores</span>
+                            </button>
+                            <button class="quick-action-btn secondary" (click)="navigateToVendors()">
+                                <span class="material-icons">business</span>
+                                <span>Manage Vendors</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legacy Stats Cards (Fallback) -->
+                <div class="dashboard-cards" *ngIf="dashboardStats && !dashboardAnalytics">
+                    <div class="card stat-card">
+                        <div class="card-icon">
+                            <span class="material-icons">people</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-value">{{ dashboardStats.totalUsers }}</h3>
+                            <p class="card-title">Total Users</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="card-icon">
+                            <span class="material-icons">store</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-value">{{ dashboardStats.totalStores }}</h3>
+                            <p class="card-title">Total Stores</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="card-icon">
+                            <span class="material-icons">assignment</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-value">{{ dashboardStats.totalAssignments }}</h3>
+                            <p class="card-title">Total Assignments</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="card-icon">
+                            <span class="material-icons">business</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-value">{{ dashboardStats.totalVendors }}</h3>
+                            <p class="card-title">Total Vendors</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="card-icon">
+                            <span class="material-icons">local_shipping</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-value">{{ dashboardStats.totalDistributors }}</h3>
+                            <p class="card-title">Total Distributors</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div *ngIf="loading" class="loading-state">
+                    <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+                    <p>Loading dashboard data...</p>
+                </div>
+            </div>
+
+            <!-- Region Content -->
+            <div *ngIf="currentRoute === '/region'">
+                <app-region></app-region>
+            </div>
+
+            <!-- Vendor Content -->
+            <div *ngIf="currentRoute === '/vendors'">
+                <app-vendor></app-vendor>
+            </div>
+
+            <!-- Distributor Content -->
+            <div *ngIf="currentRoute === '/distributors'">
+                <app-distributor></app-distributor>
+            </div>
+
+            <!-- Shop Outlets Content -->
+            <div *ngIf="currentRoute === '/shop-outlets'">
+                <app-shop-outlets></app-shop-outlets>
+            </div>
+
+            <!-- Board Details Content -->
+            <div *ngIf="currentRoute === '/board-details'">
+                <app-board-details></app-board-details>
+            </div>
+
+            <!-- Users Content -->
+            <div *ngIf="currentRoute === '/users'">
+                <app-users></app-users>
+            </div>
+
+            <!-- Roles Content -->
+            <div *ngIf="currentRoute === '/roles'">
+                <app-roles></app-roles>
+            </div>
+
+            <!-- Assignments Content -->
+            <div *ngIf="currentRoute === '/assignments'">
+                <app-assignments></app-assignments>
+            </div>
+
+            <!-- Create Assignment Content -->
+            <div *ngIf="currentRoute === '/assignments/create'">
+                <app-create-assignment></app-create-assignment>
+            </div>
+
+            <!-- View Assignment Content -->
+            <div
+                *ngIf="currentRoute.startsWith('/assignments/') && !currentRoute.includes('/create') && !currentRoute.includes('/edit')">
+                <app-view-assignment></app-view-assignment>
+            </div>
+
+            <!-- Edit Assignment Content -->
+            <div *ngIf="currentRoute.includes('/assignments/') && currentRoute.includes('/edit')">
+                <app-create-assignment></app-create-assignment>
+            </div>
+
+            <!-- Workflows Content -->
+            <div *ngIf="currentRoute === '/workflows'">
+                <app-workflows></app-workflows>
+            </div>
+
+            <!-- Create Workflow Content -->
+            <div *ngIf="currentRoute === '/workflows/create'">
+                <app-create-workflow></app-create-workflow>
+            </div>
+
+            <!-- View Workflow Content -->
+            <div
+                *ngIf="currentRoute.startsWith('/workflows/') && !currentRoute.includes('/create') && !currentRoute.includes('/edit')">
+                <app-view-workflow></app-view-workflow>
+            </div>
+
+            <!-- Edit Workflow Content -->
+            <div *ngIf="currentRoute.includes('/workflows/') && currentRoute.includes('/edit')">
+                <app-create-workflow></app-create-workflow>
+            </div>
+
+            <!-- Store View Content -->
+            <div *ngIf="currentRoute.includes('/store-view/')">
+                <app-branduser-store-view></app-branduser-store-view>
+            </div>
+        </main>
+    </div>
+</div>

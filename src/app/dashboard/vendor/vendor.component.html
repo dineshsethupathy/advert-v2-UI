@@ -1,0 +1,119 @@
+<div class="vendor-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Vendors</h1>
+                <p class="page-description">Manage your vendor relationships and access</p>
+            </div>
+            <button class="add-btn" (click)="showAddVendorForm()">
+                <span class="material-icons">add</span>
+                <span>Add Vendor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div class="form-section" *ngIf="showAddForm">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>{{ editingVendor ? 'Edit Vendor' : 'Add New Vendor' }}</h2>
+                <button class="close-btn" (click)="cancelForm()" type="button">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form class="vendor-form" (ngSubmit)="saveVendor()">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" [(ngModel)]="vendorForm.email"
+                        placeholder="Enter vendor email address" required>
+                </div>
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <div *ngIf="showError" class="error-text">{{ errorMessage }}</div>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-secondary" (click)="cancelForm()" [disabled]="formLoading">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" [disabled]="formLoading">
+                            <span class="material-icons" *ngIf="!formLoading">save</span>
+                            <l-tail-chase *ngIf="formLoading" size="20" speed="1.75" color="white"></l-tail-chase>
+                            {{ formLoading ? 'Saving...' : getSaveButtonText() }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading vendors...</p>
+    </div>
+
+    <!-- Vendors Grid -->
+    <div class="vendors-grid-container" *ngIf="!loading && vendors.length > 0">
+        <div class="grid-header">
+            <h3>Vendor List ({{ vendors.length }})</h3>
+        </div>
+        <div class="table-container">
+            <table class="vendors-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let vendor of vendors" class="vendor-row">
+                        <td class="vendor-name">
+                            <div class="name-cell">
+                                <!-- <div class="avatar">
+                                    <span class="material-icons">person</span>
+                                </div> -->
+                                <div class="name-info">
+                                    <div class="full-name">{{ getFullName(vendor) }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="vendor-email">{{ vendor.email }}</td>
+                        <td class="vendor-phone">{{ vendor.phoneNumber || '-' }}</td>
+                        <td class="vendor-status">
+                            <span class="status-badge" [class]="getStatusClass(vendor)">
+                                {{ getStatusText(vendor) }}
+                            </span>
+                        </td>
+                        <td class="vendor-last-login">
+                            {{ vendor.lastLoginAt ? (vendor.lastLoginAt | date:'short') : 'Never' }}
+                        </td>
+                        <td class="vendor-actions">
+                            <button class="action-btn edit-btn" (click)="editVendor(vendor)" title="Edit Vendor">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete-btn" (click)="deleteVendor(vendor)" title="Delete Vendor">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && vendors.length === 0">
+        <div class="empty-icon">
+            <span class="material-icons">people</span>
+        </div>
+        <h3>No Vendors Found</h3>
+        <p>Start by adding your first vendor to manage their access and relationships.</p>
+    </div>
+
+
+</div>

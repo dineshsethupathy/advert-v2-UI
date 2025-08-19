@@ -1,0 +1,241 @@
+<div class="store-workflow-container">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+        <p>Loading store workflow details...</p>
+    </div>
+
+    <!-- Store Workflow Details -->
+    <div class="workflow-content" *ngIf="!loading && storeAssignment">
+        <!-- Header Section -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="back-btn" (click)="goBack()">
+                        <span class="material-icons">arrow_back</span>
+                        Back to Assignment
+                    </button>
+                    <div class="header-info">
+                        <h1 class="page-title">{{ storeAssignment.storeName }}</h1>
+                        <p class="page-description">{{ storeAssignment.storeAddress }}</p>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <div class="current-stage">
+                        <span class="stage-label">Current Stage:</span>
+                        <span class="stage-badge" [class]="'status-' + getStatusColor(getCurrentStage())">
+                            {{ getCurrentStage() }}
+                        </span>
+                    </div>
+                    <div class="overall-progress">
+                        <div class="progress-info">
+                            <span class="progress-text">Overall Progress</span>
+                            <span class="progress-percentage">{{ getOverallProgress() }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" [style.width.%]="getOverallProgress()"
+                                [class]="'progress-' + getProgressColor(getOverallProgress())"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Stages Timeline -->
+        <div class="workflow-timeline">
+            <div class="timeline-header">
+                <h2>Workflow Timeline</h2>
+                <p>Detailed progress of each stage with timestamps</p>
+            </div>
+
+            <div class="timeline-container">
+                <!-- Pending Stage -->
+                <div class="timeline-item" [class]="'stage-' + getStageStatus('pending')">
+                    <div class="timeline-marker">
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('pending') === 'completed'">check_circle</span>
+                        <span class="material-icons" *ngIf="getStageStatus('pending') === 'pending'">schedule</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="stage-header">
+                            <h3 class="stage-title">Pending</h3>
+                            <span class="stage-status" [class]="'status-' + getStageStatus('pending')">
+                                {{ getStageStatus('pending') === 'completed' ? 'Completed' : 'Pending' }}
+                            </span>
+                        </div>
+                        <div class="stage-details">
+                            <div class="stage-info">
+                                <span class="info-label">Start Date:</span>
+                                <span class="info-value">{{ formatDate(getCreatedDate()) }}</span>
+                            </div>
+                            <div class="stage-info">
+                                <span class="info-label">Duration:</span>
+                                <span class="info-value">{{ getPendingDuration() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Started Stage -->
+                <div class="timeline-item" [class]="'stage-' + getStageStatus('started')">
+                    <div class="timeline-marker">
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('started') === 'completed'">check_circle</span>
+                        <span class="material-icons" *ngIf="getStageStatus('started') === 'pending'">schedule</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="stage-header">
+                            <h3 class="stage-title">Started</h3>
+                            <span class="stage-status" [class]="'status-' + getStageStatus('started')">
+                                {{ getStageStatus('started') === 'completed' ? 'Completed' : 'Pending' }}
+                            </span>
+                        </div>
+                        <div class="stage-details">
+                            <div class="stage-info">
+                                <span class="info-label">Start Date:</span>
+                                <span class="info-value">{{ formatDate(getStartedDate()) }}</span>
+                            </div>
+                            <div class="stage-info">
+                                <span class="info-label">Duration:</span>
+                                <span class="info-value">{{ getStartedDuration() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Before Execution Stage -->
+                <div class="timeline-item" [class]="'stage-' + getStageStatus('before execution')">
+                    <div class="timeline-marker">
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('before execution') === 'completed'">check_circle</span>
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('before execution') === 'pending'">schedule</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="stage-header">
+                            <h3 class="stage-title">Before Execution</h3>
+                            <span class="stage-status" [class]="'status-' + getStageStatus('before execution')">
+                                {{ getStageStatus('before execution') === 'completed' ? 'Completed' : 'Pending' }}
+                            </span>
+                        </div>
+                        <div class="stage-details">
+                            <div class="stage-info">
+                                <span class="info-label">Start Date:</span>
+                                <span class="info-value">{{ formatDate(getBeforeExecutionDate()) }}</span>
+                            </div>
+                            <div class="stage-info">
+                                <span class="info-label">Duration:</span>
+                                <span class="info-value">{{ getBeforeExecutionDuration() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After Execution Stage -->
+                <div class="timeline-item" [class]="'stage-' + getStageStatus('after execution')">
+                    <div class="timeline-marker">
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('after execution') === 'completed'">check_circle</span>
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('after execution') === 'pending'">schedule</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="stage-header">
+                            <h3 class="stage-title">After Execution</h3>
+                            <span class="stage-status" [class]="'status-' + getStageStatus('after execution')">
+                                {{ getStageStatus('after execution') === 'completed' ? 'Completed' : 'Pending' }}
+                            </span>
+                        </div>
+                        <div class="stage-details">
+                            <div class="stage-info">
+                                <span class="info-label">Start Date:</span>
+                                <span class="info-value">{{ formatDate(getAfterExecutionDate()) }}</span>
+                            </div>
+                            <div class="stage-info">
+                                <span class="info-label">Duration:</span>
+                                <span class="info-value">{{ getAfterExecutionDuration() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Stage -->
+                <div class="timeline-item" [class]="'stage-' + getStageStatus('completed')">
+                    <div class="timeline-marker">
+                        <span class="material-icons"
+                            *ngIf="getStageStatus('completed') === 'completed'">check_circle</span>
+                        <span class="material-icons" *ngIf="getStageStatus('completed') === 'pending'">schedule</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="stage-header">
+                            <h3 class="stage-title">Completed</h3>
+                            <span class="stage-status" [class]="'status-' + getStageStatus('completed')">
+                                {{ getStageStatus('completed') === 'completed' ? 'Completed' : 'Pending' }}
+                            </span>
+                        </div>
+                        <div class="stage-details">
+                            <div class="stage-info">
+                                <span class="info-label">Completion Date:</span>
+                                <span class="info-value">{{ formatDate(getCompletedDate()) }}</span>
+                            </div>
+                            <div class="stage-info">
+                                <span class="info-label">Total Duration:</span>
+                                <span class="info-value">{{ getTotalDuration() }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Store Details Card -->
+        <div class="store-details-card">
+            <div class="card-header">
+                <h3>Store Information</h3>
+            </div>
+            <div class="card-content">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Store Name:</span>
+                        <span class="info-value">{{ storeAssignment.storeName }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Store Address:</span>
+                        <span class="info-value">{{ storeAssignment.storeAddress }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Vendor Work Status:</span>
+                        <span class="status-badge"
+                            [class]="'status-' + getStatusColor(storeAssignment.vendorWorkStatus)">
+                            {{ storeAssignment.vendorWorkStatus }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Approval Status:</span>
+                        <span class="status-badge" [class]="'status-' + getStatusColor(storeAssignment.approvalStatus)">
+                            {{ storeAssignment.approvalStatus }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Created:</span>
+                        <span class="info-value">{{ formatDate(getCreatedDate()) }}</span>
+                    </div>
+                    <div class="info-item" *ngIf="storeAssignment.updatedAt">
+                        <span class="info-label">Last Updated:</span>
+                        <span class="info-value">{{ formatDate(getUpdatedDate()) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendor Notes Section -->
+        <div class="vendor-notes-card" *ngIf="storeAssignment.vendorNotes">
+            <div class="card-header">
+                <h3>Vendor Notes</h3>
+            </div>
+            <div class="card-content">
+                <p class="notes-text">{{ storeAssignment.vendorNotes }}</p>
+            </div>
+        </div>
+    </div>
+</div>

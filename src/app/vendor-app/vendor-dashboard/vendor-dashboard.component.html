@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+    <!-- Shared Header -->
+    <app-vendor-header></app-vendor-header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Stats Cards -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons">assignment</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ stats.totalAssignments }}</h3>
+                        <p>Total Assignments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon active">
+                        <span class="material-icons">play_circle</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ stats.activeAssignments }}</h3>
+                        <p>Active Assignments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <span class="material-icons">check_circle</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ stats.completedAssignments }}</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <span class="material-icons">schedule</span>
+                    </div>
+                    <div class="stat-content">
+                        <h3>{{ stats.pendingAssignments }}</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignments Section -->
+        <div class="assignments-section">
+            <div class="section-header">
+                <h2>Your Assignments</h2>
+                <p>Manage your advertising assignments and track progress</p>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-container" *ngIf="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading assignments...</p>
+            </div>
+
+            <!-- Assignments Grid -->
+            <div class="assignments-grid" *ngIf="!loading && assignments.length > 0">
+                <div class="assignment-card" *ngFor="let assignment of assignments"
+                    (click)="viewAssignment(assignment.id)">
+                    <div class="assignment-header">
+                        <h3>{{ assignment.name }}</h3>
+                        <span class="status-badge" [class]="'status-' + getStatusColor(assignment.status)">
+                            {{ assignment.status }}
+                        </span>
+                    </div>
+                    <p class="assignment-description">{{ assignment.description || 'No description available' }}</p>
+                    <div class="assignment-meta">
+                        <div class="meta-item">
+                            <span class="material-icons">calendar_today</span>
+                            <span>{{ formatDate(assignment.createdDt) }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">store</span>
+                            <span>{{ assignment.totalStores }} stores</span>
+                        </div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <span>Progress</span>
+                            <span>{{ getProgressPercentage(assignment) | number:'1.2-2' }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" [style.width.%]="getProgressPercentage(assignment)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" *ngIf="!loading && assignments.length === 0">
+                <div class="empty-icon">
+                    <span class="material-icons">assignment</span>
+                </div>
+                <h3>No Assignments Yet</h3>
+                <p>You don't have any assignments at the moment. Check back later for new opportunities.</p>
+            </div>
+        </div>
+    </main>
+</div>

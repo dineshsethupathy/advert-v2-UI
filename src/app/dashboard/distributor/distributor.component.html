@@ -1,0 +1,120 @@
+<div class="distributor-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Distributors</h1>
+                <p class="page-description">Manage your distributor relationships and access</p>
+            </div>
+            <button class="add-btn" (click)="showAddDistributorForm()">
+                <span class="material-icons">add</span>
+                <span>Add Distributor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div class="form-section" *ngIf="showAddForm">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>{{ editingDistributor ? 'Edit Distributor' : 'Add New Distributor' }}</h2>
+                <button class="close-btn" (click)="cancelForm()" type="button">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form class="distributor-form" (ngSubmit)="saveDistributor()">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" [(ngModel)]="distributorForm.email"
+                        placeholder="Enter distributor email address" required>
+                </div>
+                <div class="form-actions">
+                    <div class="form-actions-left">
+                        <div *ngIf="showError" class="error-text">{{ errorMessage }}</div>
+                    </div>
+                    <div class="form-actions-right">
+                        <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons">save</span>
+                            {{ getSaveButtonText() }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading distributors...</p>
+    </div>
+
+    <!-- Distributors Grid -->
+    <div class="distributors-grid-container" *ngIf="!loading && distributors.length > 0">
+        <div class="grid-header">
+            <h3>Distributor List ({{ distributors.length }})</h3>
+        </div>
+        <div class="table-container">
+            <table class="distributors-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let distributor of distributors" class="distributor-row">
+                        <td class="distributor-name">
+                            <div class="name-cell">
+                                <!-- <div class="avatar">
+                                    <span class="material-icons">local_shipping</span>
+                                </div> -->
+                                <div class="name-info">
+                                    <div class="full-name">{{ getFullName(distributor) }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="distributor-email">{{ distributor.email }}</td>
+                        <td class="distributor-phone">{{ distributor.phoneNumber || '-' }}</td>
+                        <td class="distributor-status">
+                            <span class="status-badge" [class]="getStatusClass(distributor)">
+                                {{ getStatusText(distributor) }}
+                            </span>
+                        </td>
+                        <td class="distributor-last-login">
+                            {{ distributor.lastLoginAt ? (distributor.lastLoginAt | date:'short') : 'Never' }}
+                        </td>
+                        <td class="distributor-actions">
+                            <button class="action-btn edit-btn" (click)="editDistributor(distributor)"
+                                title="Edit Distributor">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="action-btn delete-btn" (click)="deleteDistributor(distributor)"
+                                title="Delete Distributor">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && distributors.length === 0">
+        <div class="empty-icon">
+            <span class="material-icons">local_shipping</span>
+        </div>
+        <h3>No Distributors Found</h3>
+        <p>Start by adding your first distributor to manage their access and relationships.</p>
+    </div>
+
+
+</div>

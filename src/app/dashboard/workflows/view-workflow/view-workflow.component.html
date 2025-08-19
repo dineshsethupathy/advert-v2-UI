@@ -1,0 +1,110 @@
+<!-- Error State -->
+<div *ngIf="error" class="error-container">
+    <div class="error-content">
+        <span class="material-icons error-icon">error</span>
+        <h3>Error Loading Workflow</h3>
+        <p>{{ error }}</p>
+        <button class="retry-btn" (click)="goBack()">
+            <span class="material-icons">arrow_back</span>
+            Back to Workflows
+        </button>
+    </div>
+</div>
+
+<div class="view-workflow-container" *ngIf="!loading && !error">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-container">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="back-btn" (click)="goBack()">
+                        <span class="material-icons">arrow_back</span>
+                    </button>
+                    <div class="header-info">
+                        <h1 class="page-title">{{ workflow?.name }}</h1>
+                        <p class="page-description" *ngIf="workflow?.description">{{ workflow?.description }}</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="edit-btn" (click)="editWorkflow()">
+                        <span class="material-icons">edit</span>
+                        <span>Edit Workflow</span>
+                    </button>
+                    <button class="delete-btn" (click)="deleteWorkflow()" [disabled]="isDeleteDisabled()">
+                        <span class="material-icons">delete</span>
+                        <span>Delete Workflow</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Details -->
+    <div class="workflow-details" *ngIf="workflow">
+        <div class="details-card">
+            <div class="details-row">
+                <div class="detail-item">
+                    <span class="label">Created By:</span>
+                    <span class="value">{{ workflow.createdByName }}</span>
+                </div>
+                <div class="detail-item created-date">
+                    <span class="label">Created:</span>
+                    <span class="value">{{ formatDate(workflow.createdDt) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Flow Chart -->
+    <div class="workflow-flow">
+        <div class="flow-header">
+            <h3 class="flow-title">Workflow Stages</h3>
+            <p class="flow-subtitle">Approval flow and required roles</p>
+        </div>
+
+        <!-- Empty Stages State -->
+        <div *ngIf="stages.length === 0" class="empty-stages">
+            <div class="empty-icon">
+                <span class="material-icons">art_track</span>
+            </div>
+            <h4>No Stages Defined</h4>
+            <p>This workflow doesn't have any stages defined yet.</p>
+        </div>
+
+        <!-- Flow Chart -->
+        <div *ngIf="stages.length > 0" class="flow-chart">
+            <div class="flow-container">
+                <div *ngFor="let stage of stages; let i = index" class="flow-stage">
+                    <!-- Stage Node -->
+                    <div class="stage-node" [class.final-stage]="stage.isFinalStage">
+                        <div class="stage-number">{{ stage.stageOrder }}</div>
+                        <div class="stage-content">
+                            <h4 class="stage-name">{{ stage.stageName }}</h4>
+                            <div class="stage-role">
+                                <span class="role-icon material-icons">person</span>
+                                <span class="role-name">{{ stage.roleName }}</span>
+                            </div>
+                        </div>
+                        <!-- <div class="stage-badge" *ngIf="stage.isFinalStage">
+                            <span class="material-icons">flag</span>
+                        </div> -->
+                    </div>
+
+                    <!-- Flow Arrow -->
+                    <div *ngIf="i < stages.length - 1" class="flow-arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-head"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner">
+        <span class="material-icons">refresh</span>
+    </div>
+    <p>Loading workflow details...</p>
+</div>

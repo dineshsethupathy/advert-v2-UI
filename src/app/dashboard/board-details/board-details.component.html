@@ -1,0 +1,174 @@
+<div class="board-details-container">
+    <!-- Header -->
+    <div class="content-header">
+        <div class="header-content">
+            <h2 class="page-title">Board Details</h2>
+            <p class="page-description">Manage your advertising boards and their specifications.</p>
+        </div>
+        <button class="add-btn" (click)="showAddForm()">
+            <span class="material-icons">add</span>
+            Add Board
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <l-tail-chase size="40" speed="1.75" color="#6366f1"></l-tail-chase>
+        <p>Loading boards...</p>
+    </div>
+
+    <!-- Boards Grid -->
+    <div *ngIf="!loading && filteredBoards.length > 0" class="boards-grid">
+        <div *ngFor="let board of filteredBoards" class="board-card">
+            <div class="board-image" (click)="previewImage(board)"
+                *ngIf="board.imageUrl && board.imageUrl.trim() !== ''">
+                <img [src]="getImageUrl(board)" [alt]="board.name">
+            </div>
+            <div class="board-image" *ngIf="!board.imageUrl || board.imageUrl.trim() === ''">
+                <div class="no-image-placeholder">
+                    <span class="material-icons">image</span>
+                    <p>No Image</p>
+                </div>
+            </div>
+            <div class="board-info">
+                <div class="board-name">{{ board.name }}</div>
+                <div class="board-brand">{{ board.brandName }}</div>
+                <div class="board-dimensions">{{ formatDimensions(board.width, board.height) }}</div>
+                <div class="board-created">{{ board.createdBy }}</div>
+                <div class="board-date">{{ board.createdAt | date:'short' }}</div>
+            </div>
+            <div class="board-actions">
+                <button class="action-btn edit-btn" (click)="showEditForm(board)" title="Edit">
+                    <span class="material-icons">edit</span>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteBoard(board)" title="Delete">
+                    <span class="material-icons">delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredBoards.length === 0" class="empty-state">
+        <div class="empty-icon">
+            <span class="material-icons">dashboard</span>
+        </div>
+        <h3>No Boards Found</h3>
+        <p>Start by adding your first advertising board.</p>
+        <!-- <button class="add-btn" (click)="showAddForm()">
+            <span class="material-icons">add</span>
+            Add Board
+        </button> -->
+    </div>
+
+    <!-- Form Modal -->
+    <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ editingBoard ? 'Edit Board' : 'Add New Board' }}</h3>
+                <button class="close-btn" (click)="closeForm()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <form [formGroup]="boardForm" (ngSubmit)="onSubmit()" class="board-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Board Name *</label>
+                        <input type="text" id="name" formControlName="name" placeholder="Enter board name"
+                            [class.error]="formSubmitted && boardForm.get('name')?.invalid">
+                        <div *ngIf="formSubmitted && boardForm.get('name')?.invalid" class="error-message">
+                            Board name is required and must be at least 2 characters.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brandName">Brand Name *</label>
+                        <input type="text" id="brandName" formControlName="brandName" placeholder="Enter brand name"
+                            [class.error]="formSubmitted && boardForm.get('brandName')?.invalid">
+                        <div *ngIf="formSubmitted && boardForm.get('brandName')?.invalid" class="error-message">
+                            Brand name is required and must be at least 2 characters.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="width">Width (in) *</label>
+                        <input type="number" id="width" formControlName="width" step="0.01" min="0.01"
+                            placeholder="Enter width" [class.error]="formSubmitted && boardForm.get('width')?.invalid">
+                        <div *ngIf="formSubmitted && boardForm.get('width')?.invalid" class="error-message">
+                            Width is required and must be greater than 0.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height">Height (in) *</label>
+                        <input type="number" id="height" formControlName="height" step="0.01" min="0.01"
+                            placeholder="Enter height"
+                            [class.error]="formSubmitted && boardForm.get('height')?.invalid">
+                        <div *ngIf="formSubmitted && boardForm.get('height')?.invalid" class="error-message">
+                            Height is required and must be greater than 0.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Board Image</label>
+                    <div class="image-upload-section">
+                        <div class="image-preview" *ngIf="imagePreview">
+                            <img [src]="imagePreview" alt="Board preview">
+                            <button type="button" class="remove-image-btn" (click)="removeImage()">
+                                <span class="material-icons">close</span>
+                            </button>
+                        </div>
+
+                        <div class="upload-controls" *ngIf="!imagePreview">
+                            <input type="file" id="image" accept="image/*" (change)="onImageSelected($event)"
+                                style="display: none;" #fileInput>
+                            <button type="button" class="upload-btn" (click)="fileInput.click()">
+                                <span class="material-icons">upload</span>
+                                Choose Image
+                            </button>
+                            <!-- <p class="upload-hint">JPG, PNG, GIF up to 5MB</p> -->
+                        </div>
+
+                        <div class="upload-actions" *ngIf="selectedImage && !imagePreview">
+                            <p class="upload-info">Image will be uploaded when you save the board</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" (click)="closeForm()" [disabled]="formLoading">
+                        Cancel
+                    </button>
+                    <button type="submit" class="submit-btn" [disabled]="formLoading || boardForm.invalid">
+                        <span class="material-icons" *ngIf="!formLoading">{{ editingBoard ? 'update' : 'add' }}</span>
+                        <l-tail-chase *ngIf="formLoading" size="20" speed="1.75" color="white"></l-tail-chase>
+                        {{ formLoading ? 'Saving...' : (editingBoard ? 'Update Board' : 'Create Board') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error Messages -->
+    <div *ngIf="errorMessage" class="error-banner">
+        <span class="material-icons">error</span>
+        {{ errorMessage }}
+        <button class="close-error" (click)="clearMessages()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div *ngIf="showImagePreview" class="image-preview-modal" (click)="closeImagePreview()">
+        <div class="image-preview-content" (click)="$event.stopPropagation()">
+            <button class="image-preview-close" (click)="closeImagePreview()">
+                <span class="material-icons">close</span>
+            </button>
+            <img [src]="previewImageUrl" [alt]="previewImageTitle">
+        </div>
+    </div>
+</div>

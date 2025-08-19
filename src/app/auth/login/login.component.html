@@ -1,0 +1,117 @@
+<div class="login-container" [style.--primary-color]="getTenantColors().primary"
+    [style.--secondary-color]="getTenantColors().secondary">
+
+    <!-- Left Side - Illustration -->
+    <div class="login-left">
+        <div class="illustration-container">
+            <img src="assets/images/login.jpg" alt="Login Illustration" class="login-illustration">
+        </div>
+        <!-- <div class="left-content">
+            <h2>Welcome to {{ tenantName }}</h2>
+            <p>Access your dashboard to manage:</p>
+            <ul class="feature-list">
+                <li>
+                    <span class="material-icons">dashboard</span>
+                    <span>Real-time analytics and insights</span>
+                </li>
+                <li>
+                    <span class="material-icons">store</span>
+                    <span>Store and outlet management</span>
+                </li>
+                <li>
+                    <span class="material-icons">people</span>
+                    <span>User and role management</span>
+                </li>
+                <li>
+                    <span class="material-icons">assignment</span>
+                    <span>Workflow and task automation</span>
+                </li>
+            </ul>
+        </div> -->
+    </div>
+
+    <!-- Right Side - Login Card -->
+    <div class="login-right">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-section">
+                    <div class="logo-placeholder">
+                        <span class="material-icons logo-icon">business</span>
+                    </div>
+                    <div class="brand-info">
+                        <h1 class="brand-name">{{ tenantName }}</h1>
+                        <p class="brand-subtitle">Sign in to your account</p>
+                    </div>
+                </div>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">email</span>
+                        <input type="email" id="email" formControlName="email" class="form-input"
+                            placeholder="Enter your email" [class.error]="email?.invalid && email?.touched" />
+                    </div>
+                    <div class="error-message" *ngIf="email?.invalid && email?.touched">
+                        <span *ngIf="email?.errors?.['required']">Email is required</span>
+                        <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">lock</span>
+                        <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                            class="form-input" placeholder="Enter your password"
+                            [class.error]="password?.invalid && password?.touched" />
+                        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+                            <span class="material-icons">
+                                {{ showPassword ? 'visibility_off' : 'visibility' }}
+                            </span>
+                        </button>
+                    </div>
+                    <div class="error-message" *ngIf="password?.invalid && password?.touched">
+                        <span *ngIf="password?.errors?.['required']">Password is required</span>
+                        <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message global-error" *ngIf="errorMessage">
+                    <span class="material-icons">error</span>
+                    {{ errorMessage }}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn" [disabled]="loading || loginForm.invalid">
+                    <span class="material-icons" *ngIf="!loading">login</span>
+                    <div class="spinner" *ngIf="loading"></div>
+                    {{ loading ? 'Signing In...' : 'Sign In' }}
+                </button>
+
+                <!-- Demo Credentials -->
+                <!-- <div class="demo-info">
+                    <h4>Demo Credentials</h4>
+                    <div class="demo-credentials">
+                        <div class="credential-item">
+                            <strong>Email:</strong> admin@{{ tenantSubdomain }}.com
+                        </div>
+                        <div class="credential-item">
+                            <strong>Password:</strong> admin123
+                        </div>
+                    </div>
+                </div> -->
+            </form>
+
+            <!-- Footer -->
+            <!-- <div class="login-footer">
+                <p>Don't have an account? <a href="#" class="link">Contact your administrator</a></p>
+                <p><a href="#" class="link">Forgot your password?</a></p>
+            </div> -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+<div class="roles-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Roles Management</h1>
+                <p class="page-description">Manage roles and their permissions</p>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn secondary" (click)="navigateToUsers()">
+                    <span class="material-icons">people</span>
+                    <span>Manage Users</span>
+                </button>
+                <button class="add-btn" (click)="showAddRoleModal()">
+                    <span class="material-icons">add</span>
+                    <span>Add Role</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <div class="loading-spinner">
+            <span class="material-icons">refresh</span>
+        </div>
+        <p>Loading roles...</p>
+    </div>
+
+    <!-- Roles Grid -->
+    <div *ngIf="!loading" class="roles-grid">
+        <div class="grid-header">
+            <div class="grid-cell header-cell">Role Name</div>
+            <div class="grid-cell header-cell">Description</div>
+            <div class="grid-cell header-cell">Users</div>
+            <div class="grid-cell header-cell">Actions</div>
+        </div>
+
+        <div *ngIf="roles.length === 0" class="no-data">
+            <span class="material-icons">admin_panel_settings</span>
+            <p>No roles found</p>
+            <button class="btn primary" (click)="showAddRoleModal()">Add First Role</button>
+        </div>
+
+        <div *ngFor="let role of roles" class="grid-row">
+            <div class="grid-cell">
+                <div class="role-info">
+                    <!-- <div class="role-icon">
+                        <span class="material-icons">security</span>
+                    </div> -->
+                    <div class="role-details">
+                        <div class="role-name">{{ role.name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <span class="role-description">{{ role.description || 'No description' }}</span>
+            </div>
+            <div class="grid-cell">
+                <span class="users-count">
+                    {{ getUsersCount(role) }} user{{ getUsersCount(role) !== 1 ? 's' : '' }}
+                </span>
+            </div>
+            <div class="grid-cell">
+                <div class="action-buttons">
+                    <button class="action-btn edit" (click)="showEditRoleModal(role)" title="Edit Role">
+                        <span class="material-icons">edit</span>
+                    </button>
+                    <button class="action-btn delete" (click)="deleteRole(role)" title="Delete Role">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Role Modal -->
+    <div *ngIf="showAddModal" class="modal-overlay">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ getFormTitle() }}</h2>
+                <button class="modal-close" (click)="closeModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="modal-form">
+                <div class="form-group">
+                    <label for="name">Role Name *</label>
+                    <input type="text" id="name" formControlName="name" placeholder="Enter role name"
+                        [class.error]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
+                    <div *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched" class="error-message">
+                        Role name is required (minimum 2 characters)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input id="description" formControlName="description" placeholder="Enter role description" rows="3">
+                </div>
+
+                <!-- Permissions Section (Future Implementation) -->
+                <!-- <div *ngIf="editingRole" class="permissions-section">
+                    <h3>Permissions (Coming Soon)</h3>
+                    <p class="permissions-description">Detailed permission management will be available in a future
+                        update.</p>
+                    <div class="permissions-placeholder">
+                        <span class="material-icons">lock</span>
+                        <p>Role-based access control is currently active</p>
+                    </div>
+                </div> -->
+
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+                    <button type="submit" class="btn primary" [disabled]="roleForm.invalid">
+                        {{ getSubmitButtonText() }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+</div>

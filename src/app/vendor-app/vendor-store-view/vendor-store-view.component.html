@@ -1,0 +1,159 @@
+<app-vendor-header></app-vendor-header>
+
+<!-- Mobile Back Button -->
+<button class="mobile-back-btn" (click)="goBack()" type="button">
+    <span class="material-icons">arrow_back</span>
+    Back
+</button>
+
+<div class="store-view-container">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+        <p>Loading store details...</p>
+    </div>
+
+    <!-- Store Details -->
+    <div class="store-details-container" *ngIf="!loading && storeAssignment">
+        <!-- Header -->
+        <!-- <div class="view-header">
+            <div class="header-content">
+                <button class="back-btn" (click)="goBack()" type="button">
+                    <span class="material-icons">arrow_back</span>
+                    Back to Assignment
+                </button>
+                <div class="header-title">
+                    <h1>Store Details</h1>
+                    <p>{{ storeAssignment.storeName }}</p>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Store Info -->
+        <div class="store-info">
+            <button class="edit-store-btn" (click)="editStore()" title="Edit Store"
+                *ngIf="storeAssignment.vendorWorkStatus !== 'Completed'">
+                <span class="material-icons">edit</span>
+            </button>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Store Name</label>
+                    <span>{{ storeAssignment.storeName }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Address</label>
+                    <span>{{ storeAssignment.storeAddress }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Current Status</label>
+                    <span class="status-badge" [class]="'status-' + getStatusColor(storeAssignment.vendorWorkStatus)">
+                        {{ storeAssignment.vendorWorkStatus }}
+                    </span>
+                </div>
+                <div class="info-item" *ngIf="storeAssignment.boardWidth && storeAssignment.boardHeight">
+                    <label>Board Size</label>
+                    <span>{{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="images-section">
+            <h3>Store Images</h3>
+
+            <!-- Banner Image -->
+            <div class="image-section" *ngIf="storeAssignment.bannerImageUrl">
+                <h4>Banner Image</h4>
+                <div class="image-container">
+                    <img [src]="storeAssignment.bannerImageUrl" alt="Banner Image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Before and After Execution Images -->
+            <!-- Single centered image when only before execution is present -->
+            <div class="single-execution-image"
+                *ngIf="storeAssignment.beforeExecutionImageUrl && !storeAssignment.afterExecutionImageUrl">
+                <h4>Before Execution</h4>
+                <div class="execution-image-container">
+                    <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- 2x2 Grid when both images are present -->
+            <div class="execution-images-grid"
+                *ngIf="storeAssignment.beforeExecutionImageUrl && storeAssignment.afterExecutionImageUrl">
+                <!-- Before Execution Image -->
+                <div class="execution-image-section">
+                    <h4>Before Execution</h4>
+                    <div class="execution-image-container">
+                        <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image"
+                            loading="lazy">
+                    </div>
+                </div>
+
+                <!-- After Execution Image -->
+                <div class="execution-image-section">
+                    <h4>After Execution</h4>
+                    <div class="execution-image-container">
+                        <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single centered image when only after execution is present -->
+            <div class="single-execution-image"
+                *ngIf="!storeAssignment.beforeExecutionImageUrl && storeAssignment.afterExecutionImageUrl">
+                <h4>After Execution</h4>
+                <div class="execution-image-container">
+                    <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy">
+                </div>
+            </div>
+
+            <!-- No Images Message -->
+            <div class="no-images"
+                *ngIf="!storeAssignment.bannerImageUrl && !storeAssignment.beforeExecutionImageUrl && !storeAssignment.afterExecutionImageUrl">
+                <span class="material-icons">image</span>
+                <p>No images uploaded yet</p>
+                <button class="btn btn-primary" (click)="editStore()">
+                    <span class="material-icons">add_photo_alternate</span>
+                    Upload Images
+                </button>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="notes-section" *ngIf="storeAssignment.vendorNotes">
+            <h3>Notes</h3>
+            <div class="notes-content">
+                <p>{{ storeAssignment.vendorNotes }}</p>
+            </div>
+        </div>
+
+        <!-- Completion Actions -->
+        <div class="completion-actions" *ngIf="canMarkAsComplete() && storeAssignment.vendorWorkStatus !== 'Completed'">
+            <div class="completion-info">
+                <!-- <span class="material-icons">check_circle</span> -->
+                <div class="completion-text">
+                    <h4>Ready to Complete</h4>
+                    <p>All required images have been uploaded. You can now mark this store as complete.</p>
+                </div>
+            </div>
+            <button class="btn btn-success" (click)="markAsComplete()">
+                <span class="material-icons">check_circle</span>
+                Mark as Complete
+            </button>
+        </div>
+
+        <!-- Completed Status -->
+        <div class="completed-status" *ngIf="storeAssignment.vendorWorkStatus === 'Completed'">
+            <div class="completion-badge">
+                <span class="material-icons">verified</span>
+                <div class="completion-text">
+                    <h4>Store Completed</h4>
+                    <p>This store has been successfully completed on {{ storeAssignment.completedDate | date:'medium' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

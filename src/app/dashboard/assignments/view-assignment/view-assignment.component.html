@@ -1,0 +1,134 @@
+<div class="view-assignment-container" *ngIf="!loading">
+    <!-- Header Section with Progress -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" (click)="goBack()">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div class="header-info">
+                    <h1 class="page-title">{{ assignment?.name }}</h1>
+                    <p class="page-description" *ngIf="assignment?.description">{{ assignment?.description }}</p>
+                </div>
+            </div>
+            <div class="header-progress" *ngIf="assignment">
+                <div class="progress-info">
+                    <div class="progress-text">
+                        {{ assignment.completedStores }}/{{ assignment.totalStores }} stores completed
+                    </div>
+                    <div class="progress-percentage">
+                        {{ getProgressPercentage(assignment).toFixed(1) }}%
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getProgressPercentage(assignment)"
+                        [class]="'progress-' + getProgressColor(assignment)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Assignment Details -->
+    <div class="details-card" *ngIf="assignment">
+        <div class="details-row">
+            <div class="detail-item">
+                <span class="label">Vendor:</span>
+                <span class="value">{{ assignment.vendorName }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Workflow:</span>
+                <span class="value">{{ assignment.workflowName }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Status:</span>
+                <span class="status-chip" [class]="'status-' + getStatusColor(assignment.status)">
+                    {{ assignment.status }}
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Assigned By:</span>
+                <span class="value">{{ assignment.assignedByName }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Created:</span>
+                <span class="value">{{ formatDate(assignment.createdDt) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Progress -->
+    <div class="workflow-card" *ngIf="workflowProgress">
+        <div class="card-header">
+            <h3 class="card-title">Workflow Progress</h3>
+            <p class="card-subtitle">{{ workflowProgress.assignmentName }}</p>
+        </div>
+        <div class="workflow-stages">
+            <div *ngFor="let stage of workflowProgress.stages" class="stage-item">
+                <div class="stage-header">
+                    <div class="stage-info">
+                        <h4 class="stage-name">{{ stage.stageName }}</h4>
+                        <span class="stage-role">{{ stage.roleName }}</span>
+                    </div>
+                    <div class="stage-progress">
+                        <span class="progress-count">{{ stage.completedStores }}/{{ stage.totalStores }}</span>
+                        <span class="progress-percentage">{{ stage.progressPercentage.toFixed(1) }}%</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="stage.progressPercentage"
+                        [class]="'progress-' + getStageProgressColor(stage.progressPercentage)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Assignments -->
+    <div class="stores-card">
+        <div class="card-header">
+            <h3 class="card-title">Store Assignments</h3>
+            <p class="card-subtitle">Individual store progress and status</p>
+        </div>
+        <div class="stores-table">
+            <div class="table-header">
+                <div class="table-cell header-cell">Store Name</div>
+                <div class="table-cell header-cell">Address</div>
+                <div class="table-cell header-cell">Vendor Work Status</div>
+                <div class="table-cell header-cell">Approval Status</div>
+                <div class="table-cell header-cell">Started Date</div>
+                <div class="table-cell header-cell">End Date</div>
+            </div>
+            <div class="table-body">
+                <div *ngFor="let store of storeAssignments" class="table-row" (click)="viewStoreDetails(store)">
+                    <div class="table-cell">
+                        <span class="store-name">{{ store.storeName }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="store-address">{{ store.storeAddress }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="status-chip" [class]="'status-' + getVendorStatusColor(store.vendorWorkStatus)">
+                            {{ store.vendorWorkStatus }}
+                        </span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="status-chip" [class]="'status-' + getApprovalStatusColor(store.approvalStatus)">
+                            {{ store.approvalStatus }}
+                        </span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="date">{{ store.startedDate ? formatDate(store.startedDate) : '-' }}</span>
+                    </div>
+                    <div class="table-cell">
+                        <span class="date">{{ store.completedDate ? formatDate(store.completedDate) : '-' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-container" *ngIf="loading">
+    <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+    <p>Loading assignment details...</p>
+</div>
