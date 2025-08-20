@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WorkflowService, WorkflowResponse } from '../../services/workflow.service';
@@ -9,7 +9,8 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './workflows.component.html',
-    styleUrl: './workflows.component.css'
+    styleUrl: './workflows.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WorkflowsComponent implements OnInit {
     workflows: WorkflowResponse[] = [];

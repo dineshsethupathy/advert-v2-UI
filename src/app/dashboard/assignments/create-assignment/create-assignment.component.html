@@ -5,6 +5,12 @@
             <p class="form-subtitle">Assign stores to a vendor with a specific workflow</p>
         </div>
 
+        <!-- Global Loading Overlay -->
+        <div *ngIf="loading" class="global-loading-overlay">
+            <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
+            <p>Loading...</p>
+        </div>
+
         <form class="assignment-form" [formGroup]="assignmentForm" (ngSubmit)="onSubmit()">
             <!-- Basic Information -->
             <div class="form-section">
@@ -57,9 +63,7 @@
                             *ngIf="assignmentForm.get('vendorId')?.invalid && assignmentForm.get('vendorId')?.touched">
                             Vendor is required
                         </div>
-                        <div *ngIf="vendorsLoading" class="loading-overlay">
-                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
-                        </div>
+
                     </div>
 
                     <div class="form-group half-width">
@@ -87,9 +91,7 @@
                             *ngIf="assignmentForm.get('workflowDefinitionId')?.invalid && assignmentForm.get('workflowDefinitionId')?.touched">
                             Workflow is required
                         </div>
-                        <div *ngIf="workflowsLoading" class="loading-overlay">
-                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -121,9 +123,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="regionsLoading" class="loading-overlay">
-                            <l-tail-chase size="20" speed="1.75" color="#006fcf"></l-tail-chase>
-                        </div>
+
                     </div>
 
                     <div class="filter-group">
@@ -135,14 +135,9 @@
 
                 <!-- Store Selection Interface -->
                 <div class="store-selection-section">
-                    <!-- Loading State -->
-                    <div *ngIf="storesLoading" class="loading-state">
-                        <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
-                        <p>Loading stores...</p>
-                    </div>
 
                     <!-- Store Grid -->
-                    <div *ngIf="!storesLoading" class="store-selection-content">
+                    <div *ngIf="!loading" class="store-selection-content">
                         <!-- Store Grid Header -->
                         <div class="store-grid-header">
                             <div class="selection-controls">

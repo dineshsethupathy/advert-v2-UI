@@ -43,10 +43,6 @@ export class CreateAssignmentComponent implements OnInit {
 
     // Loading states
     loading = false;
-    storesLoading = false;
-    vendorsLoading = false;
-    workflowsLoading = false;
-    regionsLoading = false;
     submitting = false;
 
     // Custom dropdown states
@@ -84,10 +80,8 @@ export class CreateAssignmentComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loadVendors();
-        this.loadWorkflows();
-        this.loadStores();
-        this.loadRegions();
+        this.loading = true;
+        this.loadDataSequentially();
 
         // Subscribe to filter changes
         this.filterForm.valueChanges.subscribe(() => {
@@ -161,42 +155,100 @@ export class CreateAssignmentComponent implements OnInit {
     // DATA LOADING METHODS
     // =============================================
 
+    loadDataSequentially(): void {
+        // Load vendors first
+        this.vendorService.getVendors().subscribe({
+            next: (vendors) => {
+                console.log('Vendors loaded successfully:', vendors);
+                this.vendors = vendors;
+
+                // Then load workflows
+                this.workflowService.getWorkflows().subscribe({
+                    next: (workflows) => {
+                        console.log('Workflows loaded successfully:', workflows);
+                        this.workflows = workflows;
+
+                        // Then load regions
+                        this.regionService.getRegions().subscribe({
+                            next: (regions) => {
+                                console.log('Regions loaded successfully:', regions);
+                                this.regions = regions;
+
+                                // Finally load stores
+                                this.storesService.getStores().subscribe({
+                                    next: (stores) => {
+                                        console.log('Stores loaded successfully:', stores);
+                                        this.stores = stores;
+                                        this.filteredStores = stores;
+                                        this.updatePagination();
+                                        this.updateSelectionCheckboxes();
+                                        this.loading = false;
+                                    },
+                                    error: (error) => {
+                                        console.error('Error loading stores:', error);
+                                        this.loading = false;
+                                        Swal.fire('Error', 'Failed to load stores. Please try again.', 'error');
+                                    }
+                                });
+                            },
+                            error: (error) => {
+                                console.error('Error loading regions:', error);
+                                this.loading = false;
+                                Swal.fire('Error', 'Failed to load regions. Please try again.', 'error');
+                            }
+                        });
+                    },
+                    error: (error) => {
+                        console.error('Error loading workflows:', error);
+                        this.loading = false;
+                        Swal.fire('Error', 'Failed to load workflows. Please try again.', 'error');
+                    }
+                });
+            },
+            error: (error) => {
+                console.error('Error loading vendors:', error);
+                this.loading = false;
+                Swal.fire('Error', 'Failed to load vendors. Please try again.', 'error');
+            }
+        });
+    }
+
     loadVendors(): void {
-        this.vendorsLoading = true;
+        this.loading = true;
         console.log('Loading vendors...');
         this.vendorService.getVendors().subscribe({
             next: (vendors) => {
                 console.log('Vendors loaded successfully:', vendors);
                 this.vendors = vendors;
-                this.vendorsLoading = false;
+                this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading vendors:', error);
-                this.vendorsLoading = false;
+                this.loading = false;
                 Swal.fire('Error', 'Failed to load vendors. Please try again.', 'error');
             }
         });
     }
 
     loadWorkflows(): void {
-        this.workflowsLoading = true;
+        this.loading = true;
         console.log('Loading workflows...');
         this.workflowService.getWorkflows().subscribe({
             next: (workflows) => {
                 console.log('Workflows loaded successfully:', workflows);
                 this.workflows = workflows;
-                this.workflowsLoading = false;
+                this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading workflows:', error);
-                this.workflowsLoading = false;
+                this.loading = false;
                 Swal.fire('Error', 'Failed to load workflows. Please try again.', 'error');
             }
         });
     }
 
     loadStores(): void {
-        this.storesLoading = true;
+        this.loading = true;
         console.log('Loading stores...');
         this.storesService.getStores().subscribe({
             next: (stores) => {
@@ -205,29 +257,29 @@ export class CreateAssignmentComponent implements OnInit {
                 this.filteredStores = stores;
                 this.updatePagination();
                 this.updateSelectionCheckboxes(); // Update checkbox states after loading
-                this.storesLoading = false;
+                this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading stores:', error);
-                this.storesLoading = false;
+                this.loading = false;
                 Swal.fire('Error', 'Failed to load stores. Please try again.', 'error');
             }
         });
     }
 
     loadRegions(): void {
-        this.regionsLoading = true;
+        this.loading = true;
         console.log('Loading regions...');
         this.regionService.getRegions().subscribe({
             next: (regions) => {
                 console.log('Regions loaded successfully:', regions);
                 console.log('Regions count:', regions.length);
                 this.regions = regions;
-                this.regionsLoading = false;
+                this.loading = false;
             },
             error: (error) => {
                 console.error('Error loading regions:', error);
-                this.regionsLoading = false;
+                this.loading = false;
                 Swal.fire('Error', 'Failed to load regions. Please try again.', 'error');
             }
         });
