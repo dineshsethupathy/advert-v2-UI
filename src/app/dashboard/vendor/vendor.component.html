@@ -66,7 +66,6 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Status</th>
-                        <th>Last Login</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -88,9 +87,6 @@
                             <span class="status-badge" [class]="getStatusClass(vendor)">
                                 {{ getStatusText(vendor) }}
                             </span>
-                        </td>
-                        <td class="vendor-last-login">
-                            {{ vendor.lastLoginAt ? (vendor.lastLoginAt | date:'short') : 'Never' }}
                         </td>
                         <td class="vendor-actions">
                             <button class="action-btn edit-btn" (click)="editVendor(vendor)" title="Edit Vendor">

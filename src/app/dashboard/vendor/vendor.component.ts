@@ -203,11 +203,9 @@ export class VendorComponent implements OnInit {
     }
 
     getStatusText(vendor: Vendor): string {
+        console.log('Vendor:..', vendor);
         if (!vendor.isActive) {
             return 'Inactive';
-        }
-        if (!vendor.lastLoginAt) {
-            return 'Never logged in';
         }
         return 'Active';
     }

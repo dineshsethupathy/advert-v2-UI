@@ -296,6 +296,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
+    table-layout: fixed;
 }
 
 .vendors-table thead {
@@ -315,6 +316,33 @@
     letter-spacing: 0.5px;
 }
 
+.vendors-table th:nth-child(1) {
+    /* Name */
+    width: 25%;
+}
+
+.vendors-table th:nth-child(2) {
+    /* Email */
+    width: 30%;
+}
+
+.vendors-table th:nth-child(3) {
+    /* Phone */
+    width: 15%;
+}
+
+.vendors-table th:nth-child(4) {
+    /* Status */
+    width: 15%;
+    text-align: center;
+}
+
+.vendors-table th:nth-child(5) {
+    /* Actions */
+    width: 15%;
+    text-align: center;
+}
+
 .vendors-table tbody tr {
     border-bottom: 1px solid #f1f5f9;
     transition: all 0.2s ease;
@@ -327,10 +355,12 @@
 .vendors-table td {
     padding: 1rem 1.5rem;
     vertical-align: middle;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .vendor-name {
-    min-width: 200px;
+    /* Column width is now controlled by table-layout: fixed */
 }
 
 .name-cell {
@@ -401,11 +431,6 @@
 .status-never-logged {
     background: #fef3c7;
     color: #92400e;
-}
-
-.vendor-last-login {
-    color: #6b7280;
-    font-size: 0.875rem;
 }
 
 .vendor-created {
