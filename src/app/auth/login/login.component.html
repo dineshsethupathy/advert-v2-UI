@@ -90,7 +90,7 @@
                 <!-- Submit Button -->
                 <button type="submit" class="login-btn" [disabled]="loading || loginForm.invalid">
                     <span class="material-icons" *ngIf="!loading">login</span>
-                    <div class="spinner" *ngIf="loading"></div>
+                    <l-tail-chase *ngIf="loading" size="20" speed="1.75" color="white"></l-tail-chase>
                     {{ loading ? 'Signing In...' : 'Sign In' }}
                 </button>
 

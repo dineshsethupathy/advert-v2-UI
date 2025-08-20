@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, LoginRequest } from '../../services/auth.service';
@@ -18,7 +18,8 @@ interface TenantColorMap {
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
     imports: [CommonModule, ReactiveFormsModule],
-    standalone: true
+    standalone: true,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
