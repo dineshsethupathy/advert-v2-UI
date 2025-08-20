@@ -57,9 +57,7 @@
     <div class="regions-section">
         <!-- Loading State -->
         <div *ngIf="loading" class="loading-state">
-            <div class="loading-spinner">
-                <!-- <span class="material-icons">refresh</span> -->
-            </div>
+            <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
             <p>Loading regions...</p>
         </div>
 
@@ -70,10 +68,10 @@
             </div>
             <h3>No Regions Found</h3>
             <p>Get started by creating your first region</p>
-            <button class="btn btn-primary" (click)="showAddRegionForm()">
+            <!-- <button class="btn btn-primary" (click)="showAddRegionForm()">
                 <span class="material-icons">add</span>
                 Create First Region
-            </button>
+            </button> -->
         </div>
 
         <!-- Regions Grid -->

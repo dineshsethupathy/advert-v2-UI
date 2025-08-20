@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -19,7 +19,8 @@ export interface Region {
     standalone: true,
     imports: [CommonModule, FormsModule],
     templateUrl: './region.component.html',
-    styleUrl: './region.component.css'
+    styleUrl: './region.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class RegionComponent implements OnInit {
     regions: Region[] = [];
