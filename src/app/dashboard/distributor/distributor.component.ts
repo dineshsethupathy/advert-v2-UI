@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule, FormsModule],
     templateUrl: './distributor.component.html',
-    styleUrl: './distributor.component.css'
+    styleUrl: './distributor.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DistributorComponent implements OnInit {
     distributors: Distributor[] = [];
