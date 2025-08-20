@@ -155,9 +155,9 @@ export class LoginComponent implements OnInit {
 
     getTenantColors(): TenantColors {
         const colors: TenantColorMap = {
-            'hatsun': { primary: '#388e3c', secondary: '#66bb6a' },
-            'demo': { primary: '#388e3c', secondary: '#66bb6a' },
-            'default': { primary: '#388e3c', secondary: '#66bb6a' }
+            'hatsun': { primary: '#006fcf', secondary: '#005bb8' },
+            'demo': { primary: '#006fcf', secondary: '#005bb8' },
+            'default': { primary: '#006fcf', secondary: '#005bb8' }
         };
 
         return colors[this.tenantSubdomain] || colors['default'];

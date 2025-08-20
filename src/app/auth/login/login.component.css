@@ -2,7 +2,7 @@
 .login-container {
     min-height: 100vh;
     display: flex;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: #ffffff;
     position: relative;
     overflow: hidden;
 }
@@ -15,8 +15,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    background: #f8fafc;
     position: relative;
 }
 
@@ -33,12 +32,12 @@
     width: 100%;
     height: auto;
     max-width: 400px;
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 10px 20px rgba(0, 111, 207, 0.1));
 }
 
 .left-content {
     text-align: center;
-    color: white;
+    color: #006fcf;
     margin-top: 2rem;
 }
 
@@ -46,13 +45,13 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: #006fcf;
 }
 
 .left-content p {
     font-size: 1.1rem;
     margin-bottom: 2rem;
-    opacity: 0.9;
+    color: #666;
 }
 
 .feature-list {
@@ -69,20 +68,20 @@
     align-items: center;
     margin-bottom: 1rem;
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 111, 207, 0.05);
     border-radius: 8px;
-    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 111, 207, 0.1);
 }
 
 .feature-list .material-icons {
     margin-right: 1rem;
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #006fcf;
 }
 
 .feature-list span:last-child {
     font-size: 0.95rem;
-    opacity: 0.9;
+    color: #333;
 }
 
 /* Right Side - Login Card */
@@ -92,19 +91,19 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
 }
 
 .login-card {
     background: white;
     border-radius: 20px;
     padding: 3rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 111, 207, 0.1);
     width: 100%;
     max-width: 450px;
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(0, 111, 207, 0.1);
 }
 
 .login-card::before {
@@ -114,7 +113,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(90deg, #006fcf, #005bb8);
 }
 
 .login-header {
@@ -133,12 +132,12 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, #006fcf, #005bb8);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 111, 207, 0.2);
 }
 
 .logo-icon {
@@ -149,7 +148,7 @@
 .brand-info h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: #333;
+    color: #006fcf;
     margin-bottom: 0.5rem;
 }
 
@@ -202,9 +201,9 @@
 
 .form-input:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: #006fcf;
     background: white;
-    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 111, 207, 0.1);
 }
 
 .form-input.error {
@@ -225,7 +224,7 @@
 }
 
 .password-toggle:hover {
-    color: var(--primary-color);
+    color: #006fcf;
 }
 
 .error-message {
@@ -252,7 +251,7 @@
 .login-btn {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, #006fcf, #005bb8);
     color: white;
     border: none;
     border-radius: 12px;
@@ -270,7 +269,7 @@
 
 .login-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 111, 207, 0.3);
 }
 
 .login-btn:disabled {
@@ -304,7 +303,7 @@
     padding: 1.5rem;
     background: #f8f9fa;
     border-radius: 12px;
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid #006fcf;
 }
 
 .demo-info h4 {
@@ -342,14 +341,14 @@
 }
 
 .link {
-    color: var(--primary-color);
+    color: #006fcf;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .link:hover {
-    color: var(--secondary-color);
+    color: #005bb8;
     text-decoration: underline;
 }
 
