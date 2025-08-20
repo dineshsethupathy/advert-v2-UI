@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -8,12 +8,14 @@ import { AuthService } from '../../../services/auth.service';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './vendor-header.component.html',
-    styleUrl: './vendor-header.component.css'
+    styleUrl: './vendor-header.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class VendorHeaderComponent {
     isUserDropdownOpen = false;
     user: any;
     tenant: any;
+    logoutLoading = false;
 
     constructor(
         private router: Router,
@@ -36,6 +38,7 @@ export class VendorHeaderComponent {
     }
 
     logout(): void {
+        this.logoutLoading = true;
         this.authService.logout().subscribe({
             next: () => {
                 this.router.navigate(['/vendor-login']);
@@ -44,6 +47,9 @@ export class VendorHeaderComponent {
                 console.error('Logout error:', error);
                 // Navigate anyway since auth data is cleared
                 this.router.navigate(['/vendor-login']);
+            },
+            complete: () => {
+                this.logoutLoading = false;
             }
         });
     }

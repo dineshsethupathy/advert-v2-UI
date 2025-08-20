@@ -57,6 +57,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     users: User[] = [];
     stores: Store[] = [];
     loading = false;
+    logoutLoading = false;
     showProfileMenu = false;
     currentRoute = '/dashboard';
     private routeSubscription: any;
@@ -228,6 +229,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     }
 
     logout(): void {
+        this.logoutLoading = true;
         this.authService.logout().subscribe({
             next: () => {
                 this.router.navigate(['/login']);
@@ -236,6 +238,9 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
                 console.error('Logout error:', error);
                 // Navigate anyway since auth data is cleared
                 this.router.navigate(['/login']);
+            },
+            complete: () => {
+                this.logoutLoading = false;
             }
         });
     }

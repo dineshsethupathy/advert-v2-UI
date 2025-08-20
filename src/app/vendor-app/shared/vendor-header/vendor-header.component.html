@@ -22,9 +22,10 @@
                     </div>
                     <div class="dropdown-divider"></div>
                     <div class="dropdown-items">
-                        <button class="dropdown-item logout-item" (click)="logout()">
-                            <span class="material-icons">logout</span>
-                            <span>Logout</span>
+                        <button class="dropdown-item logout-item" (click)="logout()" [disabled]="logoutLoading">
+                            <span class="material-icons" *ngIf="!logoutLoading">logout</span>
+                            <l-tail-chase *ngIf="logoutLoading" size="16" speed="1.75" color="#6b7280"></l-tail-chase>
+                            <span>{{ logoutLoading ? 'Logging out...' : 'Logout' }}</span>
                         </button>
                     </div>
                 </div>
