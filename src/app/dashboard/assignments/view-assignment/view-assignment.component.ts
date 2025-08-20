@@ -28,7 +28,7 @@ export class ViewAssignmentComponent implements OnInit {
         if (assignmentId) {
             this.loadAssignment(assignmentId);
             this.loadStoreAssignments(assignmentId);
-            this.loadWorkflowProgress(assignmentId);
+            // this.loadWorkflowProgress(assignmentId);
         }
     }
 

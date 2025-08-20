@@ -9,6 +9,7 @@ export interface Board {
     brandName: string;
     width: number;
     height: number;
+    cost?: number;
     imageUrl?: string;
     createdAt: string;
     createdBy: string;
@@ -19,6 +20,7 @@ export interface CreateBoardRequest {
     brandName: string;
     width: number;
     height: number;
+    cost?: number;
     imageUrl?: string;
 }
 
@@ -28,6 +30,7 @@ export interface UpdateBoardRequest {
     brandName: string;
     width: number;
     height: number;
+    cost?: number;
     imageUrl?: string;
 }
 
@@ -58,6 +61,10 @@ export class BoardsService {
         formData.append('width', request.width.toString());
         formData.append('height', request.height.toString());
 
+        if (request.cost !== undefined) {
+            formData.append('cost', request.cost.toString());
+        }
+
         if (imageFile) {
             formData.append('imageFile', imageFile);
         }
@@ -72,6 +79,10 @@ export class BoardsService {
         formData.append('brandName', request.brandName);
         formData.append('width', request.width.toString());
         formData.append('height', request.height.toString());
+
+        if (request.cost !== undefined) {
+            formData.append('cost', request.cost.toString());
+        }
 
         // Always include imageUrl (can be empty string if no image)
         formData.append('imageUrl', request.imageUrl || '');

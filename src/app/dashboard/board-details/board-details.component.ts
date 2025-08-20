@@ -30,6 +30,10 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     showImagePreview = false;
     previewImageUrl = '';
     previewImageTitle = '';
+
+    // Individual image loading states
+    imageLoadingStates: { [key: number]: boolean } = {};
+
     private isInitialized = false;
 
     constructor(
@@ -42,6 +46,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             brandName: ['', [Validators.required, Validators.minLength(2)]],
             width: ['', [Validators.required, Validators.min(0.01)]],
             height: ['', [Validators.required, Validators.min(0.01)]],
+            cost: ['', [Validators.min(0)]],
             imageUrl: ['']
         });
     }
@@ -78,6 +83,14 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
                 console.log('Boards loaded:', boards.length);
                 this.boards = boards;
                 this.filteredBoards = [...this.boards];
+
+                // Initialize image loading states for all boards
+                boards.forEach(board => {
+                    if (board.imageUrl && board.imageUrl.trim() !== '') {
+                        this.imageLoadingStates[board.id] = false; // Start as not loaded
+                    }
+                });
+
                 this.loading = false;
             },
             error: (error) => {
@@ -95,6 +108,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             brandName: '',
             width: '',
             height: '',
+            cost: '',
             imageUrl: ''
         });
         this.formSubmitted = false;
@@ -112,6 +126,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             brandName: board.brandName,
             width: board.width,
             height: board.height,
+            cost: board.cost || '',
             imageUrl: board.imageUrl || ''
         });
         this.formSubmitted = false;
@@ -130,6 +145,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             brandName: '',
             width: '',
             height: '',
+            cost: '',
             imageUrl: ''
         });
         this.formSubmitted = false;
@@ -203,6 +219,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             brandName: boardData.brandName,
             width: boardData.width,
             height: boardData.height,
+            cost: boardData.cost,
             imageUrl: imageUrlToSend
         };
 
@@ -354,6 +371,20 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         this.showImagePreview = false;
         this.previewImageUrl = '';
         this.previewImageTitle = '';
+    }
+
+    // Image loading event handlers
+    onImageLoad(boardId: number): void {
+        this.imageLoadingStates[boardId] = true;
+    }
+
+    onImageError(boardId: number): void {
+        this.imageLoadingStates[boardId] = true; // Hide loader even on error
+        console.error(`Failed to load image for board ${boardId}`);
+    }
+
+    isImageLoaded(boardId: number): boolean {
+        return this.imageLoadingStates[boardId] === true;
     }
 
     removeImage(): void {
