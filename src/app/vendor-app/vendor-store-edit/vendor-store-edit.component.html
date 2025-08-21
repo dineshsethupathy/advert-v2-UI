@@ -151,6 +151,37 @@
                 </div>
             </div>
 
+            <!-- GPS Location -->
+            <div class="form-section">
+                <h3>GPS Location</h3>
+                <div class="gps-location-container">
+                    <div *ngIf="!gpsLocation" class="gps-upload-area">
+                        <button type="button" class="gps-btn" (click)="openLocationPicker()">
+                            <span class="material-icons">my_location</span>
+                            <span>Pin Location on Map</span>
+                        </button>
+                    </div>
+                    <div *ngIf="gpsLocation" class="gps-display">
+                        <div class="gps-info">
+                            <div class="gps-address">{{ gpsLocation.address }}</div>
+                            <div class="gps-coords" *ngIf="gpsLocation.coords">
+                                📍 {{ formatCoordinates(gpsLocation.coords) }}
+                            </div>
+                        </div>
+                        <div class="gps-actions">
+                            <button type="button" class="gps-edit-btn" (click)="openLocationPicker()"
+                                title="Edit Location">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button type="button" class="gps-remove-btn" (click)="removeGpsLocation()"
+                                title="Remove Location">
+                                <span class="material-icons">close</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- After Execution Image -->
             <div class="form-section" *ngIf="canShowAfterExecution()">
                 <h3>After Execution Image</h3>

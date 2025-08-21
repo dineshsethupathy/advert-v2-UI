@@ -1,0 +1,769 @@
+<div class="add-store-container">
+  <div *ngIf="isEditLoading" class="edit-loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading store data...</p>
+  </div>
+  <form *ngIf="!isEditLoading" [formGroup]="form" (ngSubmit)="onSubmit()" class="add-store-form">
+    <button type="button" class="back-btn" (click)="onCancel()" title="Back">
+      <span class="material-icons">arrow_back</span>
+      Back
+    </button>
+    <!-- <button type="button" class="close-icon" (click)="onCancel()">
+      <span class="material-icons">close</span>
+    </button> -->
+    <div class="form-row">
+      <!-- Hidden fields for IDs from session storage -->
+      <input type="hidden" formControlName="brandId">
+      <input type="hidden" formControlName="distributorId">
+      <input type="hidden" formControlName="vendorId">
+      <!-- Hidden fields end -->
+      <label>Serial Number<span class="required-asterisk">*</span></label>
+      <input formControlName="serialNumber" type="text" placeholder="Serial Number" />
+      <div *ngIf="fieldErrors['serialNumber']" class="error-message">{{ fieldErrors['serialNumber'] }}</div>
+    </div>
+    <!-- <div class="form-row" *ngIf="!showAfterExecutionField">
+      <label>Execution Start Date</label>
+      <input formControlName="executionStartDate" type="date" placeholder="DD/MM/YYYY" />
+    </div> -->
+    <div class="form-row">
+      <label>Shop Name<span class="required-asterisk">*</span></label>
+      <input formControlName="storeName" type="text" placeholder="Store Name" />
+      <div *ngIf="fieldErrors['storeName']" class="error-message">{{ fieldErrors['storeName'] }}</div>
+    </div>
+    <div class="form-row">
+      <label>Shop Phone Number</label>
+      <input formControlName="storePhoneNumber" type="tel" inputmode="numeric" placeholder="Store Phone Number"
+        maxlength="10" minlength="10" pattern="^[0-9]{10}$" />
+      <div *ngIf="form.get('storePhoneNumber')?.invalid && form.get('storePhoneNumber')?.touched" class="error-message">
+        Store Phone Number must be exactly 10 digits.
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Board Size (Width x Height in inchs)</label>
+      <div class="board-size-row">
+        <input formControlName="boardWidth" type="number" inputmode="decimal" min="0" step="any"
+          placeholder="Width (in)" />
+        <span class="board-size-x">X</span>
+        <input formControlName="boardHeight" type="number" inputmode="decimal" min="0" step="any"
+          placeholder="Height (in)" />
+      </div>
+      <div *ngIf="fieldErrors['boardSize']" class="error-message">{{ fieldErrors['boardSize'] }}</div>
+    </div>
+    <div class="form-row">
+      <label>Board Type</label>
+      <select formControlName="boardType" (change)="onBoardTypeChange()">
+        <option value="" disabled selected>Select Board Type</option>
+        <option *ngFor="let type of boardTypes" [value]="type">{{ type }}</option>
+      </select>
+      <div *ngIf="fieldErrors['boardType']" class="error-message">{{ fieldErrors['boardType'] }}</div>
+      <div *ngIf="boardTypes.length === 0" class="info-message" style="font-size: 0.95em; color: #6366f1;">
+        <!-- Add Boards <a [routerLink]="['/manage-boards']" style="color: #10b981; text-decoration: underline;">here</a> -->
+      </div>
+    </div>
+    <!-- <div class="form-row">
+      <label>Quantity of Boards</label>
+      <input formControlName="quantityOfBoards" type="number" min="1" step="1" placeholder="Enter quantity" />
+      <div *ngIf="form.get('quantityOfBoards')?.invalid && form.get('quantityOfBoards')?.touched" class="error-message">
+        Please enter a valid quantity (numbers only).
+      </div>
+    </div> -->
+    <!-- Pole Section -->
+    <div class="pole-section-container">
+      <label class="pole-checkbox-label">
+        <input type="checkbox" formControlName="hasPole" /> Pole
+      </label>
+      <div *ngIf="form.get('hasPole')?.value" class="pole-fields-container">
+        <div class="form-row">
+          <input formControlName="poleQuantity" type="number" inputmode="numeric" min="1" step="1"
+            placeholder="Quantity of Poles" />
+        </div>
+        <div class="form-row">
+          <!-- <label>Pole Height (ft)</label> -->
+          <input formControlName="poleHeight" type="number" inputmode="numeric" min="0" step="any"
+            placeholder="Pole Height (in)" />
+        </div>
+        <div class="form-row">
+          <!-- <label>Pole Width (ft)</label> -->
+          <input formControlName="poleWidth" type="number" inputmode="numeric" min="0" step="any"
+            placeholder="Pole Width (in)" />
+        </div>
+
+      </div>
+    </div>
+    <div class="form-row address-row">
+      <label>Address</label>
+      <textarea formControlName="address" placeholder="Address of the store" class="input-lg"></textarea>
+      <div *ngIf="fieldErrors['address']" class="error-message">{{ fieldErrors['address'] }}</div>
+    </div>
+    <div class="form-row gps-row" style="position: relative;">
+      <label>GPS Location</label>
+      <div style="position: relative; display: flex; align-items: center; width: 100%;">
+        <ng-container *ngIf="!form.get('gpsLocation')?.value">
+          <!-- Remove the old Capture Location button and use the new Location Picker Button -->
+          <button type="button" class="icon-btn" (click)="openLocationPicker()" title="Pin Location on Map"
+            style="width: 100%; padding: 0.7rem 1rem; border-radius: 0.5rem; background: #10b981; color: white; font-weight: 500; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <span class="material-icons">my_location</span>
+            <span>Pin Location on Map</span>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="form.get('gpsLocation')?.value">
+          <ng-container *ngIf="parseGpsLocation(form.get('gpsLocation')?.value) as gps">
+            <div
+              [ngClass]="{'location-success': gps.address !== 'Location unavailable', 'location-fail': gps.address === 'Location unavailable'}"
+              style="width: 100%; padding: 0.7rem 1rem; border-radius: 0.5rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-direction: column; align-items: flex-start;">
+              <div style="display: flex; align-items: center; width: 100%;">
+                <!-- <span class="material-icons" *ngIf="gps.address !== 'Location unavailable'">check_circle</span> -->
+                <span class="material-icons" *ngIf="gps.address === 'Location unavailable'">error</span>
+                <span>{{ gps.address }}</span>
+                <button type="button" class="icon-btn" (click)="form.patchValue({ gpsLocation: '' })"
+                  title="Remove Location" style="margin-left: auto; background: transparent; color: #374151;">
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+              <div *ngIf="gps.coords" style="font-size: 0.85em; color: #6b7280; margin-left: 2.2em;">
+                📍 {{ gps.coords }}
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <!-- Location Picker Button
+      <button mat-raised-button color="primary" type="button" (click)="openLocationPicker()">
+        <span class="material-icons">location_on</span> Pin Location on Map
+      </button> -->
+    </div>
+    <!-- <div class="form-row">
+      <label>Other Information</label>
+      <textarea formControlName="others" type="text" placeholder="Other Information" class="input-lg"></textarea>
+    </div> -->
+    <div class="form-row">
+      <label>Store Front Image(Before Execution)</label>
+      <div class="store-front-container">
+        <div class="camera-container">
+          <div class="capture-options">
+            <button type="button" class="camera-btn" (click)="openCamera()" *ngIf="!isCameraOpen">
+              <span class="material-icons">camera_alt</span>
+              Take Photo
+            </button>
+            <div class="upload-divider">
+              <span>or</span>
+            </div>
+            <div class="file-upload-wrapper">
+              <input type="file" (change)="onCapturedImageFileChange($event)" accept="image/*" id="capturedImageFile"
+                style="display: none;" />
+              <label for="capturedImageFile" class="upload-btn">
+                <span class="material-icons">upload</span>
+                Upload
+              </label>
+            </div>
+          </div>
+          <div *ngIf="isCameraOpen" class="camera-preview-container">
+            <video #videoElement [srcObject]="stream" autoplay playsinline class="camera-preview"></video>
+            <div class="camera-controls">
+              <button type="button" class="capture-btn" (click)="captureImage()">
+                <span class="material-icons">camera</span>
+                Capture
+              </button>
+              <button type="button" class="close-camera-btn" (click)="closeCamera()">
+                <span class="material-icons">close</span>
+                Close
+              </button>
+            </div>
+          </div>
+          <div *ngIf="capturedImageUrl || beforeExecutionImageUrl" class="captured-image-container">
+            <img [src]="beforeExecutionImageUrl || capturedImageUrl" alt="Captured image" class="captured-image" />
+            <button type="button" class="remove-captured-btn" (click)="removeCapturedImage()">
+              <span class="material-icons">delete</span>
+            </button>
+            <div *ngIf="(capturedImageUrl || beforeExecutionImageUrl) && !isEditing" class="edit-controls">
+              <button type="button" class="edit-btn" (click)="startEditing()">
+                <span class="material-icons">edit</span>
+                <!-- Edit Image -->
+              </button>
+            </div>
+            <div *ngIf="isEditing" class="image-editor">
+              <div class="editor-header">
+                <h4>Draw Rectangle to Highlight Area</h4>
+                <button type="button" class="close-edit-btn" (click)="cancelEditing()">
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+              <div class="canvas-container">
+                <canvas #canvasElement class="edit-canvas"></canvas>
+              </div>
+              <div class="editor-controls">
+                <button type="button" class="clear-btn" (click)="clearCanvas()">
+                  <span class="material-icons">clear</span>
+                  Clear
+                </button>
+                <button type="button" class="save-edit-btn" (click)="saveEditedImage()">
+                  <span class="material-icons">save</span>
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <small class="input-hint">Capture where the banner to be placed</small>
+      <div *ngIf="fieldErrors['beforeExecutionImage']" class="error-message">{{ fieldErrors['beforeExecutionImage'] }}
+      </div>
+    </div>
+
+    <div class="form-row" *ngIf="showAfterExecutionField">
+      <label>Store Front Image (After Execution)</label>
+      <div class="store-front-container">
+        <div class="camera-container">
+          <div class="capture-options">
+            <button type="button" class="camera-btn" (click)="openCameraAfter()" *ngIf="!isCameraOpenAfter">
+              <span class="material-icons">camera_alt</span>
+              Take Photo
+            </button>
+            <div class="upload-divider">
+              <span>or</span>
+            </div>
+            <div class="file-upload-wrapper">
+              <input type="file" (change)="onCapturedImageFileChangeAfter($event)" accept="image/*"
+                id="capturedImageFileAfter" style="display: none;" />
+              <label for="capturedImageFileAfter" class="upload-btn">
+                <span class="material-icons">upload</span>
+                Upload
+              </label>
+            </div>
+          </div>
+          <div *ngIf="isCameraOpenAfter" class="camera-preview-container">
+            <video #videoElementAfter [srcObject]="streamAfter" autoplay playsinline class="camera-preview"></video>
+            <div class="camera-controls">
+              <button type="button" class="capture-btn" (click)="captureImageAfter()">
+                <span class="material-icons">camera</span>
+                Capture
+              </button>
+              <button type="button" class="close-camera-btn" (click)="closeCameraAfter()">
+                <span class="material-icons">close</span>
+                Close
+              </button>
+            </div>
+          </div>
+          <div *ngIf="capturedImageUrlAfter || afterExecutionImageUrl" class="captured-image-container">
+            <img [src]="afterExecutionImageUrl || capturedImageUrlAfter" alt="Captured image after execution"
+              class="captured-image" />
+            <button type="button" class="remove-captured-btn" (click)="removeCapturedImageAfter()">
+              <span class="material-icons">delete</span>
+            </button>
+            <div *ngIf="(capturedImageUrlAfter || afterExecutionImageUrl) && !isEditingAfter" class="edit-controls">
+              <button type="button" class="edit-btn" (click)="startEditingAfter()">
+                <span class="material-icons">edit</span>
+                <!-- Edit Image -->
+              </button>
+            </div>
+            <div *ngIf="isEditingAfter" class="image-editor">
+              <div class="editor-header">
+                <h4>Draw Rectangle to Highlight Area</h4>
+                <button type="button" class="close-edit-btn" (click)="cancelEditingAfter()">
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+              <div class="canvas-container">
+                <canvas #canvasElementAfter class="edit-canvas"></canvas>
+              </div>
+              <div class="editor-controls">
+                <button type="button" class="clear-btn" (click)="clearCanvasAfter()">
+                  <span class="material-icons">clear</span>
+                  Clear
+                </button>
+                <button type="button" class="save-edit-btn" (click)="saveEditedImageAfter()">
+                  <span class="material-icons">save</span>
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <small class="input-hint">Capture after the banner is placed</small>
+      <div *ngIf="fieldErrors['afterExecutionImage']" class="error-message">{{ fieldErrors['afterExecutionImage'] }}
+      </div>
+    </div>
+    <!-- <div class="form-row" *ngIf="showAfterExecutionField">
+      <label>Execution End Date</label>
+      <input formControlName="executionEndDate" type="date" placeholder="DD/MM/YYYY" />
+    </div> -->
+    <!-- <div class="form-row" *ngIf="showAfterExecutionField">
+      <label>BDM Name</label>
+      <input formControlName="bdmName" type="text" placeholder="BDM Name" />
+    </div>
+    <div class="form-row" *ngIf="showAfterExecutionField">
+      <label>BDE Name</label>
+      <input formControlName="bdeName" type="text" placeholder="BDE Name" />
+    </div> -->
+    <div class="form-row " *ngIf="!(isEditMode && showAfterExecutionField)">
+      <label>Banner Design</label>
+      <input type="file" (change)="onFileChange($event)" accept="image/*" />
+      <small class="input-hint">Upload the Banner Design</small>
+      <div *ngIf="fieldErrors['bannerDesign']" class="error-message">{{ fieldErrors['bannerDesign'] }}</div>
+    </div>
+    <div *ngIf="(imagePreviewUrl || bannerDesignImageUrl) && !(isEditMode && showAfterExecutionField)"
+      class="image-preview-row">
+      <img [src]="bannerDesignImageUrl || imagePreviewUrl" alt="Image preview" class="image-preview" />
+    </div>
+
+    <div *ngIf="hasValidationErrors()" class="validation-summary">
+      <span class="material-icons">error</span>
+      <span>Please fill in all required fields to continue.</span>
+    </div>
+    <div *ngIf="fieldErrors['general']" class="validation-summary error">
+      <span class="material-icons">error</span>
+      <span>{{ fieldErrors['general'] }}</span>
+    </div>
+    <div class="form-row">
+      <button class="save-btn" type="submit" [disabled]="isLoading">{{ submitButtonText }}</button>
+      <button class="cancel-btn" type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<style>
+  .add-store-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 70vh;
+    padding: 0 0 32px 0;
+    background: transparent;
+    /* margin-top removed to let form card sit just below header */
+    position: relative;
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .add-store-container {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .add-store-container {
+      padding: 0;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .add-store-form {
+      padding: 8px 4px 12px 4px;
+      max-width: 100vw;
+      width: 100vw;
+      box-sizing: border-box;
+    }
+  }
+
+  .add-store-form {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+    padding: 24px 28px 24px 28px;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-sizing: border-box;
+    /* padding-top removed to reduce gap below header */
+  }
+
+  .add-store-form .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .add-store-form label {
+    font-weight: 500;
+    margin-bottom: 2px;
+    color: #333;
+  }
+
+  .add-store-form input[type="text"],
+  .add-store-form input[type="file"],
+  .add-store-form select {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .add-store-form input[type="text"]:focus,
+  .add-store-form select:focus {
+    border-color: #7c3aed;
+  }
+
+  .button-row-centered {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    min-width: 120px;
+    padding: 12px 0;
+    font-size: 1.08em;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    letter-spacing: 0.01em;
+  }
+
+  .save-btn {
+    background: linear-gradient(90deg, #F0060B 0%, #FF41F8 100%);
+    color: #fff;
+    border: none;
+  }
+
+  .save-btn:disabled {
+    background: #e0e0e0;
+    color: #aaa;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .cancel-btn {
+    background: #fff;
+    color: #7c3aed;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .cancel-btn:hover {
+    background: #f3f4f6;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+  }
+
+  .add-store-form .icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  .add-store-form .material-icons.upload-icon {
+    font-size: 1.5em;
+    color: #7c3aed;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .image-preview-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .image-preview {
+    max-width: 180px;
+    max-height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    object-fit: cover;
+  }
+
+  .gps-success-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #e6f9ed;
+    border: 1px solid #34c759;
+    color: #207544;
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin: 8px auto 10px auto;
+    font-size: 0.98em;
+    box-shadow: 0 1px 4px rgba(52, 199, 89, 0.07);
+    max-width: 320px;
+    min-width: 180px;
+    justify-content: center;
+  }
+
+  .gps-success-container .icon-btn {
+    background: transparent;
+    color: #207544;
+    border: none;
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+  }
+
+  .gps-label {
+    font-weight: 500;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .close-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 1000;
+  }
+
+  .close-icon:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+  }
+
+  .close-icon .material-icons {
+    font-size: 20px;
+    color: #666;
+  }
+
+  .close-icon:hover .material-icons {
+    color: #333;
+  }
+
+  .validation-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+
+  .validation-summary.error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+  }
+
+  .validation-summary.error .material-icons {
+    color: #dc2626;
+  }
+
+  .validation-summary .material-icons {
+    font-size: 18px;
+    color: #f39c12;
+  }
+
+  .board-size-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .board-size-row input[type="number"] {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .board-size-row input[type="number"]:focus {
+    border-color: #7c3aed;
+  }
+
+  .board-size-x {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+    margin: 0 2px;
+  }
+
+  .location-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1.5px solid #10b981;
+  }
+
+  .location-fail {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1.5px solid #ef4444;
+  }
+
+  .spinner {
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #6366f1;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .back-btn {
+    background: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.05em;
+    font-weight: 500;
+    color: #374151;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    z-index: 1100;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 18px;
+    align-self: flex-start;
+  }
+
+  .back-btn .material-icons {
+    font-size: 20px;
+    margin-right: 2px;
+    color: #7c3aed;
+  }
+
+  .back-btn:hover {
+    background: #f3f4f6;
+    color: #4f46e5;
+  }
+
+  .pole-section-container {
+    margin-top: 15px;
+    padding: 10px 0;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .pole-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .pole-checkbox-label input[type="checkbox"] {
+    width: 1.25em;
+    height: 1.25em;
+    accent-color: #7c3aed;
+  }
+
+  .pole-fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .pole-fields-container .form-row {
+    gap: 6px;
+  }
+
+  .pole-fields-container label {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .pole-fields-container input[type="number"] {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pole-fields-container input[type="number"]:focus {
+    border-color: #7c3aed;
+  }
+
+  .required-asterisk {
+    color: #10b981;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-left: 2px;
+  }
+
+  .edit-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  }
+
+  .edit-loading-overlay .spinner {
+    border: 4px solid #e5e7eb;
+    border-top: 4px solid #6366f1;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+
+  .edit-loading-overlay p {
+    font-size: 1.1em;
+    color: #333;
+    font-weight: 500;
+  }
+</style>

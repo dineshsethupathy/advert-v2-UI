@@ -141,7 +141,15 @@ export class VendorAssignmentViewComponent implements OnInit {
     }
 
     openStoreForm(store: StoreAssignment): void {
-        this.router.navigate(['/vendor-store-edit', store.id]);
+        // Check if the store is completed and navigate accordingly
+        if (store.vendorWorkStatus === 'Completed') {
+            // Navigate to the store view page for completed stores
+            this.router.navigate(['/vendor-store-view', store.id]);
+        } else {
+            // Navigate to the store edit form for non-completed stores
+            this.router.navigate(['/vendor-store-edit', store.id]);
+        }
+        //this.router.navigate(['/vendor-store-edit', store.id]);
     }
 
     goBack(): void {

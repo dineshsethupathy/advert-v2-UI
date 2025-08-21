@@ -111,6 +111,7 @@ export interface StoreAssignmentDetailResponse {
     afterExecutionImageUrl?: string;
     boardWidth?: number;
     boardHeight?: number;
+    gpsLocation?: string;  // address|lat|lng format
     createdAt: string;
     updatedAt?: string;
 }

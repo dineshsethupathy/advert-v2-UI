@@ -203,4 +203,70 @@ export class BrandUserStoreViewComponent implements OnInit {
         this.showImageModal = false;
         this.modalImageUrl = null;
     }
+
+    // GPS Location methods
+    getGpsAddress(gpsString: string): string {
+        if (!gpsString) return '';
+
+        try {
+            const parts = gpsString.split('|');
+            if (parts.length >= 3) {
+                return parts[0]; // Return the address part
+            }
+        } catch (error) {
+            console.error('Error parsing GPS address:', error);
+        }
+        return gpsString; // Return original string if parsing fails
+    }
+
+    getGpsCoordinates(gpsString: string): string {
+        if (!gpsString) return '';
+
+        try {
+            const parts = gpsString.split('|');
+            if (parts.length >= 3) {
+                const lat = parseFloat(parts[1]);
+                const lng = parseFloat(parts[2]);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    return `${lat}, ${lng}`;
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing GPS coordinates:', error);
+        }
+        return '';
+    }
+
+    formatCoordinates(coords: string): string {
+        try {
+            const [lat, lng] = coords.split(',').map((v: string) => parseFloat(v.trim()));
+            if (!isNaN(lat) && !isNaN(lng)) {
+                return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+            }
+        } catch (error) {
+            console.error('Error formatting coordinates:', error);
+        }
+        return coords; // Return original if parsing fails
+    }
+
+    openGoogleMaps(gpsString: string): void {
+        if (!gpsString) return;
+
+        try {
+            const parts = gpsString.split('|');
+            if (parts.length >= 3) {
+                const lat = parseFloat(parts[1]);
+                const lng = parseFloat(parts[2]);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    // Open Google Maps with the coordinates
+                    const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                    window.open(googleMapsUrl, '_blank');
+                }
+            }
+        } catch (error) {
+            console.error('Error opening Google Maps:', error);
+        }
+    }
 }

@@ -133,6 +133,26 @@
             </div>
         </div>
 
+        <!-- GPS Location Section -->
+        <div class="gps-location-section" *ngIf="storeAssignment.gpsLocation">
+            <h3>GPS Location</h3>
+            <div class="gps-location-container">
+                <div class="gps-display" (click)="openGoogleMaps(storeAssignment.gpsLocation)"
+                    [class.clickable]="getGpsCoordinates(storeAssignment.gpsLocation)">
+                    <div class="gps-info">
+                        <div class="gps-address">{{ getGpsAddress(storeAssignment.gpsLocation) }}</div>
+                        <div class="gps-coords" *ngIf="getGpsCoordinates(storeAssignment.gpsLocation)">
+                            📍 {{ formatCoordinates(getGpsCoordinates(storeAssignment.gpsLocation)) }}
+                        </div>
+                        <!-- <div class="gps-hint" *ngIf="getGpsCoordinates(storeAssignment.gpsLocation)">
+                            <span class="material-icons">open_in_new</span>
+                            <span>Click to open in Google Maps</span>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Notes Section -->
         <div class="notes-section" *ngIf="storeAssignment.vendorNotes">
             <h3>Notes</h3>

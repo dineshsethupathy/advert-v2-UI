@@ -512,6 +512,118 @@
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
+/* GPS Location Styles */
+.gps-location-container {
+    margin-bottom: 24px;
+}
+
+.gps-upload-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    border: 2px dashed #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.gps-upload-area:hover {
+    border-color: #006fcf;
+    background: #f0f9ff;
+}
+
+.gps-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gps-btn:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.gps-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #f0fdf4;
+    border: 1.5px solid #10b981;
+    border-radius: 8px;
+    color: #065f46;
+}
+
+.gps-info {
+    flex: 1;
+    text-align: center;
+}
+
+.gps-address {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.gps-coords {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.gps-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.gps-edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 32px;
+    height: 32px;
+}
+
+.gps-edit-btn:hover {
+    background: #1d4ed8;
+}
+
+.gps-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 32px;
+    height: 32px;
+}
+
+.gps-remove-btn:hover {
+    background: #b91c1c;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .mobile-back-btn {
@@ -568,6 +680,15 @@
 
     .upload-area {
         padding: 24px 16px;
+    }
+
+    .gps-location-container {
+        padding: 16px;
+    }
+
+    .gps-btn {
+        padding: 12px 16px;
+        font-size: 14px;
     }
 }
 

@@ -1,0 +1,19 @@
+<div class="modal-backdrop" (click)="cancel()"></div>
+<div class="modal-container" (click)="$event.stopPropagation()">
+    <h2>Pinpoint Location</h2>
+    <div *ngIf="loading" class="spinner-overlay">
+        <div class="spinner"></div>
+        <span>Loading map...</span>
+    </div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+    <div #mapContainer class="map-container" [class.hidden]="loading || error"></div>
+    <div *ngIf="!loading && !error" class="address-section">
+        <div class="address-label">Selected Address:</div>
+        <div class="address-value">{{ address }}</div>
+    </div>
+    <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+        <button type="button" class="confirm-btn" [disabled]="!address || address === 'Address not found'"
+            (click)="confirm()">Confirm Location</button>
+    </div>
+</div>

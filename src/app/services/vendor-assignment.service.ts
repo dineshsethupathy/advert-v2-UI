@@ -54,6 +54,7 @@ export interface StoreAssignment {
     afterExecutionImageUrl?: string;
     boardWidth?: number;
     boardHeight?: number;
+    gpsLocation?: string;  // address|lat|lng format
 }
 
 export interface UpdateStoreStatusRequest {
@@ -69,6 +70,7 @@ export interface UpdateStoreFormRequest {
     boardWidth?: number;
     boardHeight?: number;
     notes?: string;
+    gpsLocation?: string;  // address|lat|lng format
 }
 
 export interface Board {

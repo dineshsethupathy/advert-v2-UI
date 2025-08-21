@@ -194,6 +194,77 @@
     min-width: 200px;
 }
 
+/* GPS Location Styles */
+.gps-location-cell {
+    padding: 16px 20px !important;
+    background-color: #f8f9fa !important;
+}
+
+.gps-info-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    padding: 12px;
+    background: #f0fdf4;
+    border: 1.5px solid #10b981;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-align: center;
+    align-items: center;
+    position: relative;
+}
+
+.gps-info-display:hover {
+    background: #dcfce7;
+    border-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.gps-address {
+    font-weight: 600;
+    color: #065f46;
+    font-size: 14px;
+    text-align: center;
+}
+
+.gps-coordinates {
+    color: #6b7280;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.gps-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #059669;
+    opacity: 0.7;
+}
+
+.gps-icon .material-icons {
+    font-size: 16px;
+}
+
+.gps-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #059669;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.gps-hint .material-icons {
+    font-size: 12px;
+}
+
 /* Images Section */
 .images-grid {
     display: grid;
@@ -552,6 +623,23 @@
 
     .details-table .detail-value {
         min-width: 150px;
+    }
+
+    .gps-info-display {
+        padding: 10px;
+        gap: 6px;
+    }
+
+    .gps-address {
+        font-size: 13px;
+    }
+
+    .gps-coordinates {
+        font-size: 12px;
+    }
+
+    .gps-hint {
+        font-size: 10px;
     }
 
     .images-grid {

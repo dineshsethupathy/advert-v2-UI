@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { ActivatedRoute, Router } from '@angular/router';
 import { VendorAssignmentService, StoreAssignment, Board, StoreFormResponse } from '../../services/vendor-assignment.service';
 import { VendorHeaderComponent } from '../shared/vendor-header/vendor-header.component';
+import { MatDialog } from '@angular/material/dialog';
+import { LocationPickerModalComponent } from '../location-picker-modal/location-picker-modal.component';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -34,12 +36,16 @@ export class VendorStoreEditComponent implements OnInit {
     beforeExecutionImageFile: File | null = null;
     afterExecutionImageFile: File | null = null;
 
+    // GPS Location
+    gpsLocation: { address: string; coords: string; gpsString: string } | null = null;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private vendorAssignmentService: VendorAssignmentService,
         private fb: FormBuilder,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private dialog: MatDialog
     ) {
         this.storeForm = this.fb.group({
             boardId: [null, [Validators.required]],
@@ -172,6 +178,11 @@ export class VendorStoreEditComponent implements OnInit {
             this.bannerImagePreview = this.storeAssignment.bannerImageUrl || null;
             this.beforeExecutionImagePreview = this.storeAssignment.beforeExecutionImageUrl || null;
             this.afterExecutionImagePreview = this.storeAssignment.afterExecutionImageUrl || null;
+
+            // Set GPS location if exists
+            if (this.storeAssignment.gpsLocation) {
+                this.gpsLocation = this.parseGpsLocation(this.storeAssignment.gpsLocation);
+            }
         }
     }
 
@@ -277,6 +288,11 @@ export class VendorStoreEditComponent implements OnInit {
         formData.append('boardWidth', this.storeForm.get('boardWidth')?.value);
         formData.append('boardHeight', this.storeForm.get('boardHeight')?.value);
         formData.append('notes', this.storeForm.get('notes')?.value || '');
+
+        // Add GPS location field
+        if (this.gpsLocation) {
+            formData.append('gpsLocation', this.gpsLocation.gpsString);
+        }
 
         // Add image files
         if (this.bannerImageFile) {
@@ -388,4 +404,78 @@ export class VendorStoreEditComponent implements OnInit {
             this.router.navigate(['/vendor-dashboard']);
         }
     }
-} 
+
+    // GPS Location Methods
+    openLocationPicker(): void {
+        let coords = null;
+        if (this.gpsLocation) {
+            try {
+                const [lat, lng] = this.gpsLocation.coords.split(',').map((v: string) => parseFloat(v.trim()));
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    coords = { lat, lng };
+                }
+            } catch { }
+        }
+
+        const dialogRef = this.dialog.open(LocationPickerModalComponent, {
+            width: '90vw',
+            maxWidth: '500px',
+            data: { coords }
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result && result.address && result.coords && result.gpsString) {
+                this.gpsLocation = {
+                    address: result.address,
+                    coords: result.coords,
+                    gpsString: result.gpsString
+                };
+                this.cdr.detectChanges();
+            }
+        });
+    }
+
+    removeGpsLocation(): void {
+        this.gpsLocation = null;
+        this.cdr.detectChanges();
+    }
+
+    // Parse GPS location from string format (address|lat|lng)
+    parseGpsLocation(gpsString: string): { address: string; coords: string; gpsString: string } | null {
+        if (!gpsString) return null;
+
+        try {
+            const parts = gpsString.split('|');
+            if (parts.length >= 3) {
+                const address = parts[0];
+                const lat = parseFloat(parts[1]);
+                const lng = parseFloat(parts[2]);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    return {
+                        address: address,
+                        coords: `${lat}, ${lng}`,
+                        gpsString: gpsString  // Keep original format for backend
+                    };
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing GPS location:', error);
+        }
+
+        return null;
+    }
+
+    // Format coordinates for display with 3 decimal points
+    formatCoordinates(coords: string): string {
+        try {
+            const [lat, lng] = coords.split(',').map((v: string) => parseFloat(v.trim()));
+            if (!isNaN(lat) && !isNaN(lng)) {
+                return `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+            }
+        } catch (error) {
+            console.error('Error formatting coordinates:', error);
+        }
+        return coords; // Return original if parsing fails
+    }
+}  

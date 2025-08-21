@@ -62,6 +62,23 @@
                         <td class="detail-label">Assigned Date:</td>
                         <td class="detail-value">{{ formatDate(storeViewData.assignment.assignedDate) }}</td>
                     </tr>
+                    <tr *ngIf="storeViewData.storeAssignment.gpsLocation">
+                        <td class="detail-value gps-location-cell" colspan="6">
+                            <div class="gps-info-display"
+                                (click)="openGoogleMaps(storeViewData.storeAssignment.gpsLocation)">
+                                <span class="gps-icon">
+                                    <span class="material-icons">open_in_new</span>
+                                </span>
+                                <span class="gps-address">{{ getGpsAddress(storeViewData.storeAssignment.gpsLocation)
+                                    }}</span>
+                                <span class="gps-coordinates"
+                                    *ngIf="getGpsCoordinates(storeViewData.storeAssignment.gpsLocation)">
+                                    📍 {{
+                                    formatCoordinates(getGpsCoordinates(storeViewData.storeAssignment.gpsLocation)) }}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
