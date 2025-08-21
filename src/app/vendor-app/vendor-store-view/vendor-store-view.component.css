@@ -281,6 +281,7 @@
     align-items: center;
     padding: 16px 0;
     background: #f8f9fa;
+    min-height: 200px;
 }
 
 .execution-image-container img {
@@ -290,6 +291,7 @@
     height: auto;
     display: block;
     object-fit: contain;
+    transition: opacity 0.3s ease;
 }
 
 .image-container {
@@ -300,6 +302,7 @@
     justify-content: center;
     align-items: center;
     padding: 16px 0;
+    min-height: 200px;
 }
 
 .image-container img {
@@ -309,6 +312,47 @@
     height: auto;
     display: block;
     object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+/* Image loading states */
+.image-container img.hidden {
+    opacity: 0;
+}
+
+.image-container img.loaded {
+    opacity: 1;
+}
+
+.execution-image-container img.hidden {
+    opacity: 0;
+}
+
+.execution-image-container img.loaded {
+    opacity: 1;
+}
+
+.image-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure the spinner is perfectly centered */
+.image-loading l-tail-chase {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+/* Make image containers relative positioned for absolute loading spinner */
+.image-container,
+.execution-image-container {
+    position: relative;
 }
 
 .no-images {
@@ -630,6 +674,7 @@
 
     .image-container img {
         max-width: 100%;
+        transition: opacity 0.3s ease;
     }
 
     .execution-images-grid {
@@ -648,6 +693,15 @@
     .single-execution-image .execution-image-container {
         max-width: 100%;
         max-height: 250px;
+        min-height: 150px;
+    }
+
+    .image-container {
+        min-height: 150px;
+    }
+
+    .execution-image-container {
+        min-height: 150px;
     }
 }
 
@@ -715,5 +769,17 @@
     .btn {
         padding: 10px 16px;
         font-size: 13px;
+    }
+
+    .image-container {
+        min-height: 120px;
+    }
+
+    .execution-image-container {
+        min-height: 120px;
+    }
+
+    .single-execution-image .execution-image-container {
+        min-height: 120px;
     }
 }

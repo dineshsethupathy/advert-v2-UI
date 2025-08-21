@@ -18,6 +18,11 @@ export class VendorStoreViewComponent implements OnInit {
     storeAssignment: StoreAssignment | null = null;
     loading = false;
 
+    // Image loading states
+    bannerImageLoaded = false;
+    beforeImageLoaded = false;
+    afterImageLoaded = false;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -33,6 +38,11 @@ export class VendorStoreViewComponent implements OnInit {
 
     loadStoreDetails(): void {
         this.loading = true;
+        // Reset image loading states
+        this.bannerImageLoaded = false;
+        this.beforeImageLoaded = false;
+        this.afterImageLoaded = false;
+
         this.vendorAssignmentService.getStoreForm(this.storeAssignmentId).subscribe({
             next: (response) => {
                 this.storeAssignment = response.storeForm;
@@ -198,5 +208,33 @@ export class VendorStoreViewComponent implements OnInit {
         } catch (error) {
             console.error('Error opening Google Maps:', error);
         }
+    }
+
+    // Image loading event handlers
+    onBannerImageLoad(): void {
+        this.bannerImageLoaded = true;
+    }
+
+    onBannerImageError(): void {
+        this.bannerImageLoaded = true; // Hide loader even on error
+        console.error('Failed to load banner image');
+    }
+
+    onBeforeImageLoad(): void {
+        this.beforeImageLoaded = true;
+    }
+
+    onBeforeImageError(): void {
+        this.beforeImageLoaded = true; // Hide loader even on error
+        console.error('Failed to load before execution image');
+    }
+
+    onAfterImageLoad(): void {
+        this.afterImageLoaded = true;
+    }
+
+    onAfterImageError(): void {
+        this.afterImageLoaded = true; // Hide loader even on error
+        console.error('Failed to load after execution image');
     }
 } 

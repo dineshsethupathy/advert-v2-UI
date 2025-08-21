@@ -77,7 +77,12 @@
             <div class="image-section" *ngIf="storeAssignment.bannerImageUrl">
                 <h4>Banner Image</h4>
                 <div class="image-container">
-                    <img [src]="storeAssignment.bannerImageUrl" alt="Banner Image" loading="lazy">
+                    <div class="image-loading" *ngIf="!bannerImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeAssignment.bannerImageUrl" alt="Banner Image" loading="lazy"
+                        (load)="onBannerImageLoad()" (error)="onBannerImageError()" [class.hidden]="!bannerImageLoaded"
+                        [class.loaded]="bannerImageLoaded">
                 </div>
             </div>
 
@@ -87,7 +92,12 @@
                 *ngIf="storeAssignment.beforeExecutionImageUrl && !storeAssignment.afterExecutionImageUrl">
                 <h4>Before Execution</h4>
                 <div class="execution-image-container">
-                    <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image" loading="lazy">
+                    <div class="image-loading" *ngIf="!beforeImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image" loading="lazy"
+                        (load)="onBeforeImageLoad()" (error)="onBeforeImageError()" [class.hidden]="!beforeImageLoaded"
+                        [class.loaded]="beforeImageLoaded">
                 </div>
             </div>
 
@@ -98,8 +108,12 @@
                 <div class="execution-image-section">
                     <h4>Before Execution</h4>
                     <div class="execution-image-container">
-                        <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image"
-                            loading="lazy">
+                        <div class="image-loading" *ngIf="!beforeImageLoaded">
+                            <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                        </div>
+                        <img [src]="storeAssignment.beforeExecutionImageUrl" alt="Before Execution Image" loading="lazy"
+                            (load)="onBeforeImageLoad()" (error)="onBeforeImageError()"
+                            [class.hidden]="!beforeImageLoaded" [class.loaded]="beforeImageLoaded">
                     </div>
                 </div>
 
@@ -107,7 +121,12 @@
                 <div class="execution-image-section">
                     <h4>After Execution</h4>
                     <div class="execution-image-container">
-                        <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy">
+                        <div class="image-loading" *ngIf="!afterImageLoaded">
+                            <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                        </div>
+                        <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy"
+                            (load)="onAfterImageLoad()" (error)="onAfterImageError()" [class.hidden]="!afterImageLoaded"
+                            [class.loaded]="afterImageLoaded">
                     </div>
                 </div>
             </div>
@@ -117,7 +136,12 @@
                 *ngIf="!storeAssignment.beforeExecutionImageUrl && storeAssignment.afterExecutionImageUrl">
                 <h4>After Execution</h4>
                 <div class="execution-image-container">
-                    <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy">
+                    <div class="image-loading" *ngIf="!afterImageLoaded">
+                        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                    </div>
+                    <img [src]="storeAssignment.afterExecutionImageUrl" alt="After Execution Image" loading="lazy"
+                        (load)="onAfterImageLoad()" (error)="onAfterImageError()" [class.hidden]="!afterImageLoaded"
+                        [class.loaded]="afterImageLoaded">
                 </div>
             </div>
 
