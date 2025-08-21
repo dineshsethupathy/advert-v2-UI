@@ -27,6 +27,9 @@
 
         <!-- Store Info -->
         <div class="store-info">
+            <button type="button" class="close-btn" (click)="goBack()" title="Close">
+                <span class="material-icons">close</span>
+            </button>
             <div class="info-grid">
                 <div class="info-item">
                     <label>Store Name</label>
@@ -50,7 +53,31 @@
             <!-- Board Details -->
             <div class="form-section">
                 <h3>Board Details</h3>
-                <div class="form-row">
+                <div class="form-row three-columns">
+                    <div class="form-group">
+                        <label for="boardId">Board Type *</label>
+                        <div class="custom-select" [class.open]="isBoardDropdownOpen" (click)="toggleBoardDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!storeForm.get('boardId')?.value">
+                                    {{ selectedBoardText }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isBoardDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let board of boards"
+                                    (click)="selectBoard(board.id, $event)"
+                                    [class.selected]="storeForm.get('boardId')?.value === board.id">
+                                    {{ board.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message"
+                            *ngIf="storeForm.get('boardId')?.invalid && storeForm.get('boardId')?.touched">
+                            <span *ngIf="storeForm.get('boardId')?.errors?.['required']">Board type is required</span>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="boardWidth">Board Width (inches) *</label>
                         <input type="number" id="boardWidth" formControlName="boardWidth"
@@ -73,8 +100,6 @@
                             *ngIf="storeForm.get('boardHeight')?.invalid && storeForm.get('boardHeight')?.touched">
                             <span *ngIf="storeForm.get('boardHeight')?.errors?.['required']">Board height is
                                 required</span>
-                            <span *ngIf="storeForm.get('boardHeight')?.errors?.['min']">Board height must be at least 1
-                                inch</span>
                             <span *ngIf="storeForm.get('boardHeight')?.errors?.['max']">Board height cannot exceed 1000
                                 inches</span>
                         </div>

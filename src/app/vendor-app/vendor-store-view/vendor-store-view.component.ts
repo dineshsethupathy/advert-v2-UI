@@ -34,8 +34,8 @@ export class VendorStoreViewComponent implements OnInit {
     loadStoreDetails(): void {
         this.loading = true;
         this.vendorAssignmentService.getStoreForm(this.storeAssignmentId).subscribe({
-            next: (store) => {
-                this.storeAssignment = store;
+            next: (response) => {
+                this.storeAssignment = response.storeForm;
                 this.loading = false;
             },
             error: (error) => {

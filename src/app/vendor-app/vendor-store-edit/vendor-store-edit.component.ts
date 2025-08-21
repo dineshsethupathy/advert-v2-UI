@@ -1,8 +1,8 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VendorAssignmentService, StoreAssignment } from '../../services/vendor-assignment.service';
+import { VendorAssignmentService, StoreAssignment, Board, StoreFormResponse } from '../../services/vendor-assignment.service';
 import { VendorHeaderComponent } from '../shared/vendor-header/vendor-header.component';
 import Swal from 'sweetalert2';
 
@@ -20,6 +20,9 @@ export class VendorStoreEditComponent implements OnInit {
     loading = false;
     formLoading = false;
     storeForm: FormGroup;
+    boards: Board[] = [];
+    isBoardDropdownOpen = false;
+    selectedBoardText: string = 'Select board type';
 
     // Image preview URLs
     bannerImagePreview: string | null = null;
@@ -35,9 +38,11 @@ export class VendorStoreEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private vendorAssignmentService: VendorAssignmentService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private cdr: ChangeDetectorRef
     ) {
         this.storeForm = this.fb.group({
+            boardId: [null, [Validators.required]],
             boardWidth: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
             boardHeight: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
             notes: ['']
@@ -49,14 +54,76 @@ export class VendorStoreEditComponent implements OnInit {
         if (this.storeAssignmentId) {
             this.loadStoreForm();
         }
+
+        // Subscribe to form value changes to update custom dropdown
+        this.storeForm.get('boardId')?.valueChanges.subscribe(value => {
+            this.cdr.detectChanges();
+        });
+    }
+
+    // Boards are now loaded with the store form data
+    loadBoards(): void {
+        // This method is no longer needed as boards are loaded with store form
+    }
+
+    // Custom dropdown methods
+    toggleBoardDropdown(): void {
+        this.isBoardDropdownOpen = !this.isBoardDropdownOpen;
+    }
+
+    selectBoard(boardId: number, event?: Event): void {
+        if (event) {
+            event.stopPropagation();
+        }
+        this.storeForm.patchValue({ boardId: boardId });
+        this.isBoardDropdownOpen = false;
+
+        // Update the selected board text
+        this.getSelectedBoardText();
+    }
+
+    getSelectedBoardText(): string {
+        const selectedBoardId = this.storeForm.get('boardId')?.value;
+        console.log('getSelectedBoardText called, selectedBoardId:', selectedBoardId);
+        console.log('Available boards:', this.boards);
+        console.log('Form value:', this.storeForm.value);
+
+        if (!selectedBoardId) {
+            this.selectedBoardText = 'Select board type';
+            return this.selectedBoardText;
+        }
+        const selectedBoard = this.boards.find(board => board.id === selectedBoardId);
+        console.log('Found selected board:', selectedBoard);
+        this.selectedBoardText = selectedBoard ? selectedBoard.name : 'Select board type';
+        return this.selectedBoardText;
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event): void {
+        const target = event.target as HTMLElement;
+
+        // Close board dropdown if clicked outside
+        if (!target.closest('.custom-select')) {
+            this.isBoardDropdownOpen = false;
+        }
     }
 
     loadStoreForm(): void {
         this.loading = true;
         this.vendorAssignmentService.getStoreForm(this.storeAssignmentId).subscribe({
-            next: (store) => {
-                this.storeAssignment = store;
-                this.initializeForm();
+            next: (response) => {
+                console.log('loadStoreForm response:', response);
+                console.log('storeForm data:', response.storeForm);
+                console.log('availableBoards:', response.availableBoards);
+
+                this.storeAssignment = response.storeForm;
+                this.boards = response.availableBoards;
+
+                // Wait for both data to be loaded before initializing form
+                setTimeout(() => {
+                    this.initializeForm();
+                }, 100);
+
                 this.loading = false;
             },
             error: (error) => {
@@ -74,11 +141,32 @@ export class VendorStoreEditComponent implements OnInit {
 
     initializeForm(): void {
         if (this.storeAssignment) {
-            this.storeForm.patchValue({
-                boardWidth: this.storeAssignment.boardWidth || null,
-                boardHeight: this.storeAssignment.boardHeight || null,
-                notes: this.storeAssignment.vendorNotes || ''
-            });
+            console.log('initializeForm called with storeAssignment:', this.storeAssignment);
+            console.log('storeAssignment.boardId:', this.storeAssignment.boardId);
+            console.log('storeAssignment.boardWidth:', this.storeAssignment.boardWidth);
+            console.log('storeAssignment.boardHeight:', this.storeAssignment.boardHeight);
+
+            // Use setTimeout to ensure the form is fully ready
+            setTimeout(() => {
+                if (this.storeAssignment) {
+                    console.log('Setting form values...');
+                    this.storeForm.patchValue({
+                        boardId: this.storeAssignment.boardId || null,
+                        boardWidth: this.storeAssignment.boardWidth || null,
+                        boardHeight: this.storeAssignment.boardHeight || null,
+                        notes: this.storeAssignment.vendorNotes || ''
+                    });
+
+                    console.log('Form values after patch:', this.storeForm.value);
+                    console.log('Form boardId after patch:', this.storeForm.get('boardId')?.value);
+
+                    // Update the selected board text
+                    this.getSelectedBoardText();
+
+                    // Force change detection to update the custom dropdown
+                    this.cdr.detectChanges();
+                }
+            }, 0);
 
             // Set image previews
             this.bannerImagePreview = this.storeAssignment.bannerImageUrl || null;
@@ -185,6 +273,7 @@ export class VendorStoreEditComponent implements OnInit {
         const formData = new FormData();
 
         // Add form fields
+        formData.append('boardId', this.storeForm.get('boardId')?.value);
         formData.append('boardWidth', this.storeForm.get('boardWidth')?.value);
         formData.append('boardHeight', this.storeForm.get('boardHeight')?.value);
         formData.append('notes', this.storeForm.get('notes')?.value || '');

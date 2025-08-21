@@ -47,6 +47,8 @@ export interface StoreAssignment {
     updatedAt?: string;
     workflowProgress?: WorkflowProgress[];
     // New fields for store form
+    boardId?: number;
+    boardName?: string;
     bannerImageUrl?: string;
     beforeExecutionImageUrl?: string;
     afterExecutionImageUrl?: string;
@@ -63,9 +65,24 @@ export interface UpdateStoreFormRequest {
     bannerImageUrl?: string;
     beforeExecutionImageUrl?: string;
     afterExecutionImageUrl?: string;
+    boardId?: number;
     boardWidth?: number;
     boardHeight?: number;
     notes?: string;
+}
+
+export interface Board {
+    id: number;
+    name: string;
+    brandName: string;
+    width: number;
+    height: number;
+    cost?: number;
+}
+
+export interface StoreFormResponse {
+    storeForm: StoreAssignment;
+    availableBoards: Board[];
 }
 
 export interface VendorStats {
@@ -128,8 +145,8 @@ export class VendorAssignmentService {
     }
 
     // New methods for store form operations
-    getStoreForm(storeAssignmentId: number): Observable<StoreAssignment> {
-        return this.http.get<StoreAssignment>(`${this.storeApiUrl}/stores/${storeAssignmentId}/form`);
+    getStoreForm(storeAssignmentId: number): Observable<StoreFormResponse> {
+        return this.http.get<StoreFormResponse>(`${this.storeApiUrl}/stores/${storeAssignmentId}/form`);
     }
 
     updateStoreForm(storeAssignmentId: number, formData: FormData): Observable<StoreAssignment> {

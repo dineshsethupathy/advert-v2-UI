@@ -31,6 +31,9 @@
 
         <!-- Store Info -->
         <div class="store-info">
+            <button type="button" class="close-btn" (click)="goBack()" title="Close">
+                <span class="material-icons">close</span>
+            </button>
             <button class="edit-store-btn" (click)="editStore()" title="Edit Store"
                 *ngIf="storeAssignment.vendorWorkStatus !== 'Completed'">
                 <span class="material-icons">edit</span>
@@ -50,9 +53,22 @@
                         {{ storeAssignment.vendorWorkStatus }}
                     </span>
                 </div>
-                <div class="info-item" *ngIf="storeAssignment.boardWidth && storeAssignment.boardHeight">
-                    <label>Board Size</label>
-                    <span>{{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"</span>
+                <div class="info-item"
+                    *ngIf="storeAssignment.boardId || (storeAssignment.boardWidth && storeAssignment.boardHeight)">
+                    <label>Board Type</label>
+                    <span
+                        *ngIf="storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
+                        {{ storeAssignment.boardName }} ({{ storeAssignment.boardWidth }}" × {{
+                        storeAssignment.boardHeight }}")
+                    </span>
+                    <span
+                        *ngIf="storeAssignment.boardName && (!storeAssignment.boardWidth || !storeAssignment.boardHeight)">
+                        {{ storeAssignment.boardName }}
+                    </span>
+                    <span
+                        *ngIf="!storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
+                        {{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"
+                    </span>
                 </div>
             </div>
         </div>
