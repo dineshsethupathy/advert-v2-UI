@@ -54,14 +54,22 @@ export class VendorDashboardComponent implements OnInit {
 
     calculateStats(): void {
         this.stats.totalAssignments = this.assignments.length;
-        this.stats.activeAssignments = this.assignments.filter(a => a.status === 'Active').length;
-        this.stats.completedAssignments = this.assignments.filter(a => a.status === 'Completed').length;
-        this.stats.pendingAssignments = this.assignments.filter(a => a.status === 'Pending').length;
+        this.stats.activeAssignments = this.assignments.filter(a => this.getComputedStatus(a) === 'Active').length;
+        this.stats.completedAssignments = this.assignments.filter(a => this.getComputedStatus(a) === 'Completed').length;
+        this.stats.pendingAssignments = this.assignments.filter(a => this.getComputedStatus(a) === 'Pending').length;
     }
 
     getProgressPercentage(assignment: VendorAssignment): number {
         if (assignment.totalStores === 0) return 0;
         return Math.round((assignment.completedStores / assignment.totalStores) * 100 * 100) / 100;
+    }
+
+    getComputedStatus(assignment: VendorAssignment): string {
+        const progress = this.getProgressPercentage(assignment);
+        if (progress === 100) {
+            return 'Completed';
+        }
+        return assignment.status;
     }
 
     getStatusColor(status: string): string {

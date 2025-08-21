@@ -12,13 +12,21 @@
     <div class="assignment-content" *ngIf="!loading && assignment">
         <!-- Assignment Info -->
         <div class="assignment-info">
-            <div class="assignment-row">
+            <div class="back-button-container">
+                <button class="back-btn" (click)="goBack()" type="button">
+                    <span class="material-icons">arrow_back</span>
+                    Back
+                </button>
+            </div>
+            <div class="assignment-content-center">
                 <div class="assignment-name">
                     <h2>{{ assignment.name }}</h2>
                 </div>
                 <div class="assignment-description">
-                    <p>{{ assignment.description || 'No description available' }}</p>
+                    <p>{{ assignment.description || '' }}</p>
                 </div>
+            </div>
+            <div class="assignment-meta">
                 <div class="assignment-date">
                     <span class="material-icons">calendar_today</span>
                     <span>{{ formatDate(assignment.createdDt) }}</span>

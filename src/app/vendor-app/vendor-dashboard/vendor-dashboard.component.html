@@ -65,8 +65,8 @@
                     (click)="viewAssignment(assignment.id)">
                     <div class="assignment-header">
                         <h3>{{ assignment.name }}</h3>
-                        <span class="status-badge" [class]="'status-' + getStatusColor(assignment.status)">
-                            {{ assignment.status }}
+                        <span class="status-badge" [class]="'status-' + getStatusColor(getComputedStatus(assignment))">
+                            {{ getComputedStatus(assignment) }}
                         </span>
                     </div>
                     <p class="assignment-description">{{ assignment.description || 'No description available' }}</p>
