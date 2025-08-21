@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { GoogleMapsService } from '../../services/google-maps.service';
 
 @Component({
     selector: 'app-location-picker-modal',
@@ -22,7 +23,8 @@ export class LocationPickerModalComponent {
 
     constructor(
         private dialogRef: MatDialogRef<LocationPickerModalComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        private googleMapsService: GoogleMapsService
     ) { }
 
     ngAfterViewInit() {
@@ -40,33 +42,37 @@ export class LocationPickerModalComponent {
         }
     }
 
-    initMap() {
-        if (!(window as any).google || !(window as any).google.maps) {
-            this.error = 'Google Maps failed to load.';
+    async initMap() {
+        try {
+            // Load Google Maps API if not already loaded
+            await this.googleMapsService.loadGoogleMapsAPI();
+
+            // Use passed-in coords if available
+            const initialCoords = this.data?.coords;
+            if (initialCoords && typeof initialCoords.lat === 'number' && typeof initialCoords.lng === 'number') {
+                this.createMap(initialCoords.lat, initialCoords.lng);
+                return;
+            }
+            // Try to get user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        this.createMap(lat, lng);
+                    },
+                    () => {
+                        // Fallback to a default location (e.g., Lagos)
+                        this.createMap(9.926110, 78.125368);
+                    }
+                );
+            } else {
+                this.createMap(9.926110, 78.125368);
+            }
+        } catch (error) {
+            this.error = 'Failed to load Google Maps API.';
             this.loading = false;
-            return;
-        }
-        // Use passed-in coords if available
-        const initialCoords = this.data?.coords;
-        if (initialCoords && typeof initialCoords.lat === 'number' && typeof initialCoords.lng === 'number') {
-            this.createMap(initialCoords.lat, initialCoords.lng);
-            return;
-        }
-        // Try to get user's current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    this.createMap(lat, lng);
-                },
-                () => {
-                    // Fallback to a default location (e.g., Lagos)
-                    this.createMap(9.926110, 78.125368);
-                }
-            );
-        } else {
-            this.createMap(9.926110, 78.125368);
+            console.error('Google Maps API loading error:', error);
         }
     }
 
