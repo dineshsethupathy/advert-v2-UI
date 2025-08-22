@@ -327,7 +327,7 @@
 }
 
 .table-row:hover {
-    background-color: #f1f5f9;
+    background-color: #d5e7f9;
     box-shadow: 0 2px 8px rgba(0, 111, 207, 0.1);
     transform: translateY(-1px);
 }
