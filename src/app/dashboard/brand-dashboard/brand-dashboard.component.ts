@@ -60,6 +60,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     logoutLoading = false;
     showProfileMenu = false;
     currentRoute = '/dashboard';
+    isSidebarCollapsed = false;
     private routeSubscription: any;
 
     constructor(
@@ -76,6 +77,12 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.currentRoute = this.router.url;
         console.log('Initial route:', this.currentRoute);
         this.updateActiveItem();
+
+        // Restore sidebar state from localStorage
+        const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+        if (savedSidebarState !== null) {
+            this.isSidebarCollapsed = savedSidebarState === 'true';
+        }
 
         // Only load dashboard data if we're on the dashboard page
         if (this.currentRoute === '/dashboard') {
@@ -236,13 +243,15 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
             },
             error: (error) => {
                 console.error('Logout error:', error);
-                // Navigate anyway since auth data is cleared
-                this.router.navigate(['/login']);
-            },
-            complete: () => {
                 this.logoutLoading = false;
             }
         });
+    }
+
+    toggleSidebar(): void {
+        this.isSidebarCollapsed = !this.isSidebarCollapsed;
+        // Save state to localStorage for persistence
+        localStorage.setItem('sidebarCollapsed', this.isSidebarCollapsed.toString());
     }
 
     getCurrentUserName(): string {

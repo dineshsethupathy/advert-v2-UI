@@ -42,8 +42,13 @@
     </header>
 
     <div class="main-content">
+        <!-- Sidebar Toggle Button -->
+        <button class="sidebar-toggle" (click)="toggleSidebar()" [class.collapsed]="isSidebarCollapsed">
+            <span class="toggle-icon">{{ isSidebarCollapsed ? '☰' : '✕' }}</span>
+        </button>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
             <nav class="sidebar-nav">
                 <!-- <div class="nav-title">Navigation</div> -->
                 <ul class="nav-list">
@@ -51,7 +56,7 @@
                         (click)="selectItem(item)">
                         <a class="nav-link">
                             <span class="material-icons nav-icon">{{ item.icon }}</span>
-                            <span class="nav-text">{{ item.name }}</span>
+                            <span class="nav-text" [class.hidden]="isSidebarCollapsed">{{ item.name }}</span>
                         </a>
                     </li>
                 </ul>
@@ -59,7 +64,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="content-area">
+        <main class="content-area" [class.sidebar-collapsed]="isSidebarCollapsed">
             <!-- Dashboard Content -->
             <div *ngIf="currentRoute === '/dashboard'">
                 <div class="content-header">
