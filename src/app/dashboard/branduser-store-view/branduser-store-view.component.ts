@@ -129,6 +129,33 @@ export class BrandUserStoreViewComponent implements OnInit {
         }
     }
 
+    getWorkflowStatusClass(status: string): string {
+        switch (status.toLowerCase()) {
+            case 'pending':
+                return 'pending';
+            case 'in progress':
+                return 'in-progress';
+            case 'completed':
+                return 'completed';
+            case 'skipped':
+                return 'skipped';
+            default:
+                return 'pending';
+        }
+    }
+
+    getActiveStageComment(): string | null {
+        if (!this.storeViewData?.vendorWorkflow) return null;
+
+        // Find the current active stage (in progress or the next pending stage)
+        const activeStage = this.storeViewData.vendorWorkflow.find(stage =>
+            stage.status === 'In Progress' ||
+            (stage.status === 'Pending' && stage.comment)
+        );
+
+        return activeStage?.comment || null;
+    }
+
     formatDate(dateString: string | undefined): string {
         if (!dateString) return '-';
         return new Date(dateString).toLocaleDateString();

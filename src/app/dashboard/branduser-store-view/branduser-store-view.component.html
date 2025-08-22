@@ -148,25 +148,47 @@
                 <span class="progress-text">{{ getVendorWorkflowProgress().toFixed(1) }}% Complete</span>
             </div>
         </div>
-        <div class="workflow-stages">
-            <div *ngFor="let stage of storeViewData.vendorWorkflow" class="stage-item">
-                <div class="stage-header">
-                    <div class="stage-info">
-                        <h4 class="stage-name">{{ stage.stageName }}</h4>
-                        <span class="stage-status" [class]="'status-' + getWorkflowStatusColor(stage.status)">
-                            {{ stage.status }}
-                        </span>
+
+        <!-- Horizontal Workflow Stages -->
+        <div class="horizontal-workflow">
+            <div class="workflow-container">
+                <div *ngFor="let stage of storeViewData.vendorWorkflow; let i = index" class="workflow-stage-wrapper">
+                    <!-- Workflow Stage -->
+                    <div class="workflow-stage" [class]="'stage-' + getWorkflowStatusClass(stage.status)">
+                        <div class="stage-content">
+                            <h4 class="stage-name">{{ stage.stageName }}</h4>
+                            <div class="stage-status-badge" [class]="'status-' + getWorkflowStatusColor(stage.status)">
+                                {{ stage.status }}
+                            </div>
+                            <div class="stage-dates-horizontal" *ngIf="stage.startedAt || stage.completedAt">
+                                <div class="date-item" *ngIf="stage.startedAt">
+                                    <span class="date-icon">▶</span>
+                                    <span class="date-text">{{ formatDateOnly(stage.startedAt) }}</span>
+                                </div>
+                                <div class="date-item" *ngIf="stage.completedAt">
+                                    <span class="date-icon">✓</span>
+                                    <span class="date-text">{{ formatDateOnly(stage.completedAt) }}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stage-dates">
-                        <span class="date-label" *ngIf="stage.startedAt">Started: {{ formatDateOnly(stage.startedAt)
-                            }}</span>
-                        <span class="date-label" *ngIf="stage.completedAt">Completed: {{
-                            formatDateOnly(stage.completedAt) }}</span>
+
+                    <!-- Arrow connector (except for last stage) -->
+                    <div class="stage-connector" *ngIf="i < storeViewData.vendorWorkflow.length - 1">
+                        <!-- <div class="connector-line"></div> -->
+                        <div class="connector-arrow">→</div>
                     </div>
                 </div>
-                <div class="stage-comment" *ngIf="stage.comment">
-                    <span class="comment-label">Comment:</span>
-                    <span class="comment-text">{{ stage.comment }}</span>
+            </div>
+
+            <!-- Stage Comment Section -->
+            <div class="workflow-comments" *ngIf="getActiveStageComment()">
+                <div class="comment-header">
+                    <span class="comment-icon">💬</span>
+                    <span class="comment-title">Current Stage Comment</span>
+                </div>
+                <div class="comment-content">
+                    {{ getActiveStageComment() }}
                 </div>
             </div>
         </div>
