@@ -607,9 +607,7 @@
 .workflow-stage-wrapper {
     display: flex;
     align-items: center;
-    flex: 1;
-    min-width: 200px;
-    max-width: 250px;
+    flex: 0 0 220px;
     height: 100%;
 }
 
@@ -622,7 +620,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     position: relative;
-    min-height: 120px;
+    height: 140px;
     width: 100%;
     text-align: center;
     justify-content: center;
@@ -800,13 +798,11 @@
     }
 
     .workflow-stage-wrapper {
-        flex: 0 0 auto;
-        min-width: 180px;
-        max-width: 220px;
+        flex: 0 0 200px;
     }
 
     .workflow-stage {
-        min-height: 110px;
+        height: 130px;
         padding: 14px 10px;
     }
 
@@ -824,14 +820,13 @@
 
     .workflow-stage-wrapper {
         flex: 1;
-        min-width: 100%;
-        max-width: 100%;
+        width: 100%;
     }
 
     .workflow-stage {
         flex-direction: row;
         text-align: left;
-        min-height: 100px;
+        height: 110px;
         padding: 14px 16px;
         justify-content: flex-start;
     }
@@ -868,7 +863,7 @@
 @media (max-width: 480px) {
     .workflow-stage {
         padding: 12px 14px;
-        min-height: 90px;
+        height: 100px;
     }
 
     .stage-name {
