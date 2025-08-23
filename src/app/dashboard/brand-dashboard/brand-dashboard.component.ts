@@ -95,7 +95,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
             .subscribe((event) => {
                 if (event instanceof NavigationEnd) {
                     this.currentRoute = event.url;
-                    console.log('Route changed to:', this.currentRoute);
+                    // console.log('Route changed to:', this.currentRoute);
                     this.updateActiveItem();
 
                     // Load dashboard data only when navigating to dashboard
@@ -108,7 +108,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
 
     loadCurrentUser(): void {
         this.currentUser = this.authService.getCurrentUserValue();
-        console.log('Loaded current user:', this.currentUser);
+        // console.log('Loaded current user:', this.currentUser);
         if (!this.currentUser) {
             this.router.navigate(['/login']);
             return;
@@ -120,8 +120,8 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     updateSidebarVisibility(): void {
         // Show/hide sidebar items based on user type
         if (this.currentUser) {
-            console.log('Current user type:', this.currentUser.userType);
-            console.log('Current user:', this.currentUser);
+            // console.log('Current user type:', this.currentUser.userType);
+            // console.log('Current user:', this.currentUser);
 
             this.sidebarItems.forEach(item => {
                 // For now, show all items for all user types
@@ -148,7 +148,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
                 }
                 */
 
-                console.log(`Item ${item.name}: visible = ${item.visible}`);
+                // console.log(`Item ${item.name}: visible = ${item.visible}`);
             });
         } else {
             // If no user, show all items
@@ -176,11 +176,11 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.dashboardAnalyticsService.getDashboardAnalytics().subscribe({
             next: (analytics) => {
                 this.dashboardAnalytics = analytics;
-                console.log('Loaded dashboard analytics:', analytics);
+                // console.log('Loaded dashboard analytics:', analytics);
                 this.loading = false;
             },
             error: (error) => {
-                console.error('Error loading dashboard analytics:', error);
+                // console.error('Error loading dashboard analytics:', error);
                 this.loading = false;
             }
         });
@@ -200,7 +200,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.dashboardService.getAssignments().subscribe({
             next: (assignments) => {
                 this.assignments = assignments;
-                console.log('Loaded assignments:', assignments);
+                // console.log('Loaded assignments:', assignments);
             },
             error: (error) => {
                 console.error('Error loading assignments:', error);
@@ -211,7 +211,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.dashboardService.getUsers().subscribe({
             next: (users) => {
                 this.users = users;
-                console.log('Loaded users:', users);
+                // console.log('Loaded users:', users);
             },
             error: (error) => {
                 console.error('Error loading users:', error);
@@ -222,7 +222,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.dashboardService.getStores().subscribe({
             next: (stores) => {
                 this.stores = stores;
-                console.log('Loaded stores:', stores);
+                // console.log('Loaded stores:', stores);
             },
             error: (error) => {
                 console.error('Error loading stores:', error);
