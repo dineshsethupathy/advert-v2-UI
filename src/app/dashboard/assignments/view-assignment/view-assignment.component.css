@@ -51,6 +51,8 @@
 
 .back-btn .material-icons {
     font-size: 1.5rem;
+    color: #10b981;
+    font-weight: bold;
 }
 
 .header-info {
