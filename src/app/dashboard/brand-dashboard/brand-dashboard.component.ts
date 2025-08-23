@@ -75,7 +75,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
 
         // Initialize currentRoute with the actual current URL
         this.currentRoute = this.router.url;
-        console.log('Initial route:', this.currentRoute);
+        // console.log('Initial route:', this.currentRoute);
         this.updateActiveItem();
 
         // Restore sidebar state from localStorage
