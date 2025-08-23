@@ -61,11 +61,11 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log('ShopOutletsComponent ngOnInit() called');
+        // console.log('ShopOutletsComponent ngOnInit() called');
 
         // Prevent duplicate initialization
         if (this.isInitialized) {
-            console.log('Component already initialized, skipping...');
+            // console.log('Component already initialized, skipping...');
             return;
         }
 
@@ -75,7 +75,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        console.log('ShopOutletsComponent ngOnDestroy() called');
+        // console.log('ShopOutletsComponent ngOnDestroy() called');
         this.isInitialized = false;
         // Cleanup if needed
     }
@@ -83,15 +83,15 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     loadShops(): void {
         // Prevent duplicate calls if already loading
         if (this.loading) {
-            console.log('loadShops() called while already loading, skipping...');
+            // console.log('loadShops() called while already loading, skipping...');
             return;
         }
 
-        console.log('loadShops() called');
+        // console.log('loadShops() called');
         this.loading = true;
         this.storesService.getStores().subscribe({
             next: (stores) => {
-                console.log('Stores loaded:', stores.length);
+                // console.log('Stores loaded:', stores.length);
                 this.shops = stores.map(store => ({
                     id: store.id,
                     name: store.name,
@@ -117,7 +117,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         this.regionService.getRegions().subscribe({
             next: (regions) => {
                 this.regions = regions.filter(region => !region.isDeleted);
-                console.log('Loaded regions:', this.regions);
+                // console.log('Loaded regions:', this.regions);
             },
             error: (error) => {
                 console.error('Error loading regions:', error);

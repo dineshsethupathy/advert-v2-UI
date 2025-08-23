@@ -52,7 +52,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log('BoardDetailsComponent ngOnInit() called');
+        // console.log('BoardDetailsComponent ngOnInit() called');
 
         // Prevent duplicate initialization
         if (this.isInitialized) {
@@ -72,15 +72,15 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     loadBoards(): void {
         // Prevent duplicate calls if already loading
         if (this.loading) {
-            console.log('loadBoards() called while already loading, skipping...');
+            // console.log('loadBoards() called while already loading, skipping...');
             return;
         }
 
-        console.log('loadBoards() called');
+        // console.log('loadBoards() called');
         this.loading = true;
         this.boardsService.getBoards().subscribe({
             next: (boards) => {
-                console.log('Boards loaded:', boards.length);
+                // console.log('Boards loaded:', boards.length);
                 this.boards = boards;
                 this.filteredBoards = [...this.boards];
 

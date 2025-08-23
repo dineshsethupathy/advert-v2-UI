@@ -72,7 +72,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loadCurrentUser();
-
+        // console.log('ngOnInit');
         // Initialize currentRoute with the actual current URL
         this.currentRoute = this.router.url;
         // console.log('Initial route:', this.currentRoute);
@@ -108,7 +108,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
 
     loadCurrentUser(): void {
         this.currentUser = this.authService.getCurrentUserValue();
-        // console.log('Loaded current user:', this.currentUser);
+        // //console.log('Loaded current user:', this.currentUser);
         if (!this.currentUser) {
             this.router.navigate(['/login']);
             return;

@@ -159,25 +159,25 @@ export class CreateAssignmentComponent implements OnInit {
         // Load vendors first
         this.vendorService.getVendors().subscribe({
             next: (vendors) => {
-                console.log('Vendors loaded successfully:', vendors);
+                // console.log('Vendors loaded successfully:', vendors);
                 this.vendors = vendors;
 
                 // Then load workflows
                 this.workflowService.getWorkflows().subscribe({
                     next: (workflows) => {
-                        console.log('Workflows loaded successfully:', workflows);
+                        // console.log('Workflows loaded successfully:', workflows);
                         this.workflows = workflows;
 
                         // Then load regions
                         this.regionService.getRegions().subscribe({
                             next: (regions) => {
-                                console.log('Regions loaded successfully:', regions);
+                                // console.log('Regions loaded successfully:', regions);
                                 this.regions = regions;
 
                                 // Finally load stores
                                 this.storesService.getStores().subscribe({
                                     next: (stores) => {
-                                        console.log('Stores loaded successfully:', stores);
+                                        // console.log('Stores loaded successfully:', stores);
                                         this.stores = stores;
                                         this.filteredStores = stores;
                                         this.updatePagination();
@@ -218,7 +218,7 @@ export class CreateAssignmentComponent implements OnInit {
         console.log('Loading vendors...');
         this.vendorService.getVendors().subscribe({
             next: (vendors) => {
-                console.log('Vendors loaded successfully:', vendors);
+                // console.log('Vendors loaded successfully:', vendors);
                 this.vendors = vendors;
                 this.loading = false;
             },
@@ -235,7 +235,7 @@ export class CreateAssignmentComponent implements OnInit {
         console.log('Loading workflows...');
         this.workflowService.getWorkflows().subscribe({
             next: (workflows) => {
-                console.log('Workflows loaded successfully:', workflows);
+                // console.log('Workflows loaded successfully:', workflows);
                 this.workflows = workflows;
                 this.loading = false;
             },
@@ -252,7 +252,7 @@ export class CreateAssignmentComponent implements OnInit {
         console.log('Loading stores...');
         this.storesService.getStores().subscribe({
             next: (stores) => {
-                console.log('Stores loaded successfully:', stores);
+                // console.log('Stores loaded successfully:', stores);
                 this.stores = stores;
                 this.filteredStores = stores;
                 this.updatePagination();
@@ -328,13 +328,13 @@ export class CreateAssignmentComponent implements OnInit {
         const startIndex = (this.currentPage - 1) * this.pageSize;
         const endIndex = startIndex + this.pageSize;
         this.currentPageStores = this.filteredStores.slice(startIndex, endIndex);
-        console.log('Pagination updated:', {
-            totalStores: this.totalStores,
-            filteredStores: this.filteredStores.length,
-            currentPageStores: this.currentPageStores.length,
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
-        });
+        // console.log('Pagination updated:', {
+        //     totalStores: this.totalStores,
+        //     filteredStores: this.filteredStores.length,
+        //     currentPageStores: this.currentPageStores.length,
+        //     currentPage: this.currentPage,
+        //     pageSize: this.pageSize
+        // });
         this.updateSelectionCheckboxes(); // Update checkbox states after pagination
     }
 
@@ -412,13 +412,13 @@ export class CreateAssignmentComponent implements OnInit {
         const currentPageIds = this.currentPageStores.map(store => store.id);
         this.selectCurrentPage = currentPageIds.length > 0 && currentPageIds.every(id => this.selectedStoreIds.includes(id));
 
-        console.log('updateSelectionCheckboxes:', {
-            selectedStoreIds: this.selectedStoreIds.length,
-            filteredStores: this.filteredStores.length,
-            currentPageStores: this.currentPageStores.length,
-            selectAllPages: this.selectAllPages,
-            selectCurrentPage: this.selectCurrentPage
-        });
+        // console.log('updateSelectionCheckboxes:', {
+        //     selectedStoreIds: this.selectedStoreIds.length,
+        //     filteredStores: this.filteredStores.length,
+        //     currentPageStores: this.currentPageStores.length,
+        //     selectAllPages: this.selectAllPages,
+        //     selectCurrentPage: this.selectCurrentPage
+        // });
     }
 
     isStoreSelected(storeId: number): boolean {

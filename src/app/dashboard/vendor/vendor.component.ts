@@ -203,7 +203,7 @@ export class VendorComponent implements OnInit {
     }
 
     getStatusText(vendor: Vendor): string {
-        console.log('Vendor:..', vendor);
+        // console.log('Vendor:..', vendor);
         if (!vendor.isActive) {
             return 'Inactive';
         }
