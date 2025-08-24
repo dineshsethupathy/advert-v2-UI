@@ -195,14 +195,24 @@
                 </div>
             </div>
             <div class="actions-buttons">
-                <button class="edit-store-btn" (click)="editStore()" title="Edit Store"
-                    *ngIf="storeAssignment.vendorWorkStatus !== 'Completed'">
+                <button class="edit-store-btn" (click)="editStore()" title="Edit Store">
                     <span class="material-icons">edit</span>
                     Edit Store
                 </button>
                 <button class="btn btn-success" (click)="markAsComplete()">
                     <span class="material-icons">check_circle</span>
                     Mark as Complete
+                </button>
+            </div>
+        </div>
+
+        <!-- Edit Store Button for Non-Completed Stores -->
+        <div class="edit-store-section"
+            *ngIf="storeAssignment.vendorWorkStatus !== 'Completed' && !canMarkAsComplete()">
+            <div class="actions-buttons">
+                <button class="edit-store-btn" (click)="editStore()" title="Edit Store">
+                    <span class="material-icons">edit</span>
+                    Edit Store
                 </button>
             </div>
         </div>
@@ -216,13 +226,6 @@
                     <p>This store has been successfully completed on {{ storeAssignment.completedDate | date:'medium' }}
                     </p>
                 </div>
-            </div>
-            <div class="actions-buttons">
-                <button class="edit-store-btn" (click)="editStore()" title="Edit Store"
-                    *ngIf="storeAssignment.vendorWorkStatus !== 'Completed'">
-                    <span class="material-icons">edit</span>
-                    Edit Store
-                </button>
             </div>
         </div>
     </div>

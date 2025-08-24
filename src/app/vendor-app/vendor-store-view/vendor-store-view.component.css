@@ -147,6 +147,10 @@
     margin-top: 16px;
 }
 
+.edit-store-section .actions-buttons {
+    margin-top: 0;
+}
+
 .info-item {
     display: flex;
     flex-direction: column;
@@ -478,6 +482,13 @@
     border-bottom: 1px solid #e8eaed;
 }
 
+.edit-store-section {
+    padding: 24px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e8eaed;
+    text-align: center;
+}
+
 .completion-info {
     display: flex;
     align-items: center;
@@ -668,6 +679,10 @@
         padding: 16px;
     }
 
+    .edit-store-section {
+        padding: 16px;
+    }
+
     .completed-status {
         padding: 16px;
     }
@@ -759,6 +774,10 @@
     }
 
     .completion-actions {
+        padding: 12px;
+    }
+
+    .edit-store-section {
         padding: 12px;
     }
 
