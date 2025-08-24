@@ -235,8 +235,12 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.router.navigate([item.route]);
     }
 
-    logout(): void {
+    logout(event: Event): void {
+        // Prevent event from bubbling up to document click handler
+        event.stopPropagation();
+
         this.logoutLoading = true;
+        // Keep the dropdown open during logout process
         this.authService.logout().subscribe({
             next: () => {
                 this.router.navigate(['/login']);
@@ -244,6 +248,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
             error: (error) => {
                 console.error('Logout error:', error);
                 this.logoutLoading = false;
+                // Only close dropdown on error, not on success
             }
         });
     }
@@ -280,7 +285,8 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
 
     onDocumentClick(event: Event): void {
         const target = event.target as HTMLElement;
-        if (!target.closest('.profile-dropdown')) {
+        // Don't close dropdown if logout is in progress
+        if (!target.closest('.profile-dropdown') && !this.logoutLoading) {
             this.showProfileMenu = false;
         }
     }
