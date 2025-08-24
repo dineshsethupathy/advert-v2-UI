@@ -72,7 +72,7 @@
     </div>
 
     <!-- Form Modal -->
-    <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div *ngIf="showForm" class="modal-overlay">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <div class="modal-header">
                 <h3>{{ editingBoard ? 'Edit Board' : 'Add New Board' }}</h3>
@@ -182,7 +182,7 @@
     </div>
 
     <!-- Image Preview Modal -->
-    <div *ngIf="showImagePreview" class="image-preview-modal" (click)="closeImagePreview()">
+    <div *ngIf="showImagePreview" class="image-preview-modal">
         <div class="image-preview-content" (click)="$event.stopPropagation()">
             <button class="image-preview-close" (click)="closeImagePreview()">
                 <span class="material-icons">close</span>
