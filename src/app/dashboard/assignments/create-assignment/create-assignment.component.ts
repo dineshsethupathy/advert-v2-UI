@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AssignmentService, AssignmentCreateRequest } from '../../../services/assignment.service';
 import { VendorService, Vendor } from '../../../services/vendor.service';
 import { WorkflowService, WorkflowResponse } from '../../../services/workflow.service';
-import { StoresService, Store } from '../../../services/stores.service';
+import { StoresService, Store, StoreWithAssignmentHistory } from '../../../services/stores.service';
 import { RegionService, Region } from '../../../services/region.service';
 import Swal from 'sweetalert2';
 
@@ -24,7 +24,7 @@ export class CreateAssignmentComponent implements OnInit {
     // Data arrays
     vendors: Vendor[] = [];
     workflows: WorkflowResponse[] = [];
-    stores: Store[] = [];
+    stores: StoreWithAssignmentHistory[] = [];
     regions: Region[] = [];
 
     // Store selection properties
@@ -38,8 +38,8 @@ export class CreateAssignmentComponent implements OnInit {
     selectCurrentPage: boolean = false;
 
     // Filtered and paginated data
-    filteredStores: Store[] = [];
-    currentPageStores: Store[] = [];
+    filteredStores: StoreWithAssignmentHistory[] = [];
+    currentPageStores: StoreWithAssignmentHistory[] = [];
 
     // Loading states
     loading = false;
@@ -175,7 +175,7 @@ export class CreateAssignmentComponent implements OnInit {
                                 this.regions = regions;
 
                                 // Finally load stores
-                                this.storesService.getStores().subscribe({
+                                this.storesService.getStoresForAssignmentCreation().subscribe({
                                     next: (stores) => {
                                         // console.log('Stores loaded successfully:', stores);
                                         this.stores = stores;
@@ -250,7 +250,7 @@ export class CreateAssignmentComponent implements OnInit {
     loadStores(): void {
         this.loading = true;
         console.log('Loading stores...');
-        this.storesService.getStores().subscribe({
+        this.storesService.getStoresForAssignmentCreation().subscribe({
             next: (stores) => {
                 // console.log('Stores loaded successfully:', stores);
                 this.stores = stores;

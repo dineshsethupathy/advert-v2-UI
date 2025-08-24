@@ -413,8 +413,9 @@
 .store-info {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
 }
 
 .store-name {
@@ -433,6 +434,69 @@
     color: #006fcf;
     font-weight: 500;
 }
+
+.store-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.store-assignment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
+    min-width: 180px;
+}
+
+.assignment-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+}
+
+.info-label {
+    color: #374151;
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.info-value {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    color: #374151;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.info-chip.new-store {
+    background-color: #dcfce7;
+    border-color: #10b981;
+    color: #065f46;
+    padding: 0.2rem 0.5rem;
+    font-weight: 500;
+}
+
+.chip-text {
+    font-size: 0.7rem;
+}
+
+
 
 /* Pagination */
 .pagination {
@@ -631,6 +695,31 @@
         max-height: 300px;
     }
 
+    .store-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .store-assignment-info {
+        align-items: flex-start;
+        min-width: auto;
+        width: 100%;
+    }
+
+    .assignment-info-item {
+        gap: 0.4rem;
+        font-size: 0.65rem;
+    }
+
+    .info-label {
+        font-size: 0.6rem;
+    }
+
+    .info-value {
+        font-size: 0.65rem;
+    }
+
     .form-actions {
         flex-direction: column;
         gap: 0.75rem;
@@ -665,6 +754,32 @@
 
     .store-grid {
         padding: 0.75rem;
+    }
+
+    .store-info {
+        gap: 0.5rem;
+    }
+
+    .store-assignment-info {
+        gap: 0.2rem;
+    }
+
+    .assignment-info-item {
+        gap: 0.3rem;
+        font-size: 0.6rem;
+    }
+
+    .info-label {
+        font-size: 0.55rem;
+    }
+
+    .info-value {
+        font-size: 0.6rem;
+    }
+
+    .info-chip {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.65rem;
     }
 
     .pagination {

@@ -14,6 +14,13 @@ export interface Store {
     createdBy: string;
 }
 
+export interface StoreWithAssignmentHistory extends Store {
+    lastAssignmentDate?: string;
+    lastAssignedBoardName?: string;
+    lastAssignedBoardType?: string;
+    lastAssignedBoardCost?: number;
+}
+
 export interface CreateStoreRequest {
     name: string;
     sapId: string;
@@ -47,6 +54,10 @@ export class StoresService {
 
     getStores(): Observable<Store[]> {
         return this.http.get<Store[]>(`${this.API_URL}/stores`);
+    }
+
+    getStoresForAssignmentCreation(): Observable<StoreWithAssignmentHistory[]> {
+        return this.http.get<StoreWithAssignmentHistory[]>(`${this.API_URL}/stores/for-assignment`);
     }
 
     getStoreById(id: number): Observable<Store> {

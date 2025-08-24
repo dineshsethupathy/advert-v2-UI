@@ -168,9 +168,31 @@
                                         (change)="toggleStoreSelection(store.id)">
                                     <span class="checkmark"></span>
                                     <div class="store-info">
-                                        <span class="store-name">{{ store.name }}</span>
-                                        <span class="store-address">{{ store.address }}</span>
-                                        <span class="store-region">{{ store.regionName }}</span>
+                                        <div class="store-main-info">
+                                            <span class="store-name">{{ store.name }}</span>
+                                            <span class="store-address">{{ store.address }}</span>
+                                            <span class="store-region">{{ store.regionName }}</span>
+                                        </div>
+
+                                        <div class="store-assignment-info">
+                                            <!-- Last Assignment Date -->
+                                            <div class="assignment-info-item" *ngIf="store.lastAssignmentDate">
+                                                <span class="info-label">Last Assignment Date:</span>
+                                                <span class="info-value">{{ store.lastAssignmentDate | date:'shortDate'
+                                                    }}</span>
+                                            </div>
+
+                                            <!-- Board Details -->
+                                            <div class="assignment-info-item" *ngIf="store.lastAssignedBoardType">
+                                                <span class="info-label">Board:</span>
+                                                <span class="info-value">{{ store.lastAssignedBoardType }}</span>
+                                            </div>
+
+                                            <!-- New Store Indicator -->
+                                            <div class="info-chip new-store" *ngIf="!store.lastAssignmentDate">
+                                                <span class="chip-text">New Store</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </label>
                             </div>
