@@ -334,6 +334,50 @@
     transform: translateY(-1px);
 }
 
+/* Clickable row styles */
+.table-row.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.table-row.clickable::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(135deg, #006fcf 0%, #005bb8 100%);
+    transition: width 0.3s ease;
+    opacity: 0.1;
+}
+
+.table-row.clickable:hover::before {
+    width: 4px;
+}
+
+.table-row.clickable:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 111, 207, 0.15);
+    border-left: 3px solid #006fcf;
+}
+
+.table-row.clickable:hover .store-name {
+    color: #006fcf;
+}
+
+.table-row.clickable:hover .store-address,
+.table-row.clickable:hover .date {
+    color: #1e293b;
+}
+
+.table-row.clickable:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.1);
+}
+
 .table-cell {
     display: flex;
     align-items: center;

@@ -168,7 +168,7 @@ export interface ApprovalWorkflowStageResponse {
     completedAt?: string;
     createdAt: string;
     updatedAt?: string;
-    assignedToUserName?: string;
+    assignedToRoleName?: string;
 }
 
 export interface WorkflowStageVisualResponse {

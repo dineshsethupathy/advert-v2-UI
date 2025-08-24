@@ -875,3 +875,185 @@
         padding: 3px 8px;
     }
 }
+
+/* =============================================
+   APPROVAL WORKFLOW STYLING
+   ============================================= */
+
+.stage-role {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.stage-assigned-to {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: #555;
+}
+
+.assigned-icon {
+    font-size: 12px;
+}
+
+.assigned-text {
+    font-weight: 500;
+}
+
+.approval-actions-section {
+    margin-top: 24px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.actions-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.actions-icon {
+    font-size: 16px;
+}
+
+.actions-title {
+    font-size: 14px;
+}
+
+.actions-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stage-action-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.action-stage-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.action-stage-name {
+    font-weight: 600;
+    color: #212529;
+}
+
+.action-stage-role {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* =============================================
+   APPROVAL WORKFLOW ACTIONS
+   ============================================= */
+
+.stage-actions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.material-icons {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Approval Workflow Status Colors */
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-in-progress {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}

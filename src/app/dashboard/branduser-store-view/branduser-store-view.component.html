@@ -202,28 +202,80 @@
                 <span class="progress-text">{{ getApprovalWorkflowProgress().toFixed(1) }}% Complete</span>
             </div>
         </div>
-        <div class="workflow-stages">
-            <div *ngFor="let stage of storeViewData.approvalWorkflow" class="stage-item">
-                <div class="stage-header">
-                    <div class="stage-info">
-                        <h4 class="stage-name">{{ stage.stageName }}</h4>
-                        <span class="stage-role">{{ stage.roleName }}</span>
-                        <span class="stage-status" [class]="'status-' + getWorkflowStatusColor(stage.status)">
-                            {{ stage.status }}
-                        </span>
+
+        <!-- Horizontal Workflow Stages -->
+        <div class="horizontal-workflow">
+            <div class="workflow-container">
+                <div *ngFor="let stage of storeViewData.approvalWorkflow; let i = index" class="workflow-stage-wrapper">
+                    <!-- Workflow Stage -->
+                    <div class="workflow-stage" [class]="'stage-' + getWorkflowStatusClass(stage.status)">
+                        <div class="stage-content">
+                            <h4 class="stage-name">{{ stage.stageName }}</h4>
+                            <div class="stage-status-badge" [class]="'status-' + getWorkflowStatusColor(stage.status)">
+                                {{ stage.status }}
+                            </div>
+                            <div class="stage-dates-horizontal" *ngIf="stage.startedAt || stage.completedAt">
+                                <div class="date-item" *ngIf="stage.startedAt">
+                                    <span class="date-icon">▶</span>
+                                    <span class="date-text">{{ formatDateOnly(stage.startedAt) }}</span>
+                                </div>
+                                <div class="date-item" *ngIf="stage.completedAt">
+                                    <span class="date-icon">✓</span>
+                                    <span class="date-text">{{ formatDateOnly(stage.completedAt) }}</span>
+                                </div>
+                            </div>
+                            <div class="stage-assigned-to" *ngIf="stage.assignedToRoleName">
+                                <span class="assigned-icon">👤</span>
+                                <span class="assigned-text">{{ stage.assignedToRoleName }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stage-dates">
-                        <span class="date-label" *ngIf="stage.startedAt">Started: {{ formatDateOnly(stage.startedAt)
-                            }}</span>
-                        <span class="date-label" *ngIf="stage.completedAt">Completed: {{
-                            formatDateOnly(stage.completedAt) }}</span>
-                        <span class="date-label" *ngIf="stage.assignedToUserName">By: {{ stage.assignedToUserName
-                            }}</span>
+
+                    <!-- Arrow connector (except for last stage) -->
+                    <div class="stage-connector" *ngIf="i < storeViewData.approvalWorkflow.length - 1">
+                        <div class="connector-arrow">→</div>
                     </div>
                 </div>
-                <div class="stage-comment" *ngIf="stage.comment">
-                    <span class="comment-label">Comment:</span>
-                    <span class="comment-text">{{ stage.comment }}</span>
+            </div>
+
+            <!-- Stage Comment Section -->
+            <div class="workflow-comments" *ngIf="getActiveApprovalStageComment()">
+                <div class="comment-header">
+                    <span class="comment-icon">💬</span>
+                    <span class="comment-title">Current Stage Comment</span>
+                </div>
+                <div class="comment-content">
+                    {{ getActiveApprovalStageComment() }}
+                </div>
+            </div>
+
+            <!-- Approval Actions Section -->
+            <div class="approval-actions-section" *ngIf="hasApprovalActions()">
+                <div class="actions-header">
+                    <span class="actions-icon">⚡</span>
+                    <span class="actions-title">Available Actions</span>
+                </div>
+                <div class="actions-content">
+                    <ng-container *ngFor="let stage of storeViewData.approvalWorkflow">
+                        <div *ngIf="canApproveStage(stage) || canRejectStage(stage)" class="stage-action-item">
+                            <div class="action-stage-info">
+                                <span class="action-stage-name">{{ stage.stageName }}</span>
+                                <span class="action-stage-role">({{ stage.roleName }})</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button *ngIf="canApproveStage(stage)" class="btn btn-success btn-sm"
+                                    (click)="approveStage(stage)" title="Approve this stage">
+                                    <span class="material-icons">check</span>
+                                    Approve
+                                </button>
+                                <button *ngIf="canRejectStage(stage)" class="btn btn-danger btn-sm"
+                                    (click)="rejectStage(stage)" title="Reject this stage">
+                                    <span class="material-icons">close</span>
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>
@@ -240,7 +292,7 @@
     </div>
 
     <!-- Visual Workflow -->
-    <div class="workflow-card">
+    <!-- <div class="workflow-card">
         <div class="card-header">
             <h3 class="card-title">Workflow Overview</h3>
         </div>
@@ -258,7 +310,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <!-- Loading Spinner -->

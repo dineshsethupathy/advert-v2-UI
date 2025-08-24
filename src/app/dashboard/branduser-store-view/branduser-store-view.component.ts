@@ -2,6 +2,8 @@ import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssignmentService, BrandUserStoreViewResponse } from '../../services/assignment.service';
+import { BrandUserApprovalService, ApprovalWorkflowStageResponse } from '../../services/brand-user-approval.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-branduser-store-view',
@@ -27,6 +29,7 @@ export class BrandUserStoreViewComponent implements OnInit {
 
     constructor(
         private assignmentService: AssignmentService,
+        private brandUserApprovalService: BrandUserApprovalService,
         private route: ActivatedRoute,
         private router: Router
     ) { }
@@ -295,5 +298,107 @@ export class BrandUserStoreViewComponent implements OnInit {
         } catch (error) {
             console.error('Error opening Google Maps:', error);
         }
+    }
+
+    // =============================================
+    // APPROVAL WORKFLOW METHODS
+    // =============================================
+
+    canApproveStage(stage: ApprovalWorkflowStageResponse): boolean {
+        // User can approve if they have the required role and stage is in progress
+        return stage.status === 'In Progress' && stage.assignedToId === this.getCurrentUserId();
+    }
+
+    canRejectStage(stage: ApprovalWorkflowStageResponse): boolean {
+        // User can reject if they have the required role and stage is in progress
+        return stage.status === 'In Progress' && stage.assignedToId === this.getCurrentUserId();
+    }
+
+    approveStage(stage: ApprovalWorkflowStageResponse): void {
+        Swal.fire({
+            title: 'Approve Stage?',
+            text: `Are you sure you want to approve "${stage.stageName}"?`,
+            icon: 'question',
+            input: 'textarea',
+            inputLabel: 'Comment (optional)',
+            inputPlaceholder: 'Enter your approval comment...',
+            showCancelButton: true,
+            confirmButtonText: 'Approve',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                return null; // No validation required
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.brandUserApprovalService.approveStage(
+                    this.storeAssignmentId,
+                    stage.workflowStageId,
+                    result.value
+                ).subscribe({
+                    next: (response) => {
+                        Swal.fire('Success', 'Stage approved successfully!', 'success');
+                        this.loadStoreViewData(); // Reload data to show updated workflow
+                    },
+                    error: (error) => {
+                        Swal.fire('Error', error.error?.message || 'Failed to approve stage', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    rejectStage(stage: ApprovalWorkflowStageResponse): void {
+        Swal.fire({
+            title: 'Reject Stage?',
+            text: `Are you sure you want to reject "${stage.stageName}"?`,
+            icon: 'warning',
+            input: 'textarea',
+            inputLabel: 'Comment (required)',
+            inputPlaceholder: 'Please provide a reason for rejection...',
+            showCancelButton: true,
+            confirmButtonText: 'Reject',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value || value.trim().length === 0) {
+                    return 'Please provide a reason for rejection';
+                }
+                return null;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.brandUserApprovalService.rejectStage(
+                    this.storeAssignmentId,
+                    stage.workflowStageId,
+                    result.value
+                ).subscribe({
+                    next: (response) => {
+                        Swal.fire('Success', 'Stage rejected successfully!', 'success');
+                        this.loadStoreViewData(); // Reload data to show updated workflow
+                    },
+                    error: (error) => {
+                        Swal.fire('Error', error.error?.message || 'Failed to reject stage', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    private getCurrentUserId(): number {
+        // This should get the current user ID from your auth service
+        // For now, returning a placeholder - implement based on your auth system
+        return 1; // Replace with actual user ID from auth service
+    }
+
+    getActiveApprovalStageComment(): string | null {
+        if (!this.storeViewData?.approvalWorkflow) return null;
+        const activeStage = this.storeViewData.approvalWorkflow.find(stage => stage.status === 'In Progress');
+        return activeStage?.comment || null;
+    }
+
+    hasApprovalActions(): boolean {
+        if (!this.storeViewData?.approvalWorkflow) return false;
+        return this.storeViewData.approvalWorkflow.some(stage =>
+            this.canApproveStage(stage) || this.canRejectStage(stage)
+        );
     }
 }

@@ -98,7 +98,8 @@
                 <div class="table-cell header-cell">End Date</div>
             </div>
             <div class="table-body">
-                <div *ngFor="let store of storeAssignments" class="table-row" (click)="viewStoreDetails(store)">
+                <div *ngFor="let store of storeAssignments" class="table-row clickable"
+                    (click)="viewStoreDetails(store)">
                     <div class="table-cell">
                         <span class="store-name">{{ store.storeName }}</span>
                     </div>

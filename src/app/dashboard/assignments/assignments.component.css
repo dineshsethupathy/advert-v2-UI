@@ -260,6 +260,54 @@
 
 .table-row:hover {
     background-color: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 111, 207, 0.1);
+}
+
+/* Clickable row styles */
+.table-row.clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.table-row.clickable::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(135deg, #006fcf 0%, #005bb8 100%);
+    transition: width 0.3s ease;
+    opacity: 0.1;
+}
+
+.table-row.clickable:hover::before {
+    width: 4px;
+}
+
+.table-row.clickable:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 111, 207, 0.15);
+    border-left: 3px solid #006fcf;
+}
+
+.table-row.clickable:hover .assignment-name {
+    color: #006fcf;
+}
+
+.table-row.clickable:hover .vendor-name,
+.table-row.clickable:hover .workflow-name,
+.table-row.clickable:hover .assigned-by,
+.table-row.clickable:hover .created-date {
+    color: #1e293b;
+}
+
+.table-row.clickable:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.1);
 }
 
 .table-cell {
@@ -289,14 +337,8 @@
 
 .assignment-name {
     font-weight: 600;
-    color: #006fcf;
-    cursor: pointer;
+    color: #1e293b;
     transition: color 0.3s ease;
-}
-
-.assignment-name:hover {
-    color: #005bb8;
-    text-decoration: underline;
 }
 
 .assignment-description {

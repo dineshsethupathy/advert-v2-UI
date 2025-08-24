@@ -95,11 +95,11 @@
                 <div class="table-cell header-cell actions-cell">Actions</div>
             </div>
             <div class="table-body">
-                <div *ngFor="let assignment of assignments" class="table-row">
+                <div *ngFor="let assignment of assignments" class="table-row" (click)="viewAssignment(assignment.id)"
+                    [class.clickable]="true">
                     <div class="table-cell">
                         <div class="assignment-info">
-                            <span class="assignment-name" (click)="viewAssignment(assignment.id)">{{ assignment.name
-                                }}</span>
+                            <span class="assignment-name">{{ assignment.name }}</span>
                             <span *ngIf="assignment.description" class="assignment-description">{{
                                 assignment.description }}</span>
                         </div>
@@ -133,7 +133,7 @@
                         <span class="created-date">{{ formatDate(assignment.createdDt) }}</span>
                     </div>
                     <div class="table-cell">
-                        <div class="action-buttons">
+                        <div class="action-buttons" (click)="$event.stopPropagation()">
                             <button class="action-btn view-btn" (click)="viewAssignment(assignment.id)"
                                 title="View Assignment">
                                 <span class="material-icons">visibility</span>
