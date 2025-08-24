@@ -76,6 +76,11 @@
     font-size: 14px;
     font-weight: 500;
     text-transform: capitalize;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
 }
 
 .status-primary {
