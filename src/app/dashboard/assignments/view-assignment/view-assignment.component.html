@@ -88,39 +88,150 @@
             <h3 class="card-title">Store Assignments</h3>
             <p class="card-subtitle">Individual store progress and status</p>
         </div>
-        <div class="stores-table">
-            <div class="table-header">
-                <div class="table-cell header-cell">Store Name</div>
-                <div class="table-cell header-cell">Address</div>
-                <div class="table-cell header-cell">Vendor Work Status</div>
-                <div class="table-cell header-cell">Approval Status</div>
-                <div class="table-cell header-cell">Started Date</div>
-                <div class="table-cell header-cell">End Date</div>
+
+        <!-- Tab Navigation -->
+        <div class="table-tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'all'" (click)="setActiveTab('all')">
+                All ({{ storeAssignments.length }})
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'completed'" (click)="setActiveTab('completed')">
+                Completed ({{ getCompletedStoresCount() }})
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'inProgress'" (click)="setActiveTab('inProgress')">
+                In Progress ({{ getInProgressStoresCount() }})
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- All Stores Tab -->
+            <div class="tab-pane" [class.active]="activeTab === 'all'">
+                <div class="stores-table">
+                    <div class="table-header">
+                        <div class="table-cell header-cell">Store Name</div>
+                        <div class="table-cell header-cell">Address</div>
+                        <div class="table-cell header-cell">Vendor Work Status</div>
+                        <div class="table-cell header-cell">Approval Status</div>
+                        <div class="table-cell header-cell">Started Date</div>
+                        <div class="table-cell header-cell">End Date</div>
+                    </div>
+                    <div class="table-body">
+                        <div *ngFor="let store of storeAssignments" class="table-row clickable"
+                            (click)="viewStoreDetails(store)">
+                            <div class="table-cell">
+                                <span class="store-name">{{ store.storeName }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="store-address">{{ store.storeAddress }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getVendorStatusColor(store.vendorWorkStatus)">
+                                    {{ store.vendorWorkStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getApprovalStatusColor(store.approvalStatus)">
+                                    {{ store.approvalStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.startedDate ? formatDate(store.startedDate) : '-' }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.completedDate ? formatDate(store.completedDate) : '-'
+                                    }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="table-body">
-                <div *ngFor="let store of storeAssignments" class="table-row clickable"
-                    (click)="viewStoreDetails(store)">
-                    <div class="table-cell">
-                        <span class="store-name">{{ store.storeName }}</span>
+
+            <!-- Completed Stores Tab -->
+            <div class="tab-pane" [class.active]="activeTab === 'completed'">
+                <div class="stores-table">
+                    <div class="table-header">
+                        <div class="table-cell header-cell">Store Name</div>
+                        <div class="table-cell header-cell">Address</div>
+                        <div class="table-cell header-cell">Vendor Work Status</div>
+                        <div class="table-cell header-cell">Approval Status</div>
+                        <div class="table-cell header-cell">Started Date</div>
+                        <div class="table-cell header-cell">End Date</div>
                     </div>
-                    <div class="table-cell">
-                        <span class="store-address">{{ store.storeAddress }}</span>
+                    <div class="table-body">
+                        <div *ngFor="let store of getCompletedStores()" class="table-row clickable"
+                            (click)="viewStoreDetails(store)">
+                            <div class="table-cell">
+                                <span class="store-name">{{ store.storeName }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="store-address">{{ store.storeAddress }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getVendorStatusColor(store.vendorWorkStatus)">
+                                    {{ store.vendorWorkStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getApprovalStatusColor(store.approvalStatus)">
+                                    {{ store.approvalStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.startedDate ? formatDate(store.startedDate) : '-' }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.completedDate ? formatDate(store.completedDate) : '-'
+                                    }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="table-cell">
-                        <span class="status-chip" [class]="'status-' + getVendorStatusColor(store.vendorWorkStatus)">
-                            {{ store.vendorWorkStatus }}
-                        </span>
+                </div>
+            </div>
+
+            <!-- In Progress Stores Tab -->
+            <div class="tab-pane" [class.active]="activeTab === 'inProgress'">
+                <div class="stores-table">
+                    <div class="table-header">
+                        <div class="table-cell header-cell">Store Name</div>
+                        <div class="table-cell header-cell">Address</div>
+                        <div class="table-cell header-cell">Vendor Work Status</div>
+                        <div class="table-cell header-cell">Approval Status</div>
+                        <div class="table-cell header-cell">Started Date</div>
+                        <div class="table-cell header-cell">End Date</div>
                     </div>
-                    <div class="table-cell">
-                        <span class="status-chip" [class]="'status-' + getApprovalStatusColor(store.approvalStatus)">
-                            {{ store.approvalStatus }}
-                        </span>
-                    </div>
-                    <div class="table-cell">
-                        <span class="date">{{ store.startedDate ? formatDate(store.startedDate) : '-' }}</span>
-                    </div>
-                    <div class="table-cell">
-                        <span class="date">{{ store.completedDate ? formatDate(store.completedDate) : '-' }}</span>
+                    <div class="table-body">
+                        <div *ngFor="let store of getInProgressStores()" class="table-row clickable"
+                            (click)="viewStoreDetails(store)">
+                            <div class="table-cell">
+                                <span class="store-name">{{ store.storeName }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="store-address">{{ store.storeAddress }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getVendorStatusColor(store.vendorWorkStatus)">
+                                    {{ store.vendorWorkStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="status-chip"
+                                    [class]="'status-' + getApprovalStatusColor(store.approvalStatus)">
+                                    {{ store.approvalStatus }}
+                                </span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.startedDate ? formatDate(store.startedDate) : '-' }}</span>
+                            </div>
+                            <div class="table-cell">
+                                <span class="date">{{ store.completedDate ? formatDate(store.completedDate) : '-'
+                                    }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

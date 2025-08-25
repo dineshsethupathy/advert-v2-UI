@@ -16,6 +16,7 @@ export class ViewAssignmentComponent implements OnInit {
     storeAssignments: StoreAssignmentResponse[] = [];
     workflowProgress: WorkflowProgressResponse | null = null;
     loading = false;
+    activeTab: 'all' | 'completed' | 'inProgress' = 'all';
 
     constructor(
         private assignmentService: AssignmentService,
@@ -164,5 +165,29 @@ export class ViewAssignmentComponent implements OnInit {
 
     formatDate(dateString: string): string {
         return new Date(dateString).toLocaleDateString();
+    }
+
+    setActiveTab(tab: 'all' | 'completed' | 'inProgress'): void {
+        this.activeTab = tab;
+    }
+
+    getCompletedStores(): StoreAssignmentResponse[] {
+        return this.storeAssignments.filter(store =>
+            store.vendorWorkStatus.toLowerCase() === 'completed'
+        );
+    }
+
+    getInProgressStores(): StoreAssignmentResponse[] {
+        return this.storeAssignments.filter(store =>
+            store.vendorWorkStatus.toLowerCase() !== 'completed'
+        );
+    }
+
+    getCompletedStoresCount(): number {
+        return this.getCompletedStores().length;
+    }
+
+    getInProgressStoresCount(): number {
+        return this.getInProgressStores().length;
     }
 } 
