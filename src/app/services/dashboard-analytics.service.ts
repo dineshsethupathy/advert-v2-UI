@@ -240,7 +240,7 @@ export class DashboardAnalyticsService {
     private generateRecentActivities(assignments: AssignmentResponse[]): DashboardActivity[] {
         const activities: DashboardActivity[] = [];
 
-        assignments.slice(0, 10).forEach(assignment => {
+        assignments.slice(0, 3).forEach(assignment => {
             activities.push({
                 id: assignment.id,
                 type: 'assignment_created',
