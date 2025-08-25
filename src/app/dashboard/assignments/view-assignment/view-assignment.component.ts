@@ -190,4 +190,10 @@ export class ViewAssignmentComponent implements OnInit {
     getInProgressStoresCount(): number {
         return this.getInProgressStores().length;
     }
+
+    takeActionOnCompleted(): void {
+        // TODO: Implement action for completed stores
+        console.log('Taking action on completed stores:', this.getCompletedStores());
+        // This could open a modal, navigate to a workflow, or trigger a batch process
+    }
 } 

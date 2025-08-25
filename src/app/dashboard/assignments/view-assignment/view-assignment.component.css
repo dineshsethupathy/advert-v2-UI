@@ -391,6 +391,65 @@
     transform: translateY(0);
 }
 
+/* Completed Tab Header */
+.completed-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem 0.8rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border-bottom: 1px solid #d1fae5;
+}
+
+.completed-info {
+    flex: 1;
+}
+
+.completed-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #065f46;
+    margin: 0 0 0.25rem 0;
+}
+
+.completed-description {
+    color: #047857;
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.action-btn .material-icons {
+    font-size: 1rem;
+}
+
 .table-header {
     display: grid;
     grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1fr 1fr;
@@ -575,6 +634,19 @@
         font-size: 0.8rem;
         margin-right: 1px;
     }
+
+    /* Completed tab header responsive */
+    .completed-tab-header {
+        padding: 1rem 1rem 0.75rem;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 768px) {
@@ -641,6 +713,24 @@
 
     .tab-btn.active::before {
         display: block;
+    }
+
+    /* Mobile completed tab header */
+    .completed-tab-header {
+        padding: 1rem 1rem 0.75rem;
+    }
+
+    .completed-title {
+        font-size: 1rem;
+    }
+
+    .completed-description {
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
     }
 
     .table-header,
