@@ -16,9 +16,9 @@
                     <div class="progress-text">
                         {{ assignment.completedStores }}/{{ assignment.totalStores }} stores completed
                     </div>
-                    <div class="progress-percentage">
+                    <!-- <div class="progress-percentage">
                         {{ getProgressPercentage(assignment).toFixed(1) }}%
-                    </div>
+                    </div> -->
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" [style.width.%]="getProgressPercentage(assignment)"
@@ -85,7 +85,7 @@
     <!-- Store Assignments -->
     <div class="stores-card">
         <div class="card-header">
-            <h3 class="card-title">Store Assignments</h3>
+            <h3 class="card-title">Shop Outlets</h3>
             <p class="card-subtitle">Individual store progress and status</p>
         </div>
 

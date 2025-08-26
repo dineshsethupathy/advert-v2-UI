@@ -1,12 +1,13 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AssignmentService, AssignmentCreateRequest } from '../../../services/assignment.service';
 import { VendorService, Vendor } from '../../../services/vendor.service';
 import { WorkflowService, WorkflowResponse } from '../../../services/workflow.service';
-import { StoresService, Store, StoreWithAssignmentHistory } from '../../../services/stores.service';
+import { StoresService, StoreWithAssignmentHistory } from '../../../services/stores.service';
 import { RegionService, Region } from '../../../services/region.service';
+import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,7 +18,7 @@ import Swal from 'sweetalert2';
     styleUrl: './create-assignment.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class CreateAssignmentComponent implements OnInit {
+export class CreateAssignmentComponent implements OnInit, OnDestroy {
     assignmentForm: FormGroup;
     filterForm: FormGroup;
 
@@ -57,6 +58,8 @@ export class CreateAssignmentComponent implements OnInit {
     selectedWorkflowId: number | null = null;
     selectedRegionName: string = '';
 
+    private destroy$ = new Subject<void>();
+
     constructor(
         private assignmentService: AssignmentService,
         private vendorService: VendorService,
@@ -87,6 +90,11 @@ export class CreateAssignmentComponent implements OnInit {
         this.filterForm.valueChanges.subscribe(() => {
             this.applyFilters();
         });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     @HostListener('document:click', ['$event'])
@@ -449,27 +457,82 @@ export class CreateAssignmentComponent implements OnInit {
     // FORM SUBMISSION
     // =============================================
 
-    onSubmit(): void {
-        if (this.assignmentForm.invalid || this.selectedStoreIds.length === 0) {
-            return;
+    onSubmit() {
+        if (this.assignmentForm.valid && this.selectedStoreIds.length > 0) {
+            // Check if any selected stores have recent assignments (less than 30 days)
+            const storesWithRecentAssignments = this.checkStoresWithRecentAssignments();
+
+            if (storesWithRecentAssignments.length > 0) {
+                this.showRecentAssignmentWarning(storesWithRecentAssignments);
+            } else {
+                this.createAssignment();
+            }
+        }
+    }
+
+    private checkStoresWithRecentAssignments(): StoreWithAssignmentHistory[] {
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90);
+
+        return this.currentPageStores.filter(store =>
+            this.selectedStoreIds.includes(store.id) &&
+            store.lastAssignmentDate &&
+            new Date(store.lastAssignmentDate) > threeMonthsAgo
+        );
+    }
+
+    private showRecentAssignmentWarning(storesWithRecentAssignments: StoreWithAssignmentHistory[]) {
+        let message: string;
+        let title: string;
+
+        if (storesWithRecentAssignments.length === 1) {
+            const store = storesWithRecentAssignments[0];
+            title = 'Recent Assignment Warning';
+            message = `Store "${store.name}" has a last assignment date less than 3 months ago. Do you still want to proceed with creating this assignment?`;
+        } else {
+            title = 'Recent Assignments Warning';
+            message = `${storesWithRecentAssignments.length} selected stores have last assignment dates less than 3 months ago. Do you still want to proceed with creating this assignment?`;
         }
 
-        this.submitting = true;
-        const formData = this.assignmentForm.value;
+        Swal.fire({
+            title: title,
+            html: message,
+            // icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#006fcf',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Proceed',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'custom-swal-popup',
+                title: 'custom-swal-title',
+                htmlContainer: 'custom-swal-html',
+                confirmButton: 'custom-swal-confirm-btn',
+                cancelButton: 'custom-swal-cancel-btn'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.createAssignment();
+            }
+        });
+    }
 
+    private createAssignment() {
+        this.submitting = true;
         const request: AssignmentCreateRequest = {
-            name: formData.name,
-            description: formData.description,
-            vendorId: formData.vendorId,
-            workflowDefinitionId: formData.workflowDefinitionId,
+            name: this.assignmentForm.value.name,
+            description: this.assignmentForm.value.description,
+            vendorId: this.assignmentForm.value.vendorId,
+            workflowDefinitionId: this.assignmentForm.value.workflowDefinitionId,
             storeIds: this.selectedStoreIds
         };
 
         this.assignmentService.createAssignment(request).subscribe({
-            next: () => {
+            next: (response) => {
+                this.submitting = false;
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Assignment created successfully.',
+                    text: 'Assignment created successfully',
                     icon: 'success',
                     confirmButtonColor: '#006fcf'
                 }).then(() => {
@@ -477,9 +540,14 @@ export class CreateAssignmentComponent implements OnInit {
                 });
             },
             error: (error) => {
-                console.error('Error creating assignment:', error);
                 this.submitting = false;
-                Swal.fire('Error', 'Failed to create assignment. Please try again.', 'error');
+                console.error('Error creating assignment:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to create assignment. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#006fcf'
+                });
             }
         });
     }

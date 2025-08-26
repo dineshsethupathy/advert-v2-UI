@@ -811,3 +811,61 @@
     font-weight: 500;
     margin: 0;
 }
+
+/* Custom SweetAlert Styling */
+.custom-swal-popup {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    border-radius: 12px !important;
+}
+
+.custom-swal-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    margin-bottom: 1rem !important;
+}
+
+.custom-swal-html {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    color: #475569 !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+    padding: 0 0.5rem !important;
+}
+
+.custom-swal-confirm-btn {
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 6px !important;
+}
+
+.custom-swal-cancel-btn {
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 6px !important;
+}
+
+/* Alternative approach: Target SweetAlert elements directly */
+.swal2-popup {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    border-radius: 12px !important;
+}
+
+.swal2-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    margin-bottom: 1rem !important;
+}
+
+.swal2-html-container {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    color: #475569 !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+    padding: 0 0.5rem !important;
+}
