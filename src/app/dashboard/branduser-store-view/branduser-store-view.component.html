@@ -261,7 +261,13 @@
                             <div class="stage-assigned-to" *ngIf="stage.assignedToRoleName">
                                 <span class="assigned-icon">👤</span>
                                 <span class="assigned-text" *ngIf="stage.actionedByName; else roleName">
-                                    Actioned by: {{ stage.actionedByName }}
+                                    <span *ngIf="stage.action === 'Approved'" class="action-approved">Approved by: {{
+                                        stage.actionedByName }}</span>
+                                    <span *ngIf="stage.action === 'Rejected'" class="action-rejected">Rejected by: {{
+                                        stage.actionedByName }}</span>
+                                    <span
+                                        *ngIf="stage.action && stage.action !== 'Approved' && stage.action !== 'Rejected'"
+                                        class="action-other">{{ stage.action }} by: {{ stage.actionedByName }}</span>
                                 </span>
                                 <ng-template #roleName>
                                     {{ stage.assignedToRoleName }}

@@ -1070,6 +1070,24 @@
     font-weight: 600;
 }
 
+/* Style for approved by text */
+.stage-assigned-to .assigned-text span:contains('Approved by:') {
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* Style for rejected by text */
+.stage-assigned-to .assigned-text span:contains('Rejected by:') {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Style for other actions */
+.stage-assigned-to .assigned-text span:contains('by:') {
+    color: #6f42c1;
+    font-weight: 600;
+}
+
 /* Approval Actions Section - REMOVED */
 /* The approval functionality is now in the header with a modal */
 
@@ -1158,4 +1176,20 @@
 
 .status-completed {
     color: #0c5460 !important;
+}
+
+/* Style for different action types */
+.action-approved {
+    color: #28a745 !important;
+    font-weight: 600;
+}
+
+.action-rejected {
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+.action-other {
+    color: #6f42c1 !important;
+    font-weight: 600;
 }

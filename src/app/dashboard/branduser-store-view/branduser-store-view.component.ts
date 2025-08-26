@@ -579,6 +579,17 @@ export class BrandUserStoreViewComponent implements OnInit {
         // Debug: Log the approval workflow data to see if actionedByName is present
         //console.log('Approval workflow data for actionedByName check:', this.storeViewData.approvalWorkflow);
 
+        // Debug: Log each stage to see the actionedByName field
+        this.storeViewData.approvalWorkflow.forEach((stage, index) => {
+            console.log(`Stage ${index + 1}:`, {
+                stageName: stage.stageName,
+                status: stage.status,
+                action: stage.action,
+                actionedByName: stage.actionedByName,
+                actionedBy: stage.actionedBy
+            });
+        });
+
         this._hasApprovalActions = this.storeViewData.approvalWorkflow.some(stage =>
             this.canApproveStage(stage) || this.canRejectStage(stage)
         );
