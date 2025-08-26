@@ -19,6 +19,7 @@ import { WorkflowsComponent } from '../workflows/workflows.component';
 import { CreateWorkflowComponent } from '../workflows/create-workflow/create-workflow.component';
 import { ViewWorkflowComponent } from '../workflows/view-workflow/view-workflow.component';
 import { BrandUserStoreViewComponent } from '../branduser-store-view/branduser-store-view.component';
+import { ActionViewComponent } from '../action-view/action-view.component';
 
 interface SidebarItem {
     name: string;
@@ -31,7 +32,7 @@ interface SidebarItem {
 @Component({
     selector: 'app-brand-dashboard',
     standalone: true,
-    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent],
+    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent, ActionViewComponent],
     templateUrl: './brand-dashboard.component.html',
     styleUrl: './brand-dashboard.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

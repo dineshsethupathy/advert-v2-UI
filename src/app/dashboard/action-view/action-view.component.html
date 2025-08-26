@@ -1,0 +1,147 @@
+<div class="action-view-container">
+    <!-- Header -->
+    <div class="content-header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" (click)="goBack()">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div>
+                    <h1 class="page-title">{{ currentStore?.assignment?.name }}</h1>
+                    <!-- <p class="assignment-name">{{ currentStore?.assignment?.name }}</p> -->
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="store-counter">Store {{ currentStoreIndex + 1 }} of {{ stores.length }}</span>
+                <button class="nav-btn" [disabled]="currentStoreIndex === 0" (click)="previousStore()">
+                    <span class="material-icons">navigate_before</span>
+                    Previous
+                </button>
+                <button class="nav-btn" [disabled]="currentStoreIndex === stores.length - 1" (click)="nextStore()">
+                    Next
+                    <span class="material-icons">navigate_next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+        <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+        <p>Loading store details...</p>
+    </div>
+
+    <div *ngIf="!loading && currentStore" class="store-content">
+        <!-- Navigation Loading Spinner -->
+        <div *ngIf="navigationLoading" class="navigation-loading-overlay">
+            <div class="navigation-loading-content">
+                <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+                <p>Loading store...</p>
+            </div>
+        </div>
+
+        <!-- Store Details Card -->
+        <div class="details-card">
+            <div class="card-header">
+                <h3 class="card-title">Store Information</h3>
+            </div>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Store Name:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.storeName || '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">SAP ID:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.sapId || '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Region:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.regionName || '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.storeAddress || '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.storePhoneNumber || '-' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Board Width:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.boardWidth || '-' }} {{
+                        currentStore?.storeAssignment?.boardWidth ? 'cm' : '' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Board Height:</span>
+                    <span class="detail-value">{{ currentStore?.storeAssignment?.boardHeight || '-' }} {{
+                        currentStore?.storeAssignment?.boardHeight ? 'cm' : '' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Board Area:</span>
+                    <span class="detail-value">
+                        <span
+                            *ngIf="currentStore?.storeAssignment?.boardWidth && currentStore?.storeAssignment?.boardHeight">
+                            {{ (currentStore.storeAssignment.boardWidth * currentStore.storeAssignment.boardHeight /
+                            10000).toFixed(2) }} sq.m
+                        </span>
+                        <span
+                            *ngIf="!currentStore?.storeAssignment?.boardWidth || !currentStore?.storeAssignment?.boardHeight">-</span>
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">GPS:</span>
+                    <span class="detail-value">
+                        <div class="gps-info-display" *ngIf="currentStore?.storeAssignment?.gpsLocation"
+                            (click)="openGoogleMaps(currentStore.storeAssignment.gpsLocation)">
+                            <span class="gps-icon">📍</span>
+                            <span class="gps-address">Google Maps</span>
+                        </div>
+                        <span *ngIf="!currentStore?.storeAssignment?.gpsLocation">-</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="images-card">
+            <h3>Store Images</h3>
+            <div class="images-grid">
+                <div class="image-item" *ngIf="currentStore?.storeAssignment?.bannerImageUrl">
+                    <h4>Banner Image</h4>
+                    <img [src]="currentStore.storeAssignment.bannerImageUrl" alt="Banner" class="store-image"
+                        (load)="onBannerImageLoad()" (error)="onBannerImageError()"
+                        (click)="openImageModal(currentStore.storeAssignment.bannerImageUrl)">
+                </div>
+                <div class="image-item" *ngIf="currentStore?.storeAssignment?.beforeExecutionImageUrl">
+                    <h4>Before Execution</h4>
+                    <img [src]="currentStore.storeAssignment.beforeExecutionImageUrl" alt="Before Execution"
+                        class="store-image" (load)="onBeforeImageLoad()" (error)="onBeforeImageError()"
+                        (click)="openImageModal(currentStore.storeAssignment.beforeExecutionImageUrl)">
+                </div>
+                <div class="image-item" *ngIf="currentStore?.storeAssignment?.afterExecutionImageUrl">
+                    <h4>After Execution</h4>
+                    <img [src]="currentStore.storeAssignment.afterExecutionImageUrl" alt="After Execution"
+                        class="store-image" (load)="onAfterImageLoad()" (error)="onAfterImageError()"
+                        (click)="openImageModal(currentStore.storeAssignment.afterExecutionImageUrl)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendor Notes -->
+        <!-- <div class="notes-card" *ngIf="currentStore?.storeAssignment?.vendorNotes">
+            <h3>Vendor Notes</h3>
+            <div class="notes-content">
+                <p>{{ currentStore.storeAssignment.vendorNotes }}</p>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal-backdrop" *ngIf="showImageModal" (click)="closeImageModal()">
+    <div class="image-modal" (click)="$event.stopPropagation()">
+        <button class="close-modal-btn" (click)="closeImageModal()" title="Close">
+            ✕
+        </button>
+        <img [src]="modalImageUrl" alt="Full Image" />
+    </div>
+</div>

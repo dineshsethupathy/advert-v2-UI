@@ -331,8 +331,13 @@
 
             <!-- View Assignment Content -->
             <div
-                *ngIf="currentRoute.startsWith('/assignments/') && !currentRoute.includes('/create') && !currentRoute.includes('/edit')">
+                *ngIf="currentRoute.startsWith('/assignments/') && !currentRoute.includes('/create') && !currentRoute.includes('/edit') && !currentRoute.includes('/action-view')">
                 <app-view-assignment></app-view-assignment>
+            </div>
+
+            <!-- Action View Content -->
+            <div *ngIf="currentRoute.includes('/assignments/') && currentRoute.includes('/action-view')">
+                <app-action-view></app-action-view>
             </div>
 
             <!-- Edit Assignment Content -->

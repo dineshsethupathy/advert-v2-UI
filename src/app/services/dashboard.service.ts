@@ -76,4 +76,8 @@ export class DashboardService {
     getStores(): Observable<Store[]> {
         return this.http.get<Store[]>(`${this.API_URL}/stores`);
     }
+
+    getStoreView(storeAssignmentId: number): Observable<any> {
+        return this.http.get<any>(`${this.API_URL}/dashboard/store-view/${storeAssignmentId}`);
+    }
 } 
