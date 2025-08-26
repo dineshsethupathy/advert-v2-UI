@@ -19,7 +19,6 @@ import { VendorStoreEditComponent } from './vendor-app/vendor-store-edit/vendor-
 import { VendorStoreViewComponent } from './vendor-app/vendor-store-view/vendor-store-view.component';
 import { StoreWorkflowViewComponent } from './dashboard/assignments/store-workflow-view/store-workflow-view.component';
 import { BrandUserStoreViewComponent } from './dashboard/branduser-store-view/branduser-store-view.component';
-import { ActionViewComponent } from './dashboard/action-view/action-view.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -28,7 +27,6 @@ export const routes: Routes = [
     { path: 'assignments', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'assignments/create', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'assignments/:assignmentId/stores/:storeAssignmentId/workflow', component: StoreWorkflowViewComponent, canActivate: [AuthGuard] },
-    { path: 'assignments/:id/action-view', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'dashboard/store-view/:id', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'assignments/:id/edit', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'assignments/:id', component: BrandDashboardComponent, canActivate: [AuthGuard] },

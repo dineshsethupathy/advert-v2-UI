@@ -8,34 +8,40 @@
             </div>
 
             <div class="header-actions">
-                <button class="header-btn">
-                    <span class="material-icons btn-icon">notifications</span>
-                    <!-- <span class="notification-badge">3</span> -->
-                </button>
-
-                <!-- <button class="header-btn">
-                    <span class="material-icons btn-icon">settings</span>
-                </button> -->
-
-                <div class="user-info">
-                    <div class="profile-dropdown" (click)="toggleProfileMenu()">
-                        <button class="header-btn profile-btn">
-                            <span class="material-icons btn-icon">account_circle</span>
-                        </button>
-                        <div class="dropdown-menu" [class.show]="showProfileMenu">
-                            <div class="dropdown-header">
-                                <div class="user-email">{{ getCurrentUserEmail() }}</div>
-                                <div class="user-role">{{ getUserType() }}</div>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <button class="dropdown-item logout-item" (click)="logout($event)"
-                                [disabled]="logoutLoading">
-                                <span class="material-icons" *ngIf="!logoutLoading">logout</span>
-                                <l-tail-chase *ngIf="logoutLoading" size="16" speed="1.75"
-                                    color="#6b7280"></l-tail-chase>
-                                <span>{{ logoutLoading ? 'Logging out...' : 'Logout' }}</span>
-                            </button>
+                <div class="notification-dropdown">
+                    <button class="header-btn notification-btn" (click)="toggleNotifications($event)"
+                        title="Notifications">
+                        <span class="material-icons btn-icon">notifications</span>
+                        <span class="notification-badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+                    </button>
+                    <div class="notification-menu" [class.show]="showNotifications">
+                        <div class="notification-header">
+                            <h3>Notifications</h3>
                         </div>
+                        <div class="notification-content">
+                            <div class="no-notifications">
+                                <span class="material-icons">notifications_none</span>
+                                <p>No notifications at the moment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-dropdown">
+                    <button class="header-btn profile-btn" (click)="toggleProfileMenu($event)" title="Profile">
+                        <span class="material-icons btn-icon">account_circle</span>
+                    </button>
+                    <div class="dropdown-menu" [class.show]="showProfileMenu">
+                        <div class="dropdown-header">
+                            <div class="user-fullname">{{ getCurrentUserFullName() }}</div>
+                            <div class="user-email">{{ getCurrentUserEmail() }}</div>
+                            <div class="user-role">{{ getCurrentUserRoleName() }}</div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" (click)="logout($event)" [disabled]="logoutLoading">
+                            <span class="material-icons" *ngIf="!logoutLoading">logout</span>
+                            <l-tail-chase *ngIf="logoutLoading" size="16" speed="1.75" color="#6b7280"></l-tail-chase>
+                            <span>{{ logoutLoading ? 'Logging out...' : 'Logout' }}</span>
+                        </button>
                     </div>
                 </div>
             </div>

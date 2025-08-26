@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ApprovalWorkflowStageResponse } from './brand-user-approval.service';
 
 export interface AssignmentCreateRequest {
     name: string;
@@ -149,26 +150,6 @@ export interface VendorWorkflowStageResponse {
     completedAt?: string;
     createdAt: string;
     updatedAt?: string;
-}
-
-export interface ApprovalWorkflowStageResponse {
-    id: number;
-    storeAssignmentId: number;
-    workflowStageId: number;
-    stageName: string;
-    stageOrder: number;
-    isFinalStage: boolean;
-    status: string;
-    assignedToType: string;
-    assignedToId: number;
-    roleName: string;
-    action?: string;
-    comment?: string;
-    startedAt?: string;
-    completedAt?: string;
-    createdAt: string;
-    updatedAt?: string;
-    assignedToRoleName?: string;
 }
 
 export interface WorkflowStageVisualResponse {

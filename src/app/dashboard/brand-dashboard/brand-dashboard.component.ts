@@ -19,7 +19,7 @@ import { WorkflowsComponent } from '../workflows/workflows.component';
 import { CreateWorkflowComponent } from '../workflows/create-workflow/create-workflow.component';
 import { ViewWorkflowComponent } from '../workflows/view-workflow/view-workflow.component';
 import { BrandUserStoreViewComponent } from '../branduser-store-view/branduser-store-view.component';
-import { ActionViewComponent } from '../action-view/action-view.component';
+import { Subject } from 'rxjs';
 
 interface SidebarItem {
     name: string;
@@ -32,7 +32,7 @@ interface SidebarItem {
 @Component({
     selector: 'app-brand-dashboard',
     standalone: true,
-    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent, ActionViewComponent],
+    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent],
     templateUrl: './brand-dashboard.component.html',
     styleUrl: './brand-dashboard.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -58,11 +58,14 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     users: User[] = [];
     stores: Store[] = [];
     loading = false;
-    logoutLoading = false;
     showProfileMenu = false;
+    showNotifications = false;
+    notificationCount = 0;
+    logoutLoading = false;
     currentRoute = '/dashboard';
     isSidebarCollapsed = false;
     private routeSubscription: any;
+    private destroy$ = new Subject<void>();
 
     constructor(
         private router: Router,
@@ -276,19 +279,53 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         return this.currentUser?.email || 'user@example.com';
     }
 
+    getCurrentUserFullName(): string {
+        if (this.currentUser?.firstName && this.currentUser?.lastName) {
+            return `${this.currentUser.firstName} ${this.currentUser.lastName}`;
+        } else if (this.currentUser?.firstName) {
+            return this.currentUser.firstName;
+        } else if (this.currentUser?.lastName) {
+            return this.currentUser.lastName;
+        } else {
+            return this.currentUser?.email?.split('@')[0] || 'User';
+        }
+    }
+
+    getCurrentUserRoleName(): string {
+        return this.currentUser?.roleName || 'No Role';
+    }
+
     getVisibleSidebarItems(): SidebarItem[] {
         return this.sidebarItems.filter(item => item.visible);
     }
 
-    toggleProfileMenu(): void {
+    toggleProfileMenu(event: Event): void {
+        event.stopPropagation();
         this.showProfileMenu = !this.showProfileMenu;
+        this.showNotifications = false; // Close notifications when profile opens
     }
 
+    toggleNotifications(event: Event): void {
+        event.stopPropagation();
+        this.showNotifications = !this.showNotifications;
+        this.showProfileMenu = false; // Close profile when notifications opens
+    }
+
+    @HostListener('document:click', ['$event'])
     onDocumentClick(event: Event): void {
         const target = event.target as HTMLElement;
-        // Don't close dropdown if logout is in progress
-        if (!target.closest('.profile-dropdown') && !this.logoutLoading) {
+
+        // Don't close dropdowns if logout is in progress
+        if (this.logoutLoading) return;
+
+        // Close profile dropdown if clicking outside
+        if (!target.closest('.profile-dropdown')) {
             this.showProfileMenu = false;
+        }
+
+        // Close notifications dropdown if clicking outside
+        if (!target.closest('.notification-dropdown')) {
+            this.showNotifications = false;
         }
     }
 
@@ -357,11 +394,6 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         if (vendorsItem) {
             this.selectItem(vendorsItem);
         }
-    }
-
-    @HostListener('document:click', ['$event'])
-    handleDocumentClick(event: Event): void {
-        this.onDocumentClick(event);
     }
 
     ngOnDestroy(): void {

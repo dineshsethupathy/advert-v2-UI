@@ -101,6 +101,39 @@
             </div>
         </div>
 
+        <!-- Approval Workflow Section -->
+        <div class="approval-workflow-card" *ngIf="approvalWorkflow.length > 0">
+            <h3>Approval Workflow</h3>
+            <div class="workflow-stages">
+                <div *ngFor="let stage of approvalWorkflow" class="workflow-stage">
+                    <div class="stage-info">
+                        <span class="stage-name">{{ stage.stageName }}</span>
+                        <span class="stage-role">({{ stage.roleName }})</span>
+                        <span class="stage-status" [class]="'status-' + stage.status.toLowerCase().replace(' ', '-')">
+                            {{ stage.status }}
+                        </span>
+                    </div>
+                    <div class="stage-actions" *ngIf="canApproveStage(stage) || canRejectStage(stage)">
+                        <button class="btn-approve" *ngIf="canApproveStage(stage)"
+                            (click)="openApprovalModal(stage, 'approve')">
+                            Approve
+                        </button>
+                        <button class="btn-reject" *ngIf="canRejectStage(stage)"
+                            (click)="openApprovalModal(stage, 'reject')">
+                            Reject
+                        </button>
+                    </div>
+                    <div class="stage-details" *ngIf="stage.action">
+                        <span class="action-label">Action:</span>
+                        <span class="action-value">{{ stage.action }}</span>
+                        <span class="action-by" *ngIf="stage.actionedByName">by {{ stage.actionedByName }}</span>
+                        <span class="action-date" *ngIf="stage.completedAt">{{ stage.completedAt | date:'short'
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Images Section -->
         <div class="images-card">
             <h3>Store Images</h3>
@@ -143,5 +176,30 @@
             ✕
         </button>
         <img [src]="modalImageUrl" alt="Full Image" />
+    </div>
+</div>
+
+<!-- Approval Modal -->
+<div class="approval-modal-backdrop" *ngIf="showApprovalModal" (click)="closeApprovalModal()">
+    <div class="approval-modal" (click)="$event.stopPropagation()">
+        <div class="approval-modal-header">
+            <h3>{{ selectedStage?.stageName }} - {{ selectedStage?.roleName }}</h3>
+            <button class="close-modal-btn" (click)="closeApprovalModal()" title="Close">
+                ✕
+            </button>
+        </div>
+        <div class="approval-modal-content">
+            <div class="comment-section">
+                <label for="approval-comment">Comment (required):</label>
+                <textarea id="approval-comment" [(ngModel)]="approvalComment" placeholder="Enter your comment..."
+                    rows="4" required>
+                </textarea>
+            </div>
+            <div class="approval-modal-actions">
+                <button class="btn-cancel" (click)="closeApprovalModal()">Cancel</button>
+                <button class="btn-approve" (click)="submitApprovalAction()">Approve</button>
+                <button class="btn-reject" (click)="submitApprovalAction()">Reject</button>
+            </div>
+        </div>
     </div>
 </div>

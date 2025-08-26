@@ -41,10 +41,13 @@ export interface TenantInfo {
 export interface CurrentUser {
     userId: number;
     email: string;
+    firstName: string;
+    lastName: string;
     userType: string;
     tenantId: number;
     tenantName: string;
     roleName: string;
+    roleId: number;
     permissions: string[];
 }
 
@@ -76,12 +79,16 @@ export class AuthService {
                     const currentUser: CurrentUser = {
                         userId: response.user.id,
                         email: response.user.email,
+                        firstName: response.user.firstName,
+                        lastName: response.user.lastName,
                         userType: response.user.userType,
                         tenantId: response.user.tenantId,
                         tenantName: response.tenant.name,
                         roleName: response.user.roleName,
+                        roleId: response.user.roleId,
                         permissions: response.permissions
                     };
+                    console.log('currentUser..', currentUser);
 
                     this.currentUserSubject.next(currentUser);
                     localStorage.setItem('current_user', JSON.stringify(currentUser));
@@ -142,10 +149,13 @@ export class AuthService {
                     const currentUser: CurrentUser = {
                         userId: (response as any).userId,
                         email: (response as any).email,
+                        firstName: (response as any).firstName,
+                        lastName: (response as any).lastName,
                         userType: (response as any).userType,
                         tenantId: (response as any).tenantId,
                         tenantName: (response as any).tenantName,
                         roleName: (response as any).roleName,
+                        roleId: (response as any).roleId,
                         permissions: (response as any).permissions || []
                     };
 
@@ -221,12 +231,12 @@ export class AuthService {
             return {
                 id: currentUser.userId,
                 email: currentUser.email,
-                firstName: currentUser.email.split('@')[0], // Fallback since we don't store firstName
-                lastName: '',
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName,
                 userType: currentUser.userType,
                 tenantId: currentUser.tenantId,
                 roleName: currentUser.roleName,
-                roleId: 0 // Fallback since we don't store roleId
+                roleId: currentUser.roleId
             };
         }
         return null;
@@ -259,10 +269,13 @@ export class AuthService {
         const currentUser: CurrentUser = {
             userId: user.id,
             email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
             userType: user.userType,
             tenantId: user.tenantId,
             tenantName: user.tenantName || '',
             roleName: user.roleName,
+            roleId: user.roleId,
             permissions: []
         };
         this.currentUserSubject.next(currentUser);

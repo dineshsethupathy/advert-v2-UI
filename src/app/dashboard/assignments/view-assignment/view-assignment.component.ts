@@ -85,9 +85,12 @@ export class ViewAssignmentComponent implements OnInit {
     }
 
     viewStoreDetails(store: StoreAssignmentResponse): void {
-        // Navigate to brand user store view
+        // Navigate to brand user store view with assignment context
         if (this.assignment) {
-            this.router.navigate(['/dashboard/store-view', store.id]);
+            // Pass assignment ID as query parameter to enable multi-store navigation
+            this.router.navigate(['/dashboard/store-view', store.id], {
+                queryParams: { assignmentId: this.assignment.id }
+            });
         }
     }
 
@@ -192,6 +195,12 @@ export class ViewAssignmentComponent implements OnInit {
     }
 
     takeActionOnCompleted(): void {
-        this.router.navigate(['/assignments', this.assignment?.id, 'action-view']);
+        // Navigate to the first completed store with assignment context for multi-store navigation
+        const completedStores = this.getCompletedStores();
+        if (completedStores.length > 0 && this.assignment) {
+            this.router.navigate(['/dashboard/store-view', completedStores[0].id], {
+                queryParams: { assignmentId: this.assignment.id }
+            });
+        }
     }
 } 

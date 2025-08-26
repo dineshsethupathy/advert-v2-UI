@@ -25,10 +25,12 @@ export class GoogleMapsService {
                 return;
             }
 
-            // Create script element
+            // Create script element with proper async loading
             const script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=marker`;
+            script.async = true;
+            script.defer = true;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=marker&loading=async`;
 
             script.onload = () => {
                 this.isLoaded = true;

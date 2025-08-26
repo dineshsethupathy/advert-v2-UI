@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssignmentService, StoreAssignmentResponse } from '../../services/assignment.service';
 import { DashboardService } from '../../services/dashboard.service';
+import { BrandUserApprovalService, ApprovalWorkflowStageResponse } from '../../services/brand-user-approval.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-action-view',
@@ -26,6 +28,12 @@ export class ActionViewComponent implements OnInit {
     beforeImageLoaded = false;
     afterImageLoaded = false;
 
+    // Approval workflow states
+    approvalWorkflow: ApprovalWorkflowStageResponse[] = [];
+    showApprovalModal = false;
+    selectedStage: ApprovalWorkflowStageResponse | null = null;
+    approvalComment = '';
+
     // Image modal states
     showImageModal = false;
     modalImageUrl: string | null = null;
@@ -34,7 +42,9 @@ export class ActionViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private assignmentService: AssignmentService,
-        private dashboardService: DashboardService
+        private dashboardService: DashboardService,
+        private brandUserApprovalService: BrandUserApprovalService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -89,6 +99,9 @@ export class ActionViewComponent implements OnInit {
                 this.currentStore = storeDetails;
                 this.loading = false; // Clear initial loading state
                 console.log('Loaded store details:', storeDetails);
+
+                // Load approval workflow after store details are loaded
+                this.loadApprovalWorkflow();
 
                 // Check if there are no images to load, then hide spinner immediately
                 const hasAnyImages = !!(storeDetails?.storeAssignment?.bannerImageUrl ||
@@ -256,6 +269,93 @@ export class ActionViewComponent implements OnInit {
             }
         } catch (error) {
             console.error('Error opening Google Maps:', error);
+        }
+    }
+
+    // Approval workflow methods
+    loadApprovalWorkflow(): void {
+        if (!this.currentStore?.storeAssignment?.id) return;
+
+        this.brandUserApprovalService.getApprovalWorkflowProgress(this.currentStore.storeAssignment.id).subscribe({
+            next: (workflow) => {
+                this.approvalWorkflow = workflow;
+                console.log('Approval workflow loaded:', workflow);
+            },
+            error: (error) => {
+                console.error('Error loading approval workflow:', error);
+            }
+        });
+    }
+
+    canApproveStage(stage: ApprovalWorkflowStageResponse): boolean {
+        const currentUser = this.authService.getCurrentUserValue();
+        if (!currentUser) return false;
+
+        // Debug logs for role ID mismatch
+        console.log('Stage requires role ID:', stage.assignedToId);
+        console.log('Current user role ID:', currentUser.roleId);
+
+        // User can approve if they have the required role and stage is in progress
+        return stage.status === 'In Progress' && stage.assignedToId === currentUser.roleId;
+    }
+
+    canRejectStage(stage: ApprovalWorkflowStageResponse): boolean {
+        const currentUser = this.authService.getCurrentUserValue();
+        if (!currentUser) return false;
+
+        // User can reject if they have the required role and stage is in progress
+        return stage.status === 'In Progress' && stage.assignedToId === currentUser.roleId;
+    }
+
+    openApprovalModal(stage: ApprovalWorkflowStageResponse, action: 'approve' | 'reject'): void {
+        this.selectedStage = stage;
+        this.approvalComment = '';
+        this.showApprovalModal = true;
+    }
+
+    closeApprovalModal(): void {
+        this.showApprovalModal = false;
+        this.selectedStage = null;
+        this.approvalComment = '';
+    }
+
+    submitApprovalAction(): void {
+        if (!this.selectedStage) return;
+
+        const action = this.selectedStage.status === 'In Progress' ? 'approve' : 'reject';
+
+        if (action === 'approve') {
+            this.brandUserApprovalService.approveStage(
+                this.selectedStage.storeAssignmentId,
+                this.selectedStage.workflowStageId,
+                this.approvalComment
+            ).subscribe({
+                next: (response) => {
+                    console.log('Stage approved:', response);
+                    this.closeApprovalModal();
+                    this.loadApprovalWorkflow(); // Reload workflow
+                    this.loadCurrentStoreDetails(); // Reload store details
+                },
+                error: (error) => {
+                    console.error('Error approving stage:', error);
+                }
+            });
+        } else {
+            this.brandUserApprovalService.rejectStage(
+                this.selectedStage.storeAssignmentId,
+                this.selectedStage.workflowStageId,
+                this.approvalComment
+            ).subscribe({
+                next: (response) => {
+                    console.log('Stage rejected:', response);
+                    this.closeApprovalModal();
+                    this.loadApprovalWorkflow(); // Reload workflow
+                    this.loadCurrentStoreDetails(); // Reload store details
+                },
+                error: (error) => {
+                    console.error('Error rejecting stage:', error);
+                }
+            });
         }
     }
 }

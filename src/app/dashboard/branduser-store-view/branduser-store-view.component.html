@@ -11,22 +11,56 @@
                     <p class="page-description">{{ storeViewData.assignment.name }}</p>
                 </div>
             </div>
+
+            <!-- Multi-store navigation (only show when in multi-store mode with multiple stores) -->
+            <div class="header-actions" *ngIf="isMultiStoreMode">
+                <!-- Navigation buttons - only show when multiple stores -->
+                <div class="navigation-row" *ngIf="stores.length > 1">
+                    <span class="store-counter">Vendor Completed Store {{ currentStoreIndex + 1 }} of {{ stores.length
+                        }}</span>
+                    <button class="nav-btn" [disabled]="currentStoreIndex === 0" (click)="previousStore()">
+                        <span class="material-icons">navigate_before</span>
+                        Previous
+                    </button>
+                    <button class="nav-btn" [disabled]="currentStoreIndex === stores.length - 1" (click)="nextStore()">
+                        Next
+                        <span class="material-icons">navigate_next</span>
+                    </button>
+                </div>
+
+                <!-- Approval Action Button - show for any completed store -->
+                <div class="header-approval" *ngIf="hasApprovalActions()">
+                    <button class="approval-btn" (click)="openApprovalModal()" title="Take approval action">
+                        <span class="material-icons">approval</span>
+                        Take Action
+                    </button>
+                </div>
+            </div>
+
             <div class="header-status">
                 <div class="status-item">
                     <span class="label">Vendor Status:</span>
-                    <span class="status-chip"
+                    <span class="status-text"
                         [class]="'status-' + getVendorStatusColor(storeViewData.storeAssignment.vendorWorkStatus)">
                         {{ storeViewData.storeAssignment.vendorWorkStatus }}
                     </span>
                 </div>
                 <div class="status-item">
                     <span class="label">Approval Status:</span>
-                    <span class="status-chip"
+                    <span class="status-text"
                         [class]="'status-' + getApprovalStatusColor(storeViewData.storeAssignment.approvalStatus)">
                         {{ storeViewData.storeAssignment.approvalStatus }}
                     </span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Navigation Loading Overlay -->
+    <div *ngIf="navigationLoading" class="navigation-loading-overlay">
+        <div class="navigation-loading-content">
+            <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
+            <p>Loading store...</p>
         </div>
     </div>
 
@@ -248,36 +282,6 @@
                     {{ getActiveApprovalStageComment() }}
                 </div>
             </div>
-
-            <!-- Approval Actions Section -->
-            <div class="approval-actions-section" *ngIf="hasApprovalActions()">
-                <div class="actions-header">
-                    <span class="actions-icon">⚡</span>
-                    <span class="actions-title">Available Actions</span>
-                </div>
-                <div class="actions-content">
-                    <ng-container *ngFor="let stage of storeViewData.approvalWorkflow">
-                        <div *ngIf="canApproveStage(stage) || canRejectStage(stage)" class="stage-action-item">
-                            <div class="action-stage-info">
-                                <span class="action-stage-name">{{ stage.stageName }}</span>
-                                <span class="action-stage-role">({{ stage.roleName }})</span>
-                            </div>
-                            <div class="action-buttons">
-                                <button *ngIf="canApproveStage(stage)" class="btn btn-success btn-sm"
-                                    (click)="approveStage(stage)" title="Approve this stage">
-                                    <span class="material-icons">check</span>
-                                    Approve
-                                </button>
-                                <button *ngIf="canRejectStage(stage)" class="btn btn-danger btn-sm"
-                                    (click)="rejectStage(stage)" title="Reject this stage">
-                                    <span class="material-icons">close</span>
-                                    Reject
-                                </button>
-                            </div>
-                        </div>
-                    </ng-container>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -315,7 +319,7 @@
 
 <!-- Loading Spinner -->
 <div class="loading-container" *ngIf="loading">
-    <div class="loading-spinner"></div>
+    <l-tail-chase size="40" speed="1" color="#006fcf"></l-tail-chase>
     <p>Loading store details...</p>
 </div>
 

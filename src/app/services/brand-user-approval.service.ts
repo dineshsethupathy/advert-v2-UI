@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface ApprovalRequest {
-    comment?: string;
+    Comment?: string;
 }
 
 export interface ApprovalWorkflowStageResponse {
@@ -24,7 +24,9 @@ export interface ApprovalWorkflowStageResponse {
     completedAt?: string;
     createdAt: string;
     updatedAt?: string;
-    assignedToRoleName?: string;  // Changed from assignedToUserName to assignedToRoleName
+    assignedToRoleName?: string;
+    actionedBy?: number | null;
+    actionedByName?: string | null;
 }
 
 export interface WorkflowStageVisualResponse {
@@ -41,7 +43,7 @@ export interface WorkflowStageVisualResponse {
     providedIn: 'root'
 })
 export class BrandUserApprovalService {
-    private apiUrl = `${environment.apiUrl}/brand-user-approval`;
+    private apiUrl = `${environment.apiUrl}/branduserapproval`;
 
     constructor(private http: HttpClient) { }
 
@@ -50,7 +52,10 @@ export class BrandUserApprovalService {
     // =============================================
 
     approveStage(storeAssignmentId: number, workflowStageId: number, comment?: string): Observable<ApprovalWorkflowStageResponse> {
-        const request: ApprovalRequest = { comment };
+        // Convert undefined to empty string for proper serialization
+        const commentValue = comment || '';
+        const request: ApprovalRequest = { Comment: commentValue };
+
         return this.http.put<ApprovalWorkflowStageResponse>(
             `${this.apiUrl}/stores/${storeAssignmentId}/stages/${workflowStageId}/approve`,
             request
@@ -58,7 +63,17 @@ export class BrandUserApprovalService {
     }
 
     rejectStage(storeAssignmentId: number, workflowStageId: number, comment?: string): Observable<ApprovalWorkflowStageResponse> {
-        const request: ApprovalRequest = { comment };
+        // Convert undefined to empty string for proper serialization
+        const commentValue = comment || '';
+        const request: ApprovalRequest = { Comment: commentValue };
+
+        console.log('=== REJECT STAGE REQUEST DEBUG ===');
+        console.log('URL:', `${this.apiUrl}/stores/${storeAssignmentId}/stages/${workflowStageId}/reject`);
+        console.log('Comment:', comment);
+        console.log('Comment Value:', commentValue);
+        console.log('Request Body:', request);
+        console.log('====================================');
+
         return this.http.put<ApprovalWorkflowStageResponse>(
             `${this.apiUrl}/stores/${storeAssignmentId}/stages/${workflowStageId}/reject`,
             request

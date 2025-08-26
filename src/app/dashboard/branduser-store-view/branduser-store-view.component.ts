@@ -1,8 +1,9 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AssignmentService, BrandUserStoreViewResponse } from '../../services/assignment.service';
+import { AssignmentService, BrandUserStoreViewResponse, StoreAssignmentResponse } from '../../services/assignment.service';
 import { BrandUserApprovalService, ApprovalWorkflowStageResponse } from '../../services/brand-user-approval.service';
+import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,6 +19,16 @@ export class BrandUserStoreViewComponent implements OnInit {
     loading = false;
     storeAssignmentId: number = 0;
 
+    // Multi-store navigation properties (from action-view)
+    assignmentId: number = 0;
+    currentStoreIndex: number = 0;
+    stores: StoreAssignmentResponse[] = [];
+    navigationLoading: boolean = false;
+    isMultiStoreMode: boolean = false;
+
+    // Cache for approval actions - calculated once during data load
+    private _hasApprovalActions: boolean = false;
+
     // Image loading states
     bannerImageLoaded = false;
     beforeImageLoaded = false;
@@ -30,6 +41,7 @@ export class BrandUserStoreViewComponent implements OnInit {
     constructor(
         private assignmentService: AssignmentService,
         private brandUserApprovalService: BrandUserApprovalService,
+        private authService: AuthService,
         private route: ActivatedRoute,
         private router: Router
     ) { }
@@ -38,19 +50,117 @@ export class BrandUserStoreViewComponent implements OnInit {
         // Try to get the ID from route params first
         this.storeAssignmentId = Number(this.route.snapshot.paramMap.get('id'));
 
-        // If not found in params, try to extract from URL
-        if (!this.storeAssignmentId) {
-            const urlSegments = this.router.url.split('/');
-            const storeViewIndex = urlSegments.findIndex(segment => segment === 'store-view');
-            if (storeViewIndex !== -1 && storeViewIndex + 1 < urlSegments.length) {
-                this.storeAssignmentId = Number(urlSegments[storeViewIndex + 1]);
-            }
-        }
+        // Check if we're in multi-store mode by looking for assignment context
+        this.checkNavigationMode();
 
         if (this.storeAssignmentId) {
+            // Always load the specific store first to check its status
             this.loadStoreViewData();
         } else {
             console.error('No store assignment ID found in route or URL');
+        }
+    }
+
+    private checkNavigationMode(): void {
+        // Check if we have assignment context in the URL or query params
+        const assignmentIdParam = this.route.snapshot.queryParamMap.get('assignmentId');
+        if (assignmentIdParam) {
+            this.assignmentId = +assignmentIdParam;
+            // We'll determine if it's actually multi-store mode after loading the store
+        } else {
+            // Check if we're coming from the completed tab action
+            const urlSegments = this.router.url.split('/');
+            const actionViewIndex = urlSegments.findIndex(segment => segment === 'action-view');
+            if (actionViewIndex !== -1) {
+                // We're in action-view mode, get assignment ID from route
+                this.assignmentId = +urlSegments[actionViewIndex - 1];
+            }
+        }
+    }
+
+    loadStores(): void {
+        this.loading = true;
+        this.navigationLoading = true;
+
+        // Load stores for the specific assignment
+        this.assignmentService.getStoreAssignments(this.assignmentId).subscribe({
+            next: (stores) => {
+                // Filter only completed stores (same as action-view)
+                this.stores = stores.filter(store => store.vendorWorkStatus === 'Completed');
+                console.log('Completed stores for navigation:', this.stores);
+
+                if (this.stores.length > 0) {
+                    // Find the current store index
+                    this.currentStoreIndex = this.stores.findIndex(store => store.id === this.storeAssignmentId);
+                    if (this.currentStoreIndex === -1) {
+                        this.currentStoreIndex = 0;
+                    }
+                    this.loadCurrentStoreDetails();
+                } else {
+                    this.loading = false;
+                    this.navigationLoading = false;
+                }
+            },
+            error: (error) => {
+                console.error('Error loading stores:', error);
+                this.loading = false;
+                this.navigationLoading = false;
+            }
+        });
+    }
+
+    loadCurrentStoreDetails(): void {
+        if (this.stores.length === 0) return;
+
+        const currentStoreAssignment = this.stores[this.currentStoreIndex];
+        this.storeAssignmentId = currentStoreAssignment.id;
+        console.log('Loading details for store assignment ID:', currentStoreAssignment.id);
+
+        // Reset image loading states for new store
+        this.bannerImageLoaded = false;
+        this.beforeImageLoaded = false;
+        this.afterImageLoaded = false;
+
+        // Load detailed store information
+        this.assignmentService.getBrandUserStoreView(this.storeAssignmentId).subscribe({
+            next: (storeDetails) => {
+                this.storeViewData = storeDetails;
+                this.loading = false;
+                this.navigationLoading = false;
+
+                // Load approval workflow after store details are loaded (same as action-view)
+                this.loadApprovalWorkflow();
+            },
+            error: (error) => {
+                console.error('Error loading store details:', error);
+                this.loading = false;
+                this.navigationLoading = false;
+            }
+        });
+    }
+
+    // Multi-store navigation methods
+    previousStore(): void {
+        if (this.currentStoreIndex > 0) {
+            this.currentStoreIndex--;
+            this.navigationLoading = true;
+
+            // Add 1-second delay to show loading spinner
+            setTimeout(() => {
+                this.loadCurrentStoreDetails();
+            }, 500);
+        }
+    }
+
+    nextStore(): void {
+        if (this.currentStoreIndex < this.stores.length - 1) {
+            this.currentStoreIndex++;
+            this.navigationLoading = true;
+
+            // Add 1-second delay to show loading spinner
+            setTimeout(() => {
+                this.loadCurrentStoreDetails();
+            }, 1000);
         }
     }
 
@@ -62,12 +172,33 @@ export class BrandUserStoreViewComponent implements OnInit {
                 console.log('Store view data loaded:', data);
                 this.storeViewData = data;
                 this.loading = false;
+
+                // Check if we should enable multi-store mode
+                this.checkAndEnableMultiStoreMode();
+
+                // Load approval workflow after store details are loaded (same as action-view)
+                this.loadApprovalWorkflow();
             },
             error: (error) => {
                 console.error('Error loading store view data:', error);
                 this.loading = false;
             }
         });
+    }
+
+    private checkAndEnableMultiStoreMode(): void {
+        // Only enable multi-store mode if:
+        // 1. We have an assignmentId (from query params or URL)
+        // 2. The current store is completed
+        if (this.assignmentId && this.storeViewData?.storeAssignment?.vendorWorkStatus?.toLowerCase() === 'completed') {
+            this.isMultiStoreMode = true;
+            console.log('Enabling multi-store mode for completed store');
+            // Load the list of completed stores for navigation
+            this.loadStores();
+        } else {
+            this.isMultiStoreMode = false;
+            console.log('Single store mode - store is not completed or no assignment context');
+        }
     }
 
     goBack(): void {
@@ -121,12 +252,16 @@ export class BrandUserStoreViewComponent implements OnInit {
         switch (status.toLowerCase()) {
             case 'pending':
                 return 'warning';
-            case 'in progress':
+            case 'started':
                 return 'primary';
+            case 'in progress':
+                return 'info';
+            case 'approved':
+                return 'success';
+            case 'rejected':
+                return 'danger';
             case 'completed':
                 return 'success';
-            case 'skipped':
-                return 'secondary';
             default:
                 return 'primary';
         }
@@ -304,89 +439,129 @@ export class BrandUserStoreViewComponent implements OnInit {
     // APPROVAL WORKFLOW METHODS
     // =============================================
 
+    loadApprovalWorkflow(): void {
+        if (!this.storeViewData?.storeAssignment?.id) return;
+
+        this.brandUserApprovalService.getApprovalWorkflowProgress(this.storeViewData.storeAssignment.id).subscribe({
+            next: (workflow) => {
+                // Update the approval workflow in storeViewData
+                if (this.storeViewData) {
+                    this.storeViewData.approvalWorkflow = workflow;
+                }
+                console.log('Approval workflow loaded:', workflow);
+
+                // Calculate approval actions once after workflow is loaded
+                this.calculateApprovalActions();
+            },
+            error: (error) => {
+                console.error('Error loading approval workflow:', error);
+            }
+        });
+    }
+
     canApproveStage(stage: ApprovalWorkflowStageResponse): boolean {
-        // User can approve if they have the required role and stage is in progress
-        return stage.status === 'In Progress' && stage.assignedToId === this.getCurrentUserId();
+        const currentUser = this.authService.getCurrentUserValue();
+        if (!currentUser) return false;
+        console.log('_________________________');
+        console.log('stage.status..', stage.status);
+        console.log('stage.assignedToId..', stage.assignedToId);
+        console.log('stage.stageName..', stage.stageName);
+        console.log('currentUser.roleId..', currentUser.roleId);
+        console.log('_________________________');
+
+        const canApprove = (stage.status === 'In Progress') &&
+            stage.assignedToId === currentUser.roleId &&
+            !stage.actionedBy;
+
+        // console.log('Can approve calculation:', {
+        //     isInProgress: stage.status === 'In Progress',
+        //     hasRequiredRole: stage.assignedToId === currentUser.roleId,
+        //     notActioned: !stage.actionedBy,
+        //     finalResult: canApprove
+        // });
+
+        return canApprove;
     }
 
     canRejectStage(stage: ApprovalWorkflowStageResponse): boolean {
-        // User can reject if they have the required role and stage is in progress
-        return stage.status === 'In Progress' && stage.assignedToId === this.getCurrentUserId();
+        const currentUser = this.authService.getCurrentUserValue();
+        if (!currentUser) return false;
+
+        // // Debug logs for role ID mismatch
+        // console.log('Stage requires role ID:', stage.assignedToId);
+        // console.log('Current user role ID:', currentUser.roleId);
+        // console.log('Stage status:', stage.status);
+        // console.log('Stage actionedBy:', stage.actionedBy);
+
+        // SIMPLIFIED LOGIC:
+        // Same logic as approve - user can reject the current pending stage
+        // 1. Stage must be "In Progress" (current pending stage)
+        // 2. User must have the required role (assignedToId === user.roleId)
+        // 3. Stage must not be already actioned (actionedBy is null/empty)
+
+        const canReject = stage.status === 'In Progress' &&
+            stage.assignedToId === currentUser.roleId &&
+            !stage.actionedBy;
+
+        // console.log('Can reject calculation:', {
+        //     isInProgress: stage.status === 'In Progress',
+        //     hasRequiredRole: stage.assignedToId === currentUser.roleId,
+        //     notActioned: !stage.actionedBy,
+        //     finalResult: canReject
+        // });
+
+        return canReject;
     }
 
-    approveStage(stage: ApprovalWorkflowStageResponse): void {
-        Swal.fire({
-            title: 'Approve Stage?',
-            text: `Are you sure you want to approve "${stage.stageName}"?`,
-            icon: 'question',
-            input: 'textarea',
-            inputLabel: 'Comment (optional)',
-            inputPlaceholder: 'Enter your approval comment...',
-            showCancelButton: true,
-            confirmButtonText: 'Approve',
-            cancelButtonText: 'Cancel',
-            inputValidator: (value) => {
-                return null; // No validation required
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.brandUserApprovalService.approveStage(
-                    this.storeAssignmentId,
-                    stage.workflowStageId,
-                    result.value
-                ).subscribe({
-                    next: (response) => {
-                        Swal.fire('Success', 'Stage approved successfully!', 'success');
-                        this.loadStoreViewData(); // Reload data to show updated workflow
-                    },
-                    error: (error) => {
-                        Swal.fire('Error', error.error?.message || 'Failed to approve stage', 'error');
-                    }
+    approveStage(stage: ApprovalWorkflowStageResponse, comment?: string): void {
+        this.brandUserApprovalService.approveStage(
+            this.storeAssignmentId,
+            stage.workflowStageId,
+            comment
+        ).subscribe({
+            next: (response) => {
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Stage approved successfully!',
+                    icon: 'success',
+                    timer: 3500,
+                    timerProgressBar: true,
+                    showConfirmButton: true
                 });
+                this._hasApprovalActions = false; // Clear cache before reloading
+                this.loadStoreViewData(); // Reload data to show updated workflow
+            },
+            error: (error) => {
+                Swal.fire('Error', error.error?.message || 'Failed to approve stage', 'error');
             }
         });
     }
 
-    rejectStage(stage: ApprovalWorkflowStageResponse): void {
-        Swal.fire({
-            title: 'Reject Stage?',
-            text: `Are you sure you want to reject "${stage.stageName}"?`,
-            icon: 'warning',
-            input: 'textarea',
-            inputLabel: 'Comment (required)',
-            inputPlaceholder: 'Please provide a reason for rejection...',
-            showCancelButton: true,
-            confirmButtonText: 'Reject',
-            cancelButtonText: 'Cancel',
-            inputValidator: (value) => {
-                if (!value || value.trim().length === 0) {
-                    return 'Please provide a reason for rejection';
-                }
-                return null;
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.brandUserApprovalService.rejectStage(
-                    this.storeAssignmentId,
-                    stage.workflowStageId,
-                    result.value
-                ).subscribe({
-                    next: (response) => {
-                        Swal.fire('Success', 'Stage rejected successfully!', 'success');
-                        this.loadStoreViewData(); // Reload data to show updated workflow
-                    },
-                    error: (error) => {
-                        Swal.fire('Error', error.error?.message || 'Failed to reject stage', 'error');
-                    }
+    rejectStage(stage: ApprovalWorkflowStageResponse, comment?: string): void {
+
+
+        this.brandUserApprovalService.rejectStage(
+            this.storeAssignmentId,
+            stage.workflowStageId,
+            comment
+        ).subscribe({
+            next: (response) => {
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Stage rejected successfully!',
+                    icon: 'success',
+                    timer: 3500,
+                    timerProgressBar: true,
+                    showConfirmButton: true
                 });
+                this._hasApprovalActions = false; // Clear cache before reloading
+                this.loadStoreViewData(); // Reload data to show updated workflow
+            },
+            error: (error) => {
+                console.error('Error rejecting stage:', error);
+                Swal.fire('Error', error.error?.message || 'Failed to reject stage', 'error');
             }
         });
-    }
-
-    private getCurrentUserId(): number {
-        // This should get the current user ID from your auth service
-        // For now, returning a placeholder - implement based on your auth system
-        return 1; // Replace with actual user ID from auth service
     }
 
     getActiveApprovalStageComment(): string | null {
@@ -396,9 +571,77 @@ export class BrandUserStoreViewComponent implements OnInit {
     }
 
     hasApprovalActions(): boolean {
-        if (!this.storeViewData?.approvalWorkflow) return false;
-        return this.storeViewData.approvalWorkflow.some(stage =>
+        // Return cached value - calculated once during data load
+        return this._hasApprovalActions;
+    }
+
+    private calculateApprovalActions(): void {
+        if (!this.storeViewData?.approvalWorkflow) {
+            this._hasApprovalActions = false;
+            return;
+        }
+
+        this._hasApprovalActions = this.storeViewData.approvalWorkflow.some(stage =>
             this.canApproveStage(stage) || this.canRejectStage(stage)
         );
+
+        console.log('Approval actions calculated once:', this._hasApprovalActions);
+    }
+
+    openApprovalModal(): void {
+        // Get available stages for the current user (only current pending stage)
+        const availableStages = this.storeViewData?.approvalWorkflow?.filter(stage =>
+            this.canApproveStage(stage) || this.canRejectStage(stage)
+        ) || [];
+
+        if (availableStages.length === 0) {
+            Swal.fire('No Actions Available', 'You don\'t have any stages available for approval or rejection.', 'info');
+            return;
+        }
+
+        // Get the current pending stage (should be only one)
+        const selectedStage = availableStages[0];
+
+        Swal.fire({
+            title: 'Take Approval Action',
+            input: 'textarea',
+            inputLabel: 'Comment (required)',
+            inputPlaceholder: 'Enter your comment...',
+            inputAttributes: {
+                'aria-label': 'Comment input'
+            },
+            inputValidator: (value) => {
+                if (!value || !value.trim()) {
+                    return 'Comment is required!';
+                }
+                return null;
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Approve',
+            cancelButtonText: 'Cancel',
+            showDenyButton: true,
+            denyButtonText: 'Reject',
+            confirmButtonColor: '#28a745',
+            denyButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            width: '500px'
+        }).then((result) => {
+            // Comment is now required, so it will always have a value
+            const comment = result.value.trim();
+
+            if (result.isConfirmed) {
+                // Approve action
+                this.approveStage(selectedStage, comment);
+            } else if (result.isDenied) {
+                // Reject action
+                this.rejectStage(selectedStage, comment);
+            }
+        });
+    }
+
+    getCurrentUserId(): number {
+        // Get current user from auth service (same as action-view)
+        const currentUser = this.authService.getCurrentUserValue();
+        return currentUser?.roleId || 0;
     }
 }
