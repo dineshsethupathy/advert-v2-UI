@@ -260,7 +260,12 @@
                             </div>
                             <div class="stage-assigned-to" *ngIf="stage.assignedToRoleName">
                                 <span class="assigned-icon">👤</span>
-                                <span class="assigned-text">{{ stage.assignedToRoleName }}</span>
+                                <span class="assigned-text" *ngIf="stage.actionedByName; else roleName">
+                                    Actioned by: {{ stage.actionedByName }}
+                                </span>
+                                <ng-template #roleName>
+                                    {{ stage.assignedToRoleName }}
+                                </ng-template>
                             </div>
                         </div>
                     </div>

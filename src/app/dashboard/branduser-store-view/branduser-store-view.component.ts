@@ -128,8 +128,8 @@ export class BrandUserStoreViewComponent implements OnInit {
                 this.loading = false;
                 this.navigationLoading = false;
 
-                // Load approval workflow after store details are loaded (same as action-view)
-                this.loadApprovalWorkflow();
+                // Calculate approval actions after store details are loaded
+                this.calculateApprovalActions();
             },
             error: (error) => {
                 console.error('Error loading store details:', error);
@@ -176,8 +176,8 @@ export class BrandUserStoreViewComponent implements OnInit {
                 // Check if we should enable multi-store mode
                 this.checkAndEnableMultiStoreMode();
 
-                // Load approval workflow after store details are loaded (same as action-view)
-                this.loadApprovalWorkflow();
+                // Calculate approval actions after store details are loaded
+                this.calculateApprovalActions();
             },
             error: (error) => {
                 console.error('Error loading store view data:', error);
@@ -462,12 +462,7 @@ export class BrandUserStoreViewComponent implements OnInit {
     canApproveStage(stage: ApprovalWorkflowStageResponse): boolean {
         const currentUser = this.authService.getCurrentUserValue();
         if (!currentUser) return false;
-        console.log('_________________________');
-        console.log('stage.status..', stage.status);
-        console.log('stage.assignedToId..', stage.assignedToId);
-        console.log('stage.stageName..', stage.stageName);
-        console.log('currentUser.roleId..', currentUser.roleId);
-        console.log('_________________________');
+
 
         const canApprove = (stage.status === 'In Progress') &&
             stage.assignedToId === currentUser.roleId &&
@@ -580,6 +575,9 @@ export class BrandUserStoreViewComponent implements OnInit {
             this._hasApprovalActions = false;
             return;
         }
+
+        // Debug: Log the approval workflow data to see if actionedByName is present
+        //console.log('Approval workflow data for actionedByName check:', this.storeViewData.approvalWorkflow);
 
         this._hasApprovalActions = this.storeViewData.approvalWorkflow.some(stage =>
             this.canApproveStage(stage) || this.canRejectStage(stage)

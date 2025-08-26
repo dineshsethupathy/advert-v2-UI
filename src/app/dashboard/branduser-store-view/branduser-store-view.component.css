@@ -1052,16 +1052,22 @@
     align-items: center;
     gap: 4px;
     margin-top: 8px;
-    font-size: 11px;
-    color: #555;
-}
-
-.assigned-icon {
     font-size: 12px;
+    color: #6c757d;
 }
 
-.assigned-text {
+.stage-assigned-to .assigned-icon {
+    font-size: 14px;
+}
+
+.stage-assigned-to .assigned-text {
     font-weight: 500;
+}
+
+/* Style for actioned by text */
+.stage-assigned-to .assigned-text:has(text:contains('Actioned by:')) {
+    color: #006fcf;
+    font-weight: 600;
 }
 
 /* Approval Actions Section - REMOVED */
