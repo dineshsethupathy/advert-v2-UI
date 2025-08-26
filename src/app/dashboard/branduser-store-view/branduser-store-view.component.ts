@@ -38,6 +38,10 @@ export class BrandUserStoreViewComponent implements OnInit {
     showImageModal = false;
     modalImageUrl: string | null = null;
 
+    // Stage details modal states
+    showStageModal = false;
+    selectedStage: ApprovalWorkflowStageResponse | null = null;
+
     constructor(
         private assignmentService: AssignmentService,
         private brandUserApprovalService: BrandUserApprovalService,
@@ -652,5 +656,16 @@ export class BrandUserStoreViewComponent implements OnInit {
         // Get current user from auth service (same as action-view)
         const currentUser = this.authService.getCurrentUserValue();
         return currentUser?.roleId || 0;
+    }
+
+    // Stage Details Modal Methods
+    openStageDetailsModal(stage: ApprovalWorkflowStageResponse): void {
+        this.selectedStage = stage;
+        this.showStageModal = true;
+    }
+
+    closeStageModal(): void {
+        this.showStageModal = false;
+        this.selectedStage = null;
     }
 }

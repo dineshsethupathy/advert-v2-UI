@@ -237,60 +237,31 @@
             </div>
         </div>
 
-        <!-- Horizontal Workflow Stages -->
-        <div class="horizontal-workflow">
-            <div class="workflow-container">
-                <div *ngFor="let stage of storeViewData.approvalWorkflow; let i = index" class="workflow-stage-wrapper">
-                    <!-- Workflow Stage -->
-                    <div class="workflow-stage" [class]="'stage-' + getWorkflowStatusClass(stage.status)">
-                        <div class="stage-content">
-                            <h4 class="stage-name">{{ stage.stageName }}</h4>
-                            <div class="stage-status-badge" [class]="'status-' + getWorkflowStatusColor(stage.status)">
-                                {{ stage.status }}
-                            </div>
-                            <div class="stage-dates-horizontal" *ngIf="stage.startedAt || stage.completedAt">
-                                <div class="date-item" *ngIf="stage.startedAt">
-                                    <span class="date-icon">▶</span>
-                                    <span class="date-text">{{ formatDateOnly(stage.startedAt) }}</span>
-                                </div>
-                                <div class="date-item" *ngIf="stage.completedAt">
-                                    <span class="date-icon">✓</span>
-                                    <span class="date-text">{{ formatDateOnly(stage.completedAt) }}</span>
-                                </div>
-                            </div>
-                            <div class="stage-assigned-to" *ngIf="stage.assignedToRoleName">
-                                <span class="assigned-icon">👤</span>
-                                <span class="assigned-text" *ngIf="stage.actionedByName; else roleName">
-                                    <span *ngIf="stage.action === 'Approved'" class="action-approved">Approved by: {{
-                                        stage.actionedByName }}</span>
-                                    <span *ngIf="stage.action === 'Rejected'" class="action-rejected">Rejected by: {{
-                                        stage.actionedByName }}</span>
-                                    <span
-                                        *ngIf="stage.action && stage.action !== 'Approved' && stage.action !== 'Rejected'"
-                                        class="action-other">{{ stage.action }} by: {{ stage.actionedByName }}</span>
-                                </span>
-                                <ng-template #roleName>
-                                    {{ stage.assignedToRoleName }}
-                                </ng-template>
-                            </div>
+        <!-- Horizontal Progress Bar -->
+        <div class="horizontal-progress">
+            <div class="progress-container">
+                <div *ngFor="let stage of storeViewData.approvalWorkflow; let i = index" class="progress-step-wrapper">
+                    <!-- Progress Step -->
+                    <div class="progress-step" [class]="'step-' + getWorkflowStatusClass(stage.status)"
+                        (click)="openStageDetailsModal(stage)"
+                        [title]="'Click to view ' + stage.stageName + ' details'">
+                        <div class="step-icon">
+                            <span *ngIf="stage.status === 'Completed'" class="material-icons">check</span>
+                            <span *ngIf="stage.status === 'In Progress'" class="material-icons">schedule</span>
+                            <span *ngIf="stage.status === 'Pending'" class="material-icons">pending</span>
+                            <span *ngIf="stage.status === 'Approved'" class="material-icons">thumb_up</span>
+                            <span *ngIf="stage.status === 'Rejected'" class="material-icons">thumb_down</span>
+                        </div>
+                        <div class="step-label">{{ stage.stageName }}</div>
+                        <div class="step-status" *ngIf="stage.status !== 'Pending'">{{ stage.status }}</div>
+                    </div>
+
+                    <!-- Connector Line (except for last step) -->
+                    <div class="step-connector" *ngIf="i < storeViewData.approvalWorkflow.length - 1">
+                        <div class="connector-line"
+                            [class]="'connector-' + getWorkflowStatusClass(stage.status) + '-' + getWorkflowStatusClass(storeViewData.approvalWorkflow[i + 1].status)">
                         </div>
                     </div>
-
-                    <!-- Arrow connector (except for last stage) -->
-                    <div class="stage-connector" *ngIf="i < storeViewData.approvalWorkflow.length - 1">
-                        <div class="connector-arrow">→</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stage Comment Section -->
-            <div class="workflow-comments" *ngIf="getActiveApprovalStageComment()">
-                <div class="comment-header">
-                    <span class="comment-icon">💬</span>
-                    <span class="comment-title">Current Stage Comment</span>
-                </div>
-                <div class="comment-content">
-                    {{ getActiveApprovalStageComment() }}
                 </div>
             </div>
         </div>
@@ -351,5 +322,69 @@
             <span class="material-icons">close</span>
         </button>
         <img [src]="modalImageUrl" alt="Full Image" />
+    </div>
+</div>
+
+<!-- Stage Details Modal -->
+<div class="stage-modal-backdrop" *ngIf="showStageModal" (click)="closeStageModal()">
+    <div class="stage-modal" (click)="$event.stopPropagation()">
+        <div class="stage-modal-header">
+            <h3 class="stage-modal-title">{{ selectedStage?.stageName }}</h3>
+            <button class="close-modal-btn" (click)="closeStageModal()" title="Close">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+
+        <div class="stage-modal-content" *ngIf="selectedStage">
+            <table class="stage-info-table">
+                <tbody>
+                    <tr>
+                        <td class="info-label">Status</td>
+                        <td class="info-value">
+                            <span class="" [class]="'status-' + getWorkflowStatusColor(selectedStage.status)">
+                                {{ selectedStage.status }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="info-label">Assigned Role</td>
+                        <td class="info-value">{{ selectedStage.assignedToRoleName }}</td>
+                    </tr>
+
+                    <tr *ngIf="selectedStage.actionedByName">
+                        <td class="info-label">Actioned By</td>
+                        <td class="info-value">
+                            <span *ngIf="selectedStage.action === 'Approved'" class="action-approved">
+                                {{ selectedStage.actionedByName }}
+                            </span>
+                            <span *ngIf="selectedStage.action === 'Rejected'" class="action-rejected">
+                                {{ selectedStage.actionedByName }}
+                            </span>
+                            <span
+                                *ngIf="selectedStage.action && selectedStage.action !== 'Approved' && selectedStage.action !== 'Rejected'"
+                                class="action-other">
+                                {{ selectedStage.actionedByName }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="selectedStage.comment">
+                        <td class="info-label">Comment</td>
+                        <td class="info-value">{{ selectedStage.comment }}</td>
+                    </tr>
+
+                    <tr *ngIf="selectedStage.startedAt">
+                        <td class="info-label">Started Date</td>
+                        <td class="info-value">{{ formatDateOnly(selectedStage.startedAt) }}</td>
+                    </tr>
+
+                    <tr *ngIf="selectedStage.completedAt">
+                        <td class="info-label">Completed Date</td>
+                        <td class="info-value">{{ formatDateOnly(selectedStage.completedAt) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

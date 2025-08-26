@@ -1193,3 +1193,378 @@
     color: #6f42c1 !important;
     font-weight: 600;
 }
+
+/* Horizontal Progress Bar */
+.horizontal-progress {
+    margin: 1rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 900px;
+}
+
+.progress-step-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    min-width: 120px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 1rem;
+    border-radius: 12px;
+    min-width: 120px;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 111, 207, 0.15);
+}
+
+.step-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.step-status {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Step Status Styles */
+.step-pending .step-icon {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+.step-in-progress .step-icon {
+    background: #006fcf;
+    color: white;
+}
+
+.step-completed .step-icon {
+    background: #10b981;
+    color: white;
+}
+
+.step-approved .step-icon {
+    background: #10b981;
+    color: white;
+}
+
+.step-rejected .step-icon {
+    background: #dc2626;
+    color: white;
+}
+
+/* Connector Lines */
+.step-connector {
+    flex: 1;
+    height: 3px;
+    position: relative;
+    z-index: 1;
+    margin: 0 0.5rem;
+    min-width: 40px;
+}
+
+.connector-line {
+    height: 100%;
+    background: #64748b;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid #475569;
+    min-height: 3px;
+}
+
+/* Connector line colors based on stage status combinations */
+.connector-pending-pending {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+.connector-pending-in-progress {
+    background: #006fcf;
+    border-color: #005bb8;
+}
+
+.connector-pending-completed {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-pending-approved {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-pending-rejected {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-in-progress-pending {
+    background: #006fcf;
+    border-color: #005bb8;
+}
+
+.connector-in-progress-in-progress {
+    background: #006fcf;
+    border-color: #005bb8;
+}
+
+.connector-in-progress-completed {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-in-progress-approved {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-in-progress-rejected {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-completed-pending {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-completed-in-progress {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-completed-completed {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-completed-approved {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-completed-rejected {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-approved-pending {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-approved-in-progress {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-approved-completed {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-approved-approved {
+    background: #10b981;
+    border-color: #059669;
+}
+
+.connector-approved-rejected {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-rejected-pending {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-rejected-in-progress {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-rejected-completed {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-rejected-approved {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+.connector-rejected-rejected {
+    background: #dc2626;
+    border-color: #b91c1c;
+}
+
+/* Stage Details Modal */
+.stage-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.stage-modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.stage-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stage-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.stage-modal-content {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Remove special comment styling - now uses standard info-value styling */
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Debug: Make connector lines very visible */
+.step-connector {
+    flex: 1;
+    height: 4px;
+    position: relative;
+    z-index: 1;
+    margin: 0 0.5rem;
+    min-width: 40px;
+    background: rgba(255, 0, 0, 0.1);
+    /* Debug: Red background to see the container */
+}
+
+.connector-line {
+    height: 100%;
+    background: #1e293b;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #475569;
+}
+
+.stage-info-table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.stage-info-table td {
+    padding: 0.875rem 1rem;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+.stage-info-table .info-label {
+    font-weight: 600;
+    color: #475569;
+    background-color: #f8fafc;
+    width: 35%;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 0.75rem;
+}
+
+.stage-info-table .info-value {
+    color: #1e293b;
+    font-weight: 500;
+    font-size: 0.875rem;
+    width: 65%;
+}
