@@ -24,6 +24,39 @@
     box-shadow: 0 4px 20px rgba(0, 111, 207, 0.05);
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #10b981;
+}
+
+.back-btn:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+    transform: scale(1.1);
+    color: #059669;
+}
+
+.back-btn .material-icons {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
 .header-title {
     flex: 1;
 }

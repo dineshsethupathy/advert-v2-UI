@@ -2,9 +2,14 @@
     <!-- Header Section -->
     <div class="page-header">
         <div class="header-content">
-            <div class="header-title">
-                <h1 class="page-title">Workflow Management</h1>
-                <p class="page-description">Create and manage your approval workflows</p>
+            <div class="header-left">
+                <button class="back-btn" (click)="goBack()">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div class="header-title">
+                    <h1 class="page-title">Workflow Management</h1>
+                    <p class="page-description">Create and manage your approval workflows</p>
+                </div>
             </div>
             <div class="header-actions">
                 <button class="add-btn" (click)="createNewWorkflow()">

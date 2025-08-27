@@ -49,6 +49,10 @@ export class WorkflowsComponent implements OnInit {
         this.router.navigate(['/workflows/create']);
     }
 
+    goBack(): void {
+        this.router.navigate(['/assignments']);
+    }
+
     viewWorkflow(id: number): void {
         this.router.navigate(['/workflows', id]);
     }
