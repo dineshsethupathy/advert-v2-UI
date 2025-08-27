@@ -139,16 +139,20 @@
                 <!-- Store Selection Interface -->
                 <div class="store-selection-section">
 
-                    <!-- Store Grid -->
+                    <!-- Store Grid Header -->
                     <div *ngIf="!loading" class="store-selection-content">
-                        <!-- Store Grid Header -->
                         <div class="store-grid-header">
                             <div class="selection-controls">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" [checked]="selectAllPages" (change)="selectAllStores()">
-                                    <span class="checkmark"></span>
-                                    Select All Stores
-                                </label>
+                                <div class="filter-controls">
+                                    <div class="select-all-section">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" [checked]="selectAllPages"
+                                                (change)="selectAllStores()">
+                                            <span class="checkmark"></span>
+                                            Select All Stores
+                                        </label>
+                                    </div>
+                                </div>
 
                                 <!-- <label class="checkbox-label">
                                     <input type="checkbox" [checked]="selectCurrentPage"
@@ -159,20 +163,20 @@
                             </div>
 
                             <div class="right-controls">
-                                <button type="button" class="btn btn-primary filter-btn"
-                                    [class.active]="showStoresOver90Days" (click)="toggleStoresOver90DaysFilter()">
-                                    <!-- <span class="filter-icon">📅</span> -->
-                                    {{ showStoresOver90Days ? 'Show All Stores' : 'Show 90+ Days (' +
-                                    storesOver90DaysCount + ')' }}
-                                </button>
-                                <div class="custom-tooltip" *ngIf="!showStoresOver90Days">
-                                    <span class="tooltip-text">Show stores that haven't had an assignment in the last 90
-                                        days or have never been assigned</span>
-                                </div>
                                 <div class="pagination-info">
                                     Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} stores
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- 90+ Days Filter Label -->
+                        <div class="filter-label-section">
+                            <label class="checkbox-label filter-label">
+                                <input type="checkbox" [checked]="showStoresOver90Days"
+                                    (change)="toggleStoresOver90DaysFilter()">
+                                <span class="checkmark"></span>
+                                Show stores that haven't had an assignment in the last 90 days
+                            </label>
                         </div>
 
                         <!-- Store Grid -->

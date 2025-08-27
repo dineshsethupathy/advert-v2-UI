@@ -305,7 +305,45 @@
 
 .filter-controls {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
+}
+
+.select-all-section {
+    margin-bottom: 0.5rem;
+}
+
+.filter-section {
+    margin-bottom: 0.5rem;
+}
+
+.filter-section .checkbox-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* Filter Label Section */
+.filter-label-section {
+    background: #e3e3f5;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.3rem 1rem;
+    margin: 0 1rem 1rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.filter-label {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
 }
 
 .right-controls {
@@ -419,14 +457,23 @@
     height: 18px;
     width: 18px;
     background-color: white;
-    border: 2px solid #d1d5db;
+    border: 2px solid #0861e5;
     border-radius: 4px;
     position: relative;
     transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.checkbox-label:hover .checkmark {
+    border-color: #0056b3;
+    box-shadow: 0 2px 8px rgba(8, 97, 229, 0.3);
+    transform: scale(1.5);
 }
 
 .checkbox-label:hover input~.checkmark {
-    border-color: #006fcf;
+    border-color: #0056b3;
+    box-shadow: 0 2px 8px rgba(8, 97, 229, 0.3);
+    transform: scale(1.05);
 }
 
 .checkbox-label input:checked~.checkmark {
