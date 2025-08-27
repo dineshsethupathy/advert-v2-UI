@@ -332,6 +332,15 @@
     margin: 0 1rem 1rem 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.filter-label-section:hover {
+    background: #d1d1f0;
+    border-color: #0861e5;
+    box-shadow: 0 4px 12px rgba(8, 97, 229, 0.2);
+    transform: translateY(-2px);
 }
 
 .filter-label {
