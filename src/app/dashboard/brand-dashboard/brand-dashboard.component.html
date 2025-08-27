@@ -49,13 +49,21 @@
     </header>
 
     <div class="main-content">
+        <!-- Loading State -->
+        <div class="sidebar-loading" *ngIf="!isSidebarReady">
+            <div class="loading-spinner"></div>
+            <p>Loading navigation...</p>
+        </div>
+
         <!-- Sidebar Toggle Button -->
-        <button class="sidebar-toggle" (click)="toggleSidebar()" [class.collapsed]="isSidebarCollapsed">
+        <button class="sidebar-toggle" (click)="toggleSidebar()" [class.collapsed]="isSidebarCollapsed"
+            *ngIf="isSidebarReady">
             <span class="material-icons toggle-icon">{{ isSidebarCollapsed ? 'menu' : 'arrow_left' }}</span>
         </button>
 
         <!-- Sidebar -->
-        <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+        <aside class="sidebar" [class.collapsed]="isSidebarCollapsed" [class.ready]="isSidebarReady"
+            *ngIf="isSidebarReady">
             <nav class="sidebar-nav">
                 <!-- <div class="nav-title">Navigation</div> -->
                 <ul class="nav-list">
@@ -71,7 +79,8 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="content-area" [class.sidebar-collapsed]="isSidebarCollapsed">
+        <main class="content-area" [class.sidebar-collapsed]="isSidebarCollapsed" [class.ready]="isSidebarReady"
+            *ngIf="isSidebarReady">
             <!-- Dashboard Content -->
             <div *ngIf="currentRoute === '/dashboard'">
                 <div class="content-header">

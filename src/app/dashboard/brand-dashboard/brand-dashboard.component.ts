@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 import { DashboardService, DashboardStats, RecentActivity, Assignment, User, Store } from '../../services/dashboard.service';
 import { DashboardAnalyticsService, DashboardAnalytics } from '../../services/dashboard-analytics.service';
+import { SidebarStateService } from '../../services/sidebar-state.service';
 import { RegionComponent } from '../region/region.component';
 import { VendorComponent } from '../vendor/vendor.component';
 import { DistributorComponent } from '../distributor/distributor.component';
@@ -19,7 +20,7 @@ import { WorkflowsComponent } from '../workflows/workflows.component';
 import { CreateWorkflowComponent } from '../workflows/create-workflow/create-workflow.component';
 import { ViewWorkflowComponent } from '../workflows/view-workflow/view-workflow.component';
 import { BrandUserStoreViewComponent } from '../branduser-store-view/branduser-store-view.component';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 interface SidebarItem {
     name: string;
@@ -64,14 +65,18 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     logoutLoading = false;
     currentRoute = '/dashboard';
     isSidebarCollapsed = false;
+    isSidebarReady = false;
     private routeSubscription: any;
+    private sidebarSubscription: Subscription | undefined;
+    private sidebarReadySubscription: Subscription | undefined;
     private destroy$ = new Subject<void>();
 
     constructor(
         private router: Router,
         private authService: AuthService,
         private dashboardService: DashboardService,
-        private dashboardAnalyticsService: DashboardAnalyticsService
+        private dashboardAnalyticsService: DashboardAnalyticsService,
+        private sidebarStateService: SidebarStateService
     ) { }
 
     ngOnInit(): void {
@@ -82,11 +87,15 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         // console.log('Initial route:', this.currentRoute);
         this.updateActiveItem();
 
-        // Restore sidebar state from localStorage
-        const savedSidebarState = localStorage.getItem('sidebarCollapsed');
-        if (savedSidebarState !== null) {
-            this.isSidebarCollapsed = savedSidebarState === 'true';
-        }
+        // Subscribe to sidebar state changes from service
+        this.sidebarSubscription = this.sidebarStateService.isCollapsed$.subscribe(
+            collapsed => this.isSidebarCollapsed = collapsed
+        );
+
+        // Subscribe to sidebar ready state
+        this.sidebarReadySubscription = this.sidebarStateService.isReady$.subscribe(
+            ready => this.isSidebarReady = ready
+        );
 
         // Only load dashboard data if we're on the dashboard page
         if (this.currentRoute === '/dashboard') {
@@ -258,9 +267,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     }
 
     toggleSidebar(): void {
-        this.isSidebarCollapsed = !this.isSidebarCollapsed;
-        // Save state to localStorage for persistence
-        localStorage.setItem('sidebarCollapsed', this.isSidebarCollapsed.toString());
+        this.sidebarStateService.toggleSidebar();
     }
 
     getCurrentUserName(): string {
@@ -399,6 +406,12 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         if (this.routeSubscription) {
             this.routeSubscription.unsubscribe();
+        }
+        if (this.sidebarSubscription) {
+            this.sidebarSubscription.unsubscribe();
+        }
+        if (this.sidebarReadySubscription) {
+            this.sidebarReadySubscription.unsubscribe();
         }
     }
 } 
