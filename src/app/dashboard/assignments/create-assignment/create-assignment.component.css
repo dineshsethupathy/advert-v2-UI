@@ -308,6 +308,12 @@
     gap: 1rem;
 }
 
+.right-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
 .filter-btn {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
@@ -786,6 +792,13 @@
     .filter-controls {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .right-controls {
+        width: 100%;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 1rem;
     }
 }
 
