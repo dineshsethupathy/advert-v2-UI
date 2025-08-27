@@ -269,6 +269,87 @@
     gap: 1.5rem;
 }
 
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 111, 207, 0.3);
+}
+
+.filter-btn.active {
+    background: #005bb8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 111, 207, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 2px 8px rgba(0, 111, 207, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 2px 12px rgba(0, 111, 207, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 2px 8px rgba(0, 111, 207, 0.3);
+    }
+}
+
+.filter-btn.active:hover {
+    background: #005bb8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 111, 207, 0.4);
+}
+
+.filter-icon {
+    font-size: 0.9rem;
+    margin-right: 0.25rem;
+}
+
+.custom-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 280px;
+    background-color: #1e293b;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 0.75rem;
+    position: absolute;
+    z-index: 1000;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.filter-controls:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 .pagination-info {
     font-size: 0.875rem;
     color: #64748b;
@@ -614,7 +695,7 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #006fcf 0%, #005bb8 100%);
+    background: #006fcf;
     color: white;
     box-shadow: 0 4px 15px rgba(0, 111, 207, 0.2);
 }
@@ -666,6 +747,11 @@
     .selection-controls {
         flex-direction: column;
         gap: 0.75rem;
+    }
+
+    .filter-controls {
+        width: 100%;
+        justify-content: flex-start;
     }
 }
 

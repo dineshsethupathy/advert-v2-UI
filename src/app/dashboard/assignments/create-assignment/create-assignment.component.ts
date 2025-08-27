@@ -46,6 +46,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     loading = false;
     submitting = false;
 
+    // Filter states
+    showStoresOver90Days = false;
+
     // Custom dropdown states
     vendorDropdownOpen = false;
     workflowDropdownOpen = false;
@@ -321,15 +324,36 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
             return regionMatch && cityMatch;
         });
 
+        // Apply 90+ days filter if enabled
+        if (this.showStoresOver90Days) {
+            this.filteredStores = this.filteredStores.filter(store => {
+                if (!store.lastAssignmentDate) {
+                    return true; // Include stores with no assignment history
+                }
+                const lastAssignmentDate = new Date(store.lastAssignmentDate);
+                const ninetyDaysAgo = new Date();
+                ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+                return lastAssignmentDate < ninetyDaysAgo;
+            });
+        }
+
         this.totalStores = this.filteredStores.length;
         console.log('Stores filtered:', {
             totalStores: this.totalStores,
             filteredStores: this.filteredStores.length,
             currentPageStores: this.currentPageStores.length,
             currentPage: this.currentPage,
-            pageSize: this.pageSize
+            pageSize: this.pageSize,
+            showStoresOver90Days: this.showStoresOver90Days
         });
         this.updateSelectionCheckboxes(); // Update checkbox states after filtering
+    }
+
+    toggleStoresOver90DaysFilter(): void {
+        this.showStoresOver90Days = !this.showStoresOver90Days;
+        this.currentPage = 1; // Reset to first page when filtering
+        this.filterStores();
+        this.updatePagination();
     }
 
     updatePagination(): void {
@@ -356,6 +380,18 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     get endIndex(): number {
         return Math.min(this.startIndex + this.pageSize, this.totalStores);
+    }
+
+    get storesOver90DaysCount(): number {
+        return this.stores.filter(store => {
+            if (!store.lastAssignmentDate) {
+                return true; // Include stores with no assignment history
+            }
+            const lastAssignmentDate = new Date(store.lastAssignmentDate);
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+            return lastAssignmentDate < ninetyDaysAgo;
+        }).length;
     }
 
     // =============================================

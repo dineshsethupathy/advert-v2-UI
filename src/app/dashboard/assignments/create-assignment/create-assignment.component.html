@@ -155,6 +155,19 @@
                                 </label> -->
                             </div>
 
+                            <div class="filter-controls">
+                                <button type="button" class="btn btn-primary filter-btn"
+                                    [class.active]="showStoresOver90Days" (click)="toggleStoresOver90DaysFilter()">
+                                    <!-- <span class="filter-icon">📅</span> -->
+                                    {{ showStoresOver90Days ? 'Show All Stores' : 'Show 90+ Days (' +
+                                    storesOver90DaysCount + ')' }}
+                                </button>
+                                <div class="custom-tooltip" *ngIf="!showStoresOver90Days">
+                                    <span class="tooltip-text">Show stores that haven't had an assignment in the last 90
+                                        days or have never been assigned</span>
+                                </div>
+                            </div>
+
                             <div class="pagination-info">
                                 Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} stores
                             </div>
