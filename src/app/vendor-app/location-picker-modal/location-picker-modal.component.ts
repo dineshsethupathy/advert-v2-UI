@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, Inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, Inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
@@ -9,7 +9,8 @@ import { GoogleMapsService } from '../../services/google-maps.service';
     standalone: true,
     templateUrl: './location-picker-modal.component.html',
     styleUrl: './location-picker-modal.component.css',
-    imports: [CommonModule]
+    imports: [CommonModule],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LocationPickerModalComponent {
     @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;

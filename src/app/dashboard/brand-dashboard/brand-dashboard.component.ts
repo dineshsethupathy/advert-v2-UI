@@ -189,7 +189,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.dashboardAnalyticsService.getDashboardAnalytics().subscribe({
             next: (analytics) => {
                 this.dashboardAnalytics = analytics;
-                // console.log('Loaded dashboard analytics:', analytics);
+                console.log('Loaded dashboard analytics:', analytics);
                 this.loading = false;
             },
             error: (error) => {
