@@ -1651,3 +1651,229 @@
         font-size: 14px;
     }
 }
+
+/* Cost Breakdown Modal Styles */
+.cost-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.cost-modal {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.cost-modal-content {
+    padding: 12px;
+}
+
+.cost-breakdown-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cost-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e8eaed;
+}
+
+.cost-section-title {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 4px;
+}
+
+/* Improved 3x3 Grid Layout */
+.cost-calculation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 8px;
+    align-items: start;
+}
+
+.calculation-cell {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    min-height: 40px;
+}
+
+.calculation-cell:last-child {
+    border-bottom: none;
+}
+
+.cell-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cell-value {
+    font-weight: 600;
+    color: #212529;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.calculation-cell.net-amount {
+    background: white;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    grid-column: 1 / -1;
+    border: 1px solid #e9ecef;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.calculation-cell.gross-amount {
+    grid-column: 1 / 2;
+}
+
+.calculation-cell.gst-amount {
+    grid-column: 2 / 3;
+}
+
+/* Ensure the last row (Gross and GST) spans properly */
+.cost-calculation-grid .calculation-cell.gross-amount,
+.cost-calculation-grid .calculation-cell.gst-amount {
+    grid-row: 3;
+}
+
+.cost-summary {
+    background: #006fcf;
+    color: white;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    margin-top: 0;
+}
+
+.cost-summary-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.summary-value {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Total Cost Display Styles */
+/* .total-cost-item {
+    border-top: 2px solid #e8eaed;
+    padding-top: 16px;
+    margin-top: 16px;
+} */
+
+.total-cost-link {
+    color: #006fcf;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.total-cost-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.cost-breakdown-icon {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cost-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .cost-modal-content {
+        padding: 16px;
+    }
+
+    .cost-section {
+        padding: 12px;
+    }
+
+    .cost-calculation-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .calculation-cell {
+        min-height: auto;
+        padding: 6px 8px;
+    }
+
+    .cell-label {
+        font-size: 11px;
+    }
+
+    .cell-value {
+        font-size: 13px;
+    }
+
+    .summary-row {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .cost-calculation-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+}

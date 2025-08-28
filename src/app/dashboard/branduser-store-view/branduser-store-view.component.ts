@@ -34,13 +34,12 @@ export class BrandUserStoreViewComponent implements OnInit {
     beforeImageLoaded = false;
     afterImageLoaded = false;
 
-    // Image modal states
+    // Modal state
     showImageModal = false;
     modalImageUrl: string | null = null;
-
-    // Stage details modal states
     showStageModal = false;
     selectedStage: ApprovalWorkflowStageResponse | null = null;
+    showCostModal = false;
 
     constructor(
         private assignmentService: AssignmentService,
@@ -164,7 +163,7 @@ export class BrandUserStoreViewComponent implements OnInit {
             // Add 1-second delay to show loading spinner
             setTimeout(() => {
                 this.loadCurrentStoreDetails();
-            }, 1000);
+            }, 500);
         }
     }
 
@@ -667,5 +666,51 @@ export class BrandUserStoreViewComponent implements OnInit {
     closeStageModal(): void {
         this.showStageModal = false;
         this.selectedStage = null;
+    }
+
+    // Cost calculation methods
+    calculateTotalCost(): number {
+        let totalCost = 0;
+
+        // Calculate board cost if available
+        if (this.storeViewData?.storeAssignment?.boardWidth &&
+            this.storeViewData?.storeAssignment?.boardHeight &&
+            this.storeViewData?.storeAssignment?.boardCost) {
+
+            const boardWidthInFeet = this.storeViewData.storeAssignment.boardWidth / 12;
+            const boardHeightInFeet = this.storeViewData.storeAssignment.boardHeight / 12;
+            const boardArea = boardWidthInFeet * boardHeightInFeet;
+            const boardGrossAmount = boardArea * this.storeViewData.storeAssignment.boardCost;
+            const boardNetAmount = boardGrossAmount * 1.18; // Adding 18% GST
+
+            totalCost += boardNetAmount;
+        }
+
+        // Calculate pole cost if available
+        if (this.storeViewData?.storeAssignment?.poleQuantity &&
+            this.storeViewData.storeAssignment.poleQuantity > 0 &&
+            this.storeViewData?.storeAssignment?.poleWidth &&
+            this.storeViewData?.storeAssignment?.poleHeight &&
+            this.storeViewData?.storeAssignment?.poleCost) {
+
+            const poleWidthInFeet = this.storeViewData.storeAssignment.poleWidth / 12;
+            const poleHeightInFeet = this.storeViewData.storeAssignment.poleHeight / 12;
+            const poleArea = poleWidthInFeet * poleHeightInFeet;
+            const totalPoleArea = poleArea * this.storeViewData.storeAssignment.poleQuantity;
+            const poleGrossAmount = totalPoleArea * this.storeViewData.storeAssignment.poleCost;
+            const poleNetAmount = poleGrossAmount * 1.18; // Adding 18% GST
+
+            totalCost += poleNetAmount;
+        }
+
+        return totalCost;
+    }
+
+    openCostBreakdownModal(): void {
+        this.showCostModal = true;
+    }
+
+    closeCostModal(): void {
+        this.showCostModal = false;
     }
 }

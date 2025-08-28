@@ -124,38 +124,50 @@
             <h3 class="card-title">Execution Images</h3>
         </div>
         <div class="board-details"
-            *ngIf="(storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight) || (storeViewData.storeAssignment.poleQuantity && storeViewData.storeAssignment.poleQuantity > 0)">
+            *ngIf="((storeViewData?.storeAssignment?.boardWidth ?? 0) && (storeViewData?.storeAssignment?.boardHeight ?? 0)) || ((storeViewData?.storeAssignment?.poleQuantity ?? 0) > 0)">
             <div class="specifications-container">
                 <!-- Board Specifications -->
                 <div class="spec-item"
-                    *ngIf="storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight">
+                    *ngIf="(storeViewData?.storeAssignment?.boardWidth ?? 0) && (storeViewData?.storeAssignment?.boardHeight ?? 0)">
                     <label class="spec-label">Board Type</label>
                     <div class="spec-value">
-                        <span *ngIf="storeViewData.storeAssignment.boardName">
-                            {{ storeViewData.storeAssignment.boardName }} ({{ storeViewData.storeAssignment.boardWidth
-                            }}" × {{ storeViewData.storeAssignment.boardHeight }}")
+                        <span *ngIf="storeViewData?.storeAssignment?.boardName">
+                            {{ storeViewData?.storeAssignment?.boardName }} ({{
+                            (storeViewData?.storeAssignment?.boardWidth ?? 0) }}" × {{
+                            (storeViewData?.storeAssignment?.boardHeight ?? 0) }}")
                         </span>
-                        <span *ngIf="!storeViewData.storeAssignment.boardName">
-                            {{ storeViewData.storeAssignment.boardWidth }}" × {{
-                            storeViewData.storeAssignment.boardHeight }}"
+                        <span *ngIf="!storeViewData?.storeAssignment?.boardName">
+                            {{ (storeViewData?.storeAssignment?.boardWidth ?? 0) }}" × {{
+                            (storeViewData?.storeAssignment?.boardHeight ?? 0) }}"
                         </span>
                     </div>
                 </div>
 
                 <!-- Pole Specifications -->
-                <div class="spec-item"
-                    *ngIf="storeViewData.storeAssignment.poleQuantity && storeViewData.storeAssignment.poleQuantity > 0">
+                <div class="spec-item" *ngIf="(storeViewData?.storeAssignment?.poleQuantity ?? 0) > 0">
                     <label class="spec-label">Pole(s)</label>
                     <div class="spec-value">
                         <span
-                            *ngIf="storeViewData.storeAssignment.poleWidth && storeViewData.storeAssignment.poleHeight">
-                            {{ storeViewData.storeAssignment.poleQuantity }} ({{ storeViewData.storeAssignment.poleWidth
-                            }}" × {{ storeViewData.storeAssignment.poleHeight }}")
+                            *ngIf="(storeViewData?.storeAssignment?.poleWidth ?? 0) && (storeViewData?.storeAssignment?.poleHeight ?? 0)">
+                            {{ (storeViewData?.storeAssignment?.poleQuantity ?? 0) }} ({{
+                            (storeViewData?.storeAssignment?.poleWidth ?? 0) }}" × {{
+                            (storeViewData?.storeAssignment?.poleHeight ?? 0) }}")
                         </span>
                         <span
-                            *ngIf="!storeViewData.storeAssignment.poleWidth || !storeViewData.storeAssignment.poleHeight">
-                            {{ storeViewData.storeAssignment.poleQuantity }}
+                            *ngIf="!(storeViewData?.storeAssignment?.poleWidth ?? 0) || !(storeViewData?.storeAssignment?.poleHeight ?? 0)">
+                            {{ (storeViewData?.storeAssignment?.poleQuantity ?? 0) }}
                         </span>
+                    </div>
+                </div>
+
+                <!-- Total Cost Display -->
+                <div class="spec-item total-cost-item" *ngIf="calculateTotalCost() > 0">
+                    <label class="spec-label">Total Cost</label>
+                    <div class="spec-value">
+                        <a href="javascript:void(0)" class="total-cost-link" (click)="openCostBreakdownModal()">
+                            ₹{{ calculateTotalCost() | number:'1.2-2' }}
+                            <!-- <span class="cost-breakdown-icon">📊</span> -->
+                        </a>
                     </div>
                 </div>
             </div>
@@ -419,6 +431,131 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Cost Breakdown Modal -->
+<div class="cost-modal-backdrop" *ngIf="showCostModal" (click)="closeCostModal()">
+    <div class="cost-modal" (click)="$event.stopPropagation()">
+        <div class="cost-modal-content">
+            <div class="cost-breakdown-section">
+                <!-- Board Cost Breakdown -->
+                <div class="cost-section"
+                    *ngIf="(storeViewData?.storeAssignment?.boardWidth ?? 0) && (storeViewData?.storeAssignment?.boardHeight ?? 0) && (storeViewData?.storeAssignment?.boardCost ?? 0)">
+                    <h4 class="cost-section-title">Board Cost Calculation</h4>
+                    <div class="cost-calculation-grid">
+                        <div class="calculation-cell">
+                            <span class="cell-label">Dimensions(in):</span>
+                            <span class="cell-value">{{ (storeViewData?.storeAssignment?.boardWidth ?? 0) }}" × {{
+                                (storeViewData?.storeAssignment?.boardHeight ?? 0) }}"</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">In Feet:</span>
+                            <span class="cell-value">{{ ((storeViewData?.storeAssignment?.boardWidth ?? 0) / 12) |
+                                number:'1.2-2' }}' × {{ ((storeViewData?.storeAssignment?.boardHeight ?? 0) / 12) |
+                                number:'1.2-2' }}'</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Area:</span>
+                            <span class="cell-value">{{ (((storeViewData?.storeAssignment?.boardWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.boardHeight ?? 0) / 12)) | number:'1.2-2' }} sq
+                                ft</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Cost/sq ft:</span>
+                            <span class="cell-value">₹{{ storeViewData?.storeAssignment?.boardCost ?? 0 }}</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Gross:</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.boardWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.boardHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.boardCost ?? 0)) | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">GST (18%):</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.boardWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.boardHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.boardCost ?? 0) * 0.18) | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="calculation-cell net-amount">
+                            <span class="cell-label">Net:</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.boardWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.boardHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.boardCost ?? 0) * 1.18) | number:'1.2-2' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pole Cost Breakdown -->
+                <div class="cost-section"
+                    *ngIf="(storeViewData?.storeAssignment?.poleQuantity ?? 0) > 0 && (storeViewData?.storeAssignment?.poleWidth ?? 0) && (storeViewData?.storeAssignment?.poleHeight ?? 0) && (storeViewData?.storeAssignment?.poleCost ?? 0)">
+                    <h4 class="cost-section-title">Pole Cost Calculation</h4>
+                    <div class="cost-calculation-grid">
+                        <div class="calculation-cell">
+                            <span class="cell-label">Dimensions:</span>
+                            <span class="cell-value">{{ (storeViewData?.storeAssignment?.poleWidth ?? 0) }}" × {{
+                                (storeViewData?.storeAssignment?.poleHeight ?? 0) }}"</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">In Feet:</span>
+                            <span class="cell-value">{{ ((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) |
+                                number:'1.2-2' }}' × {{ ((storeViewData?.storeAssignment?.poleHeight ?? 0) / 12) |
+                                number:'1.2-2' }}'</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Area/Pole:</span>
+                            <span class="cell-value">{{ (((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.poleHeight ?? 0) / 12)) | number:'1.2-2' }} sq
+                                ft</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Quantity:</span>
+                            <span class="cell-value">{{ storeViewData?.storeAssignment?.poleQuantity ?? 0 }}</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Total Area:</span>
+                            <span class="cell-value">{{ (((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.poleHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.poleQuantity ?? 0)) | number:'1.2-2' }} sq ft</span>
+                        </div>
+                        <div class="calculation-cell">
+                            <span class="cell-label">Cost/sq ft:</span>
+                            <span class="cell-value">₹{{ storeViewData?.storeAssignment?.poleCost ?? 0 }}</span>
+                        </div>
+                        <div class="calculation-cell gross-amount">
+                            <span class="cell-label">Gross:</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.poleHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.poleQuantity ?? 0) *
+                                (storeViewData?.storeAssignment?.poleCost ?? 0)) | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="calculation-cell gst-amount">
+                            <span class="cell-label">GST (18%):</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.poleHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.poleQuantity ?? 0) *
+                                (storeViewData?.storeAssignment?.poleCost ?? 0) * 0.18) | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="calculation-cell net-amount">
+                            <span class="cell-label">Net:</span>
+                            <span class="cell-value">₹{{ (((storeViewData?.storeAssignment?.poleWidth ?? 0) / 12) *
+                                ((storeViewData?.storeAssignment?.poleQuantity ?? 0) *
+                                (storeViewData?.storeAssignment?.poleHeight ?? 0) / 12) *
+                                (storeViewData?.storeAssignment?.poleCost ?? 0) * 1.18) | number:'1.2-2' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Cost Summary -->
+                <div class="cost-summary" *ngIf="calculateTotalCost() > 0">
+                    <!-- <h4 class="cost-summary-title">Total Cost Summary</h4> -->
+                    <div class="summary-row">
+                        <span class="summary-label">Total Net Amount:</span>
+                        <span class="summary-value">₹{{ calculateTotalCost() | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
