@@ -31,12 +31,16 @@
                         <span class="material-icons btn-icon">account_circle</span>
                     </button>
                     <div class="dropdown-menu" [class.show]="showProfileMenu">
-                        <div class="dropdown-header">
+                        <div class="dropdown-header" (click)="navigateToProfile()" style="cursor: pointer;">
                             <div class="user-fullname">{{ getCurrentUserFullName() }}</div>
                             <div class="user-email">{{ getCurrentUserEmail() }}</div>
                             <div class="user-role">{{ getCurrentUserRoleName() }}</div>
                         </div>
                         <div class="dropdown-divider"></div>
+                        <button class="dropdown-item profile-item" (click)="navigateToProfile()">
+                            <span class="material-icons">person</span>
+                            <span>View Profile</span>
+                        </button>
                         <button class="dropdown-item logout-item" (click)="logout($event)" [disabled]="logoutLoading">
                             <span class="material-icons" *ngIf="!logoutLoading">logout</span>
                             <l-tail-chase *ngIf="logoutLoading" size="16" speed="1.75" color="#6b7280"></l-tail-chase>
@@ -384,6 +388,11 @@
             <!-- Store View Content -->
             <div *ngIf="currentRoute.includes('/store-view/')">
                 <app-branduser-store-view></app-branduser-store-view>
+            </div>
+
+            <!-- Profile Content -->
+            <div *ngIf="currentRoute === '/profile'">
+                <app-profile></app-profile>
             </div>
         </main>
     </div>

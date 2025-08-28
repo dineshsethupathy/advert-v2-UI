@@ -20,6 +20,7 @@ import { WorkflowsComponent } from '../workflows/workflows.component';
 import { CreateWorkflowComponent } from '../workflows/create-workflow/create-workflow.component';
 import { ViewWorkflowComponent } from '../workflows/view-workflow/view-workflow.component';
 import { BrandUserStoreViewComponent } from '../branduser-store-view/branduser-store-view.component';
+import { ProfileComponent } from '../profile/profile.component';
 import { Subject, Subscription } from 'rxjs';
 
 interface SidebarItem {
@@ -33,7 +34,7 @@ interface SidebarItem {
 @Component({
     selector: 'app-brand-dashboard',
     standalone: true,
-    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent],
+    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent, ProfileComponent],
     templateUrl: './brand-dashboard.component.html',
     styleUrl: './brand-dashboard.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -370,6 +371,9 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         } else if (this.currentRoute === '/roles') {
             // Roles should highlight Users in sidebar
             activeItemName = 'Users';
+        } else if (this.currentRoute === '/profile') {
+            // Profile doesn't have a sidebar item, so no highlighting
+            activeItemName = null;
         }
 
         // Set the active item
@@ -401,6 +405,11 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         if (vendorsItem) {
             this.selectItem(vendorsItem);
         }
+    }
+
+    navigateToProfile(): void {
+        this.router.navigate(['/profile']);
+        this.showProfileMenu = false;
     }
 
     ngOnDestroy(): void {

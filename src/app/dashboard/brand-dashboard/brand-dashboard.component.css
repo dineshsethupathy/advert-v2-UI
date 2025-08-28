@@ -200,6 +200,11 @@
 .dropdown-header {
     padding: 1.25rem;
     border-bottom: 1px solid rgba(0, 111, 207, 0.1);
+    transition: all 0.3s ease;
+}
+
+.dropdown-header:hover {
+    background: rgba(0, 111, 207, 0.05);
 }
 
 .user-fullname {
@@ -285,6 +290,26 @@
 
 .logout-item:hover .material-icons {
     color: #dc2626;
+}
+
+.profile-item {
+    color: #006fcf;
+    border-top: 1px solid rgba(0, 111, 207, 0.05);
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+}
+
+.profile-item:hover {
+    background: rgba(0, 111, 207, 0.05);
+    color: #006fcf;
+}
+
+.profile-item .material-icons {
+    color: #006fcf;
+}
+
+.profile-item:hover .material-icons {
+    color: #006fcf;
 }
 
 .header-btn {

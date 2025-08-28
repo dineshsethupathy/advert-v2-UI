@@ -300,6 +300,11 @@ export class AuthService {
         }
     }
 
+    updateCurrentUser(updatedUser: CurrentUser): void {
+        this.currentUserSubject.next(updatedUser);
+        localStorage.setItem('current_user', JSON.stringify(updatedUser));
+    }
+
     getAuthHeaders(): HttpHeaders {
         const token = this.getToken();
         return new HttpHeaders({

@@ -1,0 +1,272 @@
+<div class="profile-container">
+    <!-- Header Section with Avatar -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <div class="avatar-container">
+                    <div class="user-avatar">
+                        <span class="material-icons">account_circle</span>
+                    </div>
+                    <div class="avatar-info">
+                        <h1 class="page-title">User Profile</h1>
+                        <p class="page-description">Manage your account information and preferences</p>
+                        <!-- <span class="role-badge">{{ userProfile?.roleName }}</span> -->
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <!-- <button *ngIf="!editing" class="header-btn secondary" (click)="toggleEdit()">
+                    <span class="material-icons">edit</span>
+                    <span>Edit Profile</span>
+                </button> -->
+                <button *ngIf="editing" class="header-btn secondary" (click)="cancelEdit()">
+                    <span class="material-icons">cancel</span>
+                    <span>Cancel</span>
+                </button>
+                <button *ngIf="editing" class="add-btn" (click)="saveProfile()" [disabled]="profileForm.invalid">
+                    <span class="material-icons">save</span>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <l-tail-chase size="40" speed="1.75" color="#6366f1"></l-tail-chase>
+        <p>Loading profile...</p>
+    </div>
+
+    <!-- Profile Content -->
+    <div *ngIf="!loading && userProfile" class="profile-content">
+        <div class="profile-info-grid">
+            <!-- <div class="grid-header">
+                <div class="grid-cell header-cell">Field</div>
+                <div class="grid-cell header-cell">Value</div>
+            </div> -->
+
+            <!-- Full Name Row -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="field-label">
+                        <span class="material-icons">person</span>
+                        <span>Full Name</span>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div *ngIf="!editing" class="field-value">
+                        {{ userProfile.firstName }} {{ userProfile.lastName }}
+                    </div>
+                    <div *ngIf="editing" class="field-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" formControlName="firstName" placeholder="First Name"
+                                    [class.error]="getFormControl('firstName')?.invalid && formSubmitted">
+                                <div *ngIf="getFormControl('firstName')?.invalid && formSubmitted"
+                                    class="error-message">
+                                    <span *ngIf="getFormControl('firstName')?.errors?.['required']">First name is
+                                        required</span>
+                                    <span *ngIf="getFormControl('firstName')?.errors?.['minlength']">First name must
+                                        be at least 2 characters</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" formControlName="lastName" placeholder="Last Name"
+                                    [class.error]="getFormControl('lastName')?.invalid && formSubmitted">
+                                <div *ngIf="getFormControl('lastName')?.invalid && formSubmitted" class="error-message">
+                                    <span *ngIf="getFormControl('lastName')?.errors?.['required']">Last name is
+                                        required</span>
+                                    <span *ngIf="getFormControl('lastName')?.errors?.['minlength']">Last name must
+                                        be at least 2 characters</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Row -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="field-label">
+                        <span class="material-icons">email</span>
+                        <span>Email Address</span>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div *ngIf="!editing" class="field-value">
+                        {{ userProfile.email }}
+                    </div>
+                    <div *ngIf="editing" class="field-form">
+                        <div class="form-group">
+                            <input type="email" formControlName="email" placeholder="Email Address"
+                                [class.error]="getFormControl('email')?.invalid && formSubmitted">
+                            <div *ngIf="getFormControl('email')?.invalid && formSubmitted" class="error-message">
+                                <span *ngIf="getFormControl('email')?.errors?.['required']">Email is required</span>
+                                <span *ngIf="getFormControl('email')?.errors?.['email']">Please enter a valid
+                                    email</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Row -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="field-label">
+                        <span class="material-icons">admin_panel_settings</span>
+                        <span>Role</span>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="field-value">
+                        <span class="">{{ userProfile.roleName }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Login Row -->
+            <div class="grid-row" *ngIf="userProfile.lastLoginAt">
+                <div class="grid-cell">
+                    <div class="field-label">
+                        <span class="material-icons">schedule</span>
+                        <span>Last Login</span>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="field-value">
+                        {{ userProfile.lastLoginAt | date:'medium' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature Row -->
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="field-label">
+                        <span class="material-icons">draw</span>
+                        <span>Digital Signature</span>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div *ngIf="!editing" class="field-value">
+                        <div *ngIf="userSignature; else noSignature" class="signature-display">
+                            <div class="signature-image-container">
+                                <img [src]="userSignature" alt="User Signature" class="signature-image">
+                                <button class="signature-edit-icon" (click)="openSignatureModal()">
+                                    <span class="material-icons">edit</span>
+                                </button>
+                            </div>
+                        </div>
+                        <ng-template #noSignature>
+                            <div class="no-signature">
+                                <span class="material-icons">draw</span>
+                                <p>No signature added yet</p>
+                                <button class="add-signature-btn" (click)="openSignatureModal()">
+                                    <span class="material-icons">add</span>
+                                    Add Signature
+                                </button>
+                            </div>
+                        </ng-template>
+                    </div>
+                    <div *ngIf="editing" class="field-form">
+                        <div class="signature-actions">
+                            <button type="button" class="signature-btn" (click)="openSignatureModal()">
+                                <span class="material-icons">draw</span>
+                                {{ userSignature ? 'Edit' : 'Add' }} Signature
+                            </button>
+                            <button *ngIf="userSignature" type="button" class="signature-btn secondary"
+                                (click)="removeSignature()">
+                                <span class="material-icons">delete</span>
+                                Remove Signature
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Signature Modal -->
+<div *ngIf="showSignatureModal" class="signature-modal-overlay" (click)="closeSignatureModal()">
+    <div class="signature-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Digital Signature</h3>
+            <button class="modal-close" (click)="closeSignatureModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+
+        <div class="modal-content">
+            <div class="signature-tabs">
+                <button class="tab-btn" [class.active]="activeTab === 'draw'" (click)="setActiveTab('draw')">
+                    <span class="material-icons">draw</span>
+                    Draw Signature
+                </button>
+                <button class="tab-btn" [class.active]="activeTab === 'upload'" (click)="setActiveTab('upload')">
+                    <span class="material-icons">upload</span>
+                    Upload Image
+                </button>
+            </div>
+
+            <!-- Drawing Tab -->
+            <div *ngIf="activeTab === 'draw'" class="tab-content">
+                <div class="canvas-container">
+                    <canvas #signatureCanvas class="signature-canvas" (mousedown)="startDrawing($event)"
+                        (mousemove)="draw($event)" (mouseup)="stopDrawing()" (mouseleave)="stopDrawing()">
+                    </canvas>
+                    <div class="canvas-controls">
+                        <button class="control-btn" (click)="clearCanvas()">
+                            <span class="material-icons">clear</span>
+                            Clear
+                        </button>
+                        <button class="control-btn" (click)="undoLastStroke()">
+                            <span class="material-icons">undo</span>
+                            Undo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Tab -->
+            <div *ngIf="activeTab === 'upload'" class="tab-content">
+                <div class="upload-container">
+                    <div class="upload-area" (click)="triggerFileInput()" (dragover)="onDragOver($event)"
+                        (drop)="onFileDrop($event)" [class.dragover]="isDragOver" [class.has-image]="uploadedImage">
+
+                        <!-- Default upload content when no image -->
+                        <div *ngIf="!uploadedImage" class="upload-content">
+                            <span class="material-icons">cloud_upload</span>
+                            <p>Click to browse or drag & drop image here</p>
+                            <p class="upload-hint">Supported formats: PNG, JPG, JPEG (Max: 2MB)</p>
+                        </div>
+
+                        <!-- Image preview when image is uploaded -->
+                        <div *ngIf="uploadedImage" class="image-preview">
+                            <img [src]="uploadedImage" alt="Uploaded Image" class="preview-image">
+                            <div class="preview-overlay">
+                                <button class="remove-upload-btn"
+                                    (click)="removeUploadedImage(); $event.stopPropagation()">
+                                    <span class="material-icons">close</span>
+                                </button>
+                                <p class="preview-text">Click to change image</p>
+                            </div>
+                        </div>
+                    </div>
+                    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)"
+                        style="display: none;">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn secondary" (click)="closeSignatureModal()">Cancel</button>
+            <button class="btn primary" (click)="saveSignature()" [disabled]="!canSaveSignature()">
+                <span class="material-icons">save</span>
+                Save Signature
+            </button>
+        </div>
+    </div>
+</div>

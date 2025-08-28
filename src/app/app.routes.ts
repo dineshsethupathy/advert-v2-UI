@@ -41,7 +41,7 @@ export const routes: Routes = [
     { path: 'vendors', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'distributors', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     { path: 'board-details', component: BrandDashboardComponent, canActivate: [AuthGuard] },
-
+    { path: 'profile', component: BrandDashboardComponent, canActivate: [AuthGuard] },
     // Vendor App Routes
     { path: 'vendor-signup', component: VendorSignupComponent },
     { path: 'vendor-login', component: VendorLoginComponent },

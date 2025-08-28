@@ -9,6 +9,7 @@ export interface User {
     firstName: string;
     lastName: string;
     lastLoginAt?: string;
+    signature?: string;
     roleName: string;
     roleId: number;
 }
@@ -27,6 +28,11 @@ export interface UpdateUserRequest {
     firstName: string;
     lastName: string;
     roleId: number;
+}
+
+export interface UpdateSignatureRequest {
+    id: number;
+    signature?: string;
 }
 
 @Injectable({
@@ -51,6 +57,10 @@ export class UserService {
 
     updateUser(user: UpdateUserRequest): Observable<User> {
         return this.http.put<User>(`${this.API_URL}/user/${user.id}`, user);
+    }
+
+    updateSignature(user: UpdateSignatureRequest): Observable<User> {
+        return this.http.put<User>(`${this.API_URL}/user/${user.id}/signature`, user);
     }
 
     deleteUser(id: number): Observable<void> {

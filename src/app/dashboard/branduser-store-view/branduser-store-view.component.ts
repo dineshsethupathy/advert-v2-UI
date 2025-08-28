@@ -632,7 +632,7 @@ export class BrandUserStoreViewComponent implements OnInit {
             confirmButtonText: 'Approve',
             cancelButtonText: 'Cancel',
             showDenyButton: true,
-            denyButtonText: 'Reject',
+            denyButtonText: 'Hold',
             confirmButtonColor: '#28a745',
             denyButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
