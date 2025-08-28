@@ -128,34 +128,34 @@
             <div class="specifications-container">
                 <!-- Board Specifications -->
                 <div class="spec-item"
-                    *ngIf="(storeViewData?.storeAssignment?.boardWidth ?? 0) && (storeViewData?.storeAssignment?.boardHeight ?? 0)">
+                    *ngIf="(storeViewData.storeAssignment.boardWidth ?? 0) && (storeViewData.storeAssignment.boardHeight ?? 0)">
                     <label class="spec-label">Board Type</label>
                     <div class="spec-value">
-                        <span *ngIf="storeViewData?.storeAssignment?.boardName">
-                            {{ storeViewData?.storeAssignment?.boardName }} ({{
-                            (storeViewData?.storeAssignment?.boardWidth ?? 0) }}" × {{
-                            (storeViewData?.storeAssignment?.boardHeight ?? 0) }}")
+                        <span *ngIf="storeViewData.storeAssignment.boardName">
+                            {{ storeViewData.storeAssignment.boardName }} ({{
+                            (storeViewData.storeAssignment.boardWidth ?? 0) }}" × {{
+                            (storeViewData.storeAssignment.boardHeight ?? 0) }}")
                         </span>
-                        <span *ngIf="!storeViewData?.storeAssignment?.boardName">
-                            {{ (storeViewData?.storeAssignment?.boardWidth ?? 0) }}" × {{
-                            (storeViewData?.storeAssignment?.boardHeight ?? 0) }}"
+                        <span *ngIf="!storeViewData.storeAssignment.boardName">
+                            {{ (storeViewData.storeAssignment.boardWidth ?? 0) }}" × {{
+                            (storeViewData.storeAssignment.boardHeight ?? 0) }}"
                         </span>
                     </div>
                 </div>
 
                 <!-- Pole Specifications -->
-                <div class="spec-item" *ngIf="(storeViewData?.storeAssignment?.poleQuantity ?? 0) > 0">
+                <div class="spec-item" *ngIf="(storeViewData.storeAssignment.poleQuantity ?? 0) > 0">
                     <label class="spec-label">Pole(s)</label>
                     <div class="spec-value">
                         <span
-                            *ngIf="(storeViewData?.storeAssignment?.poleWidth ?? 0) && (storeViewData?.storeAssignment?.poleHeight ?? 0)">
-                            {{ (storeViewData?.storeAssignment?.poleQuantity ?? 0) }} ({{
-                            (storeViewData?.storeAssignment?.poleWidth ?? 0) }}" × {{
-                            (storeViewData?.storeAssignment?.poleHeight ?? 0) }}")
+                            *ngIf="(storeViewData.storeAssignment.poleWidth ?? 0) && (storeViewData.storeAssignment.poleHeight ?? 0)">
+                            {{ (storeViewData.storeAssignment.poleQuantity ?? 0) }} ({{
+                            (storeViewData.storeAssignment.poleWidth ?? 0) }}" × {{
+                            (storeViewData.storeAssignment.poleHeight ?? 0) }}")
                         </span>
                         <span
-                            *ngIf="!(storeViewData?.storeAssignment?.poleWidth ?? 0) || !(storeViewData?.storeAssignment?.poleHeight ?? 0)">
-                            {{ (storeViewData?.storeAssignment?.poleQuantity ?? 0) }}
+                            *ngIf="!(storeViewData.storeAssignment.poleWidth ?? 0) || !(storeViewData.storeAssignment.poleHeight ?? 0)">
+                            {{ (storeViewData.storeAssignment.poleQuantity ?? 0) }}
                         </span>
                     </div>
                 </div>

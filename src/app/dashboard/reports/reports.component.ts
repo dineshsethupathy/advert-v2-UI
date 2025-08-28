@@ -89,7 +89,7 @@ export class ReportsComponent implements OnInit {
 
             if (response) {
                 this.assignments = response.assignments || [];
-                this.statuses = response.statuses?.map((s: any) => s.status) || ['Completed', 'In Progress'];
+                this.statuses = (response.statuses && response.statuses.map((s: any) => s.status)) || ['Completed', 'In Progress'];
             }
         } catch (error) {
             console.error('Error loading dropdown data:', error);
