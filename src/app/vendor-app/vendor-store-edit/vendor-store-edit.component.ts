@@ -51,6 +51,12 @@ export class VendorStoreEditComponent implements OnInit {
             boardId: [null, [Validators.required]],
             boardWidth: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
             boardHeight: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
+            boardCost: [null, [Validators.required, Validators.min(0.01), Validators.max(10000)]],
+            hasPole: [false],
+            poleQuantity: [null, [Validators.min(1), Validators.max(100)]],
+            poleWidth: [null, [Validators.min(0.1), Validators.max(100)]],
+            poleHeight: [null, [Validators.min(0.1), Validators.max(1000)]],
+            poleCost: [null, [Validators.min(0.01), Validators.max(10000)]],
             notes: ['']
         });
     }
@@ -64,6 +70,11 @@ export class VendorStoreEditComponent implements OnInit {
         // Subscribe to form value changes to update custom dropdown
         this.storeForm.get('boardId')?.valueChanges.subscribe(value => {
             this.cdr.detectChanges();
+        });
+
+        // Subscribe to pole checkbox changes to handle validation
+        this.storeForm.get('hasPole')?.valueChanges.subscribe(hasPole => {
+            this.handlePoleCheckboxChange(hasPole);
         });
     }
 
@@ -151,20 +162,33 @@ export class VendorStoreEditComponent implements OnInit {
             console.log('storeAssignment.boardId:', this.storeAssignment.boardId);
             console.log('storeAssignment.boardWidth:', this.storeAssignment.boardWidth);
             console.log('storeAssignment.boardHeight:', this.storeAssignment.boardHeight);
+            console.log('storeAssignment.poleQuantity:', this.storeAssignment.poleQuantity);
 
             // Use setTimeout to ensure the form is fully ready
             setTimeout(() => {
                 if (this.storeAssignment) {
                     console.log('Setting form values...');
+
+                    // Determine if pole checkbox should be checked based on poleQuantity
+                    const hasPole = this.storeAssignment.poleQuantity != null && this.storeAssignment.poleQuantity > 0;
+
                     this.storeForm.patchValue({
                         boardId: this.storeAssignment.boardId || null,
                         boardWidth: this.storeAssignment.boardWidth || null,
                         boardHeight: this.storeAssignment.boardHeight || null,
+                        boardCost: this.storeAssignment.boardCost || null,
+                        hasPole: hasPole,
+                        poleQuantity: this.storeAssignment.poleQuantity || null,
+                        poleWidth: this.storeAssignment.poleWidth || null,
+                        poleHeight: this.storeAssignment.poleHeight || null,
+                        poleCost: this.storeAssignment.poleCost || null,
                         notes: this.storeAssignment.vendorNotes || ''
                     });
 
                     console.log('Form values after patch:', this.storeForm.value);
                     console.log('Form boardId after patch:', this.storeForm.get('boardId')?.value);
+                    console.log('Form hasPole after patch:', this.storeForm.get('hasPole')?.value);
+                    console.log('Form poleQuantity after patch:', this.storeForm.get('poleQuantity')?.value);
 
                     // Update the selected board text
                     this.getSelectedBoardText();
@@ -273,7 +297,45 @@ export class VendorStoreEditComponent implements OnInit {
             this.afterExecutionImagePreview !== null;
     }
 
+    // Check if pole fields are valid when checkbox is checked
+    isPoleFieldsValid(): boolean {
+        if (!this.storeForm.get('hasPole')?.value) {
+            return true; // No validation needed if pole is not selected
+        }
+
+        const poleQuantity = this.storeForm.get('poleQuantity')?.value;
+        const poleWidth = this.storeForm.get('poleWidth')?.value;
+        const poleHeight = this.storeForm.get('poleHeight')?.value;
+
+        return poleQuantity && poleWidth && poleHeight &&
+            poleQuantity >= 1 && poleQuantity <= 100 &&
+            poleWidth >= 0.1 && poleWidth <= 100 &&
+            poleHeight >= 0.1 && poleHeight <= 1000;
+    }
+
+    // Check if form is valid including pole fields
+    isFormValid(): boolean {
+        return this.storeForm.valid && this.isPoleFieldsValid();
+    }
+
     onSubmit(): void {
+        // Check pole validation before submitting
+        if (this.storeForm.get('hasPole')?.value) {
+            const poleQuantity = this.storeForm.get('poleQuantity')?.value;
+            const poleWidth = this.storeForm.get('poleWidth')?.value;
+            const poleHeight = this.storeForm.get('poleHeight')?.value;
+
+            if (!poleQuantity || !poleWidth || !poleHeight) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pole Dimensions Required',
+                    text: 'Please enter pole quantity, width and height when pole is selected.',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
+        }
+
         if (this.storeForm.invalid) {
             this.markFormGroupTouched();
             return;
@@ -287,7 +349,22 @@ export class VendorStoreEditComponent implements OnInit {
         formData.append('boardId', this.storeForm.get('boardId')?.value);
         formData.append('boardWidth', this.storeForm.get('boardWidth')?.value);
         formData.append('boardHeight', this.storeForm.get('boardHeight')?.value);
+        formData.append('boardCost', this.storeForm.get('boardCost')?.value || '');
         formData.append('notes', this.storeForm.get('notes')?.value || '');
+
+        // Handle pole fields - if checkbox is unchecked, send null values
+        if (this.storeForm.get('hasPole')?.value) {
+            formData.append('poleQuantity', this.storeForm.get('poleQuantity')?.value || '');
+            formData.append('poleWidth', this.storeForm.get('poleWidth')?.value || '');
+            formData.append('poleHeight', this.storeForm.get('poleHeight')?.value || '');
+            formData.append('poleCost', this.storeForm.get('poleCost')?.value || '');
+        } else {
+            // When checkbox is unchecked, send empty strings to indicate pole fields should be cleared
+            formData.append('poleQuantity', '');
+            formData.append('poleWidth', '');
+            formData.append('poleHeight', '');
+            formData.append('poleCost', '');
+        }
 
         // Add GPS location field
         if (this.gpsLocation) {
@@ -304,6 +381,7 @@ export class VendorStoreEditComponent implements OnInit {
         if (this.afterExecutionImageFile) {
             formData.append('afterExecutionImageFile', this.afterExecutionImageFile);
         }
+        console.log('formData:', formData);
 
         this.vendorAssignmentService.updateStoreForm(this.storeAssignmentId, formData).subscribe({
             next: (updatedStore) => {
@@ -477,5 +555,33 @@ export class VendorStoreEditComponent implements OnInit {
             console.error('Error formatting coordinates:', error);
         }
         return coords; // Return original if parsing fails
+    }
+
+    // Handle pole checkbox changes
+    handlePoleCheckboxChange(hasPole: boolean): void {
+        if (hasPole) {
+            // Add required validators when checkbox is checked
+            this.storeForm.get('poleQuantity')?.setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
+            this.storeForm.get('poleWidth')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(100)]);
+            this.storeForm.get('poleHeight')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(1000)]);
+            this.storeForm.get('poleCost')?.setValidators([Validators.required, Validators.min(0.01), Validators.max(10000)]);
+        } else {
+            // Clear validators when checkbox is unchecked
+            this.storeForm.get('poleQuantity')?.clearValidators();
+            this.storeForm.get('poleWidth')?.clearValidators();
+            this.storeForm.get('poleHeight')?.clearValidators();
+            this.storeForm.get('poleCost')?.clearValidators();
+            // Clear the values when unchecked - this will send null to backend
+            this.storeForm.get('poleQuantity')?.setValue(null);
+            this.storeForm.get('poleWidth')?.setValue(null);
+            this.storeForm.get('poleHeight')?.setValue(null);
+            this.storeForm.get('poleCost')?.setValue(null);
+        }
+
+        // Update validation state
+        this.storeForm.get('poleQuantity')?.updateValueAndValidity();
+        this.storeForm.get('poleWidth')?.updateValueAndValidity();
+        this.storeForm.get('poleHeight')?.updateValueAndValidity();
+        this.storeForm.get('poleCost')?.updateValueAndValidity();
     }
 }  

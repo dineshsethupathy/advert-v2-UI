@@ -34,7 +34,7 @@
             <button type="button" class="close-btn" (click)="goBack()" title="Close">
                 <span class="material-icons">close</span>
             </button>
-            <div class="info-grid">
+            <div class="info-row">
                 <div class="info-item">
                     <label>Store Name</label>
                     <span>{{ storeAssignment.storeName }}</span>
@@ -64,6 +64,16 @@
                     <span
                         *ngIf="!storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
                         {{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"
+                    </span>
+                </div>
+                <div class="info-item" *ngIf="storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0">
+                    <label>Pole(s)</label>
+                    <span *ngIf="storeAssignment.poleWidth && storeAssignment.poleHeight">
+                        {{ storeAssignment.poleQuantity }} ({{ storeAssignment.poleWidth }}" × {{
+                        storeAssignment.poleHeight }}")
+                    </span>
+                    <span *ngIf="!storeAssignment.poleWidth || !storeAssignment.poleHeight">
+                        {{ storeAssignment.poleQuantity }}
                     </span>
                 </div>
             </div>
@@ -150,10 +160,10 @@
                 *ngIf="!storeAssignment.bannerImageUrl && !storeAssignment.beforeExecutionImageUrl && !storeAssignment.afterExecutionImageUrl">
                 <span class="material-icons">image</span>
                 <p>No images uploaded yet</p>
-                <button class="btn btn-primary" (click)="editStore()">
+                <!-- <button class="btn btn-primary" (click)="editStore()">
                     <span class="material-icons">add_photo_alternate</span>
                     Upload Images
-                </button>
+                </button> -->
             </div>
         </div>
 

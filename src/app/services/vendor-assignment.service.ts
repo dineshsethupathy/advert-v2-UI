@@ -19,6 +19,10 @@ export interface VendorAssignment {
     assignedDate?: string;
     workflowDefinitionId: number;
     updatedAt?: string;
+    // Add pole fields for consistency
+    poleQuantity?: number;
+    poleWidth?: number;
+    poleHeight?: number;
 }
 
 export interface VendorAssignmentDetail extends VendorAssignment {
@@ -54,7 +58,12 @@ export interface StoreAssignment {
     afterExecutionImageUrl?: string;
     boardWidth?: number;
     boardHeight?: number;
+    boardCost?: number;
     gpsLocation?: string;  // address|lat|lng format
+    poleQuantity?: number;
+    poleWidth?: number;
+    poleHeight?: number;
+    poleCost?: number;
 }
 
 export interface UpdateStoreStatusRequest {
@@ -69,8 +78,13 @@ export interface UpdateStoreFormRequest {
     boardId?: number;
     boardWidth?: number;
     boardHeight?: number;
+    boardCost?: number;
     notes?: string;
     gpsLocation?: string;  // address|lat|lng format
+    poleQuantity?: number;
+    poleWidth?: number;
+    poleHeight?: number;
+    poleCost?: number;
 }
 
 export interface Board {
@@ -158,4 +172,4 @@ export class VendorAssignmentService {
     markStoreAsComplete(storeAssignmentId: number): Observable<StoreAssignment> {
         return this.http.put<StoreAssignment>(`${this.storeApiUrl}/stores/${storeAssignmentId}/complete`, {});
     }
-} 
+}

@@ -139,6 +139,23 @@
     gap: 20px;
 }
 
+.info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    flex: 1 1 auto;
+    max-width: calc(25% - 18px);
+}
+
 .actions-buttons {
     display: flex;
     gap: 12px;
@@ -149,12 +166,6 @@
 
 .edit-store-section .actions-buttons {
     margin-top: 0;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
 
 .info-item label {

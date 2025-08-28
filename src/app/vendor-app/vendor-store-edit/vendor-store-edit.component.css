@@ -198,8 +198,166 @@
 }
 
 .form-row.three-columns {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 20px;
+}
+
+.form-row.two-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Checkbox Styling */
+.checkbox-group {
+    margin-bottom: 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 18px;
+    width: 18px;
+    background-color: white;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label:hover input~.checkmark {
+    border-color: #006fcf;
+}
+
+.checkbox-label input:checked~.checkmark {
+    background-color: #006fcf;
+    border-color: #006fcf;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+}
+
+.checkbox-label input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Checkbox hover effect */
+.checkbox-label:hover .checkmark {
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.2);
+}
+
+/* Pole Container Styling */
+.pole-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 16px 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.pole-container:hover {
+    border-color: #006fcf;
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.1);
+}
+
+.pole-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    min-height: 40px;
+    justify-content: flex-start;
+}
+
+.pole-checkbox {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.pole-fields {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 400px;
+    animation: fadeInUp 0.3s ease-out;
+    align-items: center;
+}
+
+.pole-fields input {
+    flex: 1;
+    min-width: 90px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+.pole-fields input:focus {
+    outline: none;
+    border-color: #006fcf;
+    box-shadow: 0 0 0 3px rgba(0, 111, 207, 0.1);
+}
+
+.pole-fields input::placeholder {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.pole-errors {
+    margin-top: 12px;
+}
+
+.pole-errors .error-message {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #dc3545;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Custom Select Dropdown */
@@ -712,5 +870,292 @@
     .btn {
         padding: 10px 16px;
         font-size: 13px;
+    }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .store-edit-container {
+        padding: 16px;
+        margin: 0;
+    }
+
+    .store-form-container {
+        border-radius: 8px;
+        margin: 0;
+    }
+
+    /* Store Info Section Mobile */
+    .store-info {
+        padding: 16px;
+        position: relative;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .close-btn .material-icons {
+        font-size: 18px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .info-item {
+        gap: 6px;
+    }
+
+    .info-item label {
+        font-size: 11px;
+    }
+
+    .info-item span {
+        font-size: 15px;
+    }
+
+    .status-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    /* Form Section Mobile */
+    .store-form {
+        padding: 16px;
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-section h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+    }
+
+    /* Form Rows Mobile */
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .form-row.three-columns {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .form-row.two-columns {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    /* Form Groups Mobile */
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    /* Custom Select Mobile */
+    .custom-select .select-display {
+        padding: 12px;
+        min-height: 48px;
+    }
+
+    .select-text {
+        font-size: 16px;
+    }
+
+    .select-arrow .material-icons {
+        font-size: 20px;
+    }
+
+    /* Pole Container Mobile */
+    .pole-container {
+        padding: 12px;
+        margin: 12px 0;
+    }
+
+    .pole-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .pole-checkbox {
+        align-self: flex-start;
+    }
+
+    .pole-fields {
+        flex-direction: column;
+        gap: 12px;
+        min-width: auto;
+    }
+
+    .pole-fields input {
+        width: 100%;
+        min-width: auto;
+        height: 44px;
+        font-size: 16px;
+    }
+
+    /* Checkbox Mobile */
+    .checkbox-label {
+        font-size: 14px;
+        padding: 8px 0;
+    }
+
+    .checkmark {
+        height: 20px;
+        width: 20px;
+    }
+
+    /* Image Upload Mobile */
+    .image-upload-container {
+        margin-bottom: 16px;
+    }
+
+    .upload-area {
+        padding: 20px;
+    }
+
+    .upload-label {
+        font-size: 14px;
+    }
+
+    .upload-label .material-icons {
+        font-size: 24px;
+    }
+
+    /* GPS Location Mobile */
+    .gps-location-container {
+        margin-bottom: 16px;
+    }
+
+    .gps-upload-area .gps-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .gps-display {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .gps-info {
+        text-align: center;
+    }
+
+    .gps-actions {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    /* Form Actions Mobile */
+    .form-actions {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px 0;
+    }
+
+    .actions-left,
+    .actions-right {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .actions-right {
+        order: -1;
+        /* Submit button first on mobile */
+    }
+
+    .btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+        justify-content: center;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .store-edit-container {
+        padding: 12px;
+    }
+
+    .store-info {
+        padding: 12px;
+    }
+
+    .store-form {
+        padding: 12px;
+    }
+
+    .form-section h3 {
+        font-size: 15px;
+    }
+
+    .info-item label {
+        font-size: 10px;
+    }
+
+    .info-item span {
+        font-size: 14px;
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+    }
+
+    .pole-container {
+        padding: 10px;
+    }
+
+    .pole-fields input {
+        height: 40px;
+        font-size: 15px;
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    /* Very small screens - stack board fields vertically */
+    .form-row.three-columns {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .form-row.two-columns {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 }

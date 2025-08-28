@@ -123,6 +123,44 @@
         <div class="card-header">
             <h3 class="card-title">Execution Images</h3>
         </div>
+        <div class="board-details"
+            *ngIf="(storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight) || (storeViewData.storeAssignment.poleQuantity && storeViewData.storeAssignment.poleQuantity > 0)">
+            <div class="specifications-container">
+                <!-- Board Specifications -->
+                <div class="spec-item"
+                    *ngIf="storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight">
+                    <label class="spec-label">Board Type</label>
+                    <div class="spec-value">
+                        <span *ngIf="storeViewData.storeAssignment.boardName">
+                            {{ storeViewData.storeAssignment.boardName }} ({{ storeViewData.storeAssignment.boardWidth
+                            }}" × {{ storeViewData.storeAssignment.boardHeight }}")
+                        </span>
+                        <span *ngIf="!storeViewData.storeAssignment.boardName">
+                            {{ storeViewData.storeAssignment.boardWidth }}" × {{
+                            storeViewData.storeAssignment.boardHeight }}"
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Pole Specifications -->
+                <div class="spec-item"
+                    *ngIf="storeViewData.storeAssignment.poleQuantity && storeViewData.storeAssignment.poleQuantity > 0">
+                    <label class="spec-label">Pole(s)</label>
+                    <div class="spec-value">
+                        <span
+                            *ngIf="storeViewData.storeAssignment.poleWidth && storeViewData.storeAssignment.poleHeight">
+                            {{ storeViewData.storeAssignment.poleQuantity }} ({{ storeViewData.storeAssignment.poleWidth
+                            }}" × {{ storeViewData.storeAssignment.poleHeight }}")
+                        </span>
+                        <span
+                            *ngIf="!storeViewData.storeAssignment.poleWidth || !storeViewData.storeAssignment.poleHeight">
+                            {{ storeViewData.storeAssignment.poleQuantity }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
         <div class="images-grid">
             <div class="image-item" *ngIf="storeViewData.storeAssignment.bannerImageUrl">
                 <h4>Banner Image</h4>
@@ -167,11 +205,7 @@
                 </p>
             </div>
         </div>
-        <div class="board-details"
-            *ngIf="storeViewData.storeAssignment.boardWidth && storeViewData.storeAssignment.boardHeight">
-            <h4>Board Specifications</h4>
-            <p>{{ storeViewData.storeAssignment.boardWidth }}cm × {{ storeViewData.storeAssignment.boardHeight }}cm</p>
-        </div>
+
     </div>
 
     <!-- Vendor Workflow Progress -->

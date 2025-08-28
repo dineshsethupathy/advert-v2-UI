@@ -98,7 +98,7 @@ export class VendorStoreViewComponent implements OnInit {
         Swal.fire({
             title: 'Mark as Complete?',
             text: 'Are you sure you want to mark this store as complete? This action cannot be undone.',
-            icon: 'question',
+            // icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',

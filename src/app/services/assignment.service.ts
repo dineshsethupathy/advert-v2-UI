@@ -110,9 +110,17 @@ export interface StoreAssignmentDetailResponse {
     bannerImageUrl?: string;
     beforeExecutionImageUrl?: string;
     afterExecutionImageUrl?: string;
+    boardId?: number;
+    boardName?: string;
     boardWidth?: number;
     boardHeight?: number;
+    boardCost?: number;
     gpsLocation?: string;  // address|lat|lng format
+    // Pole fields
+    poleQuantity?: number;
+    poleWidth?: number;
+    poleHeight?: number;
+    poleCost?: number;
     createdAt: string;
     updatedAt?: string;
 }
