@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import * as ExcelJS from 'exceljs';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-reports',
@@ -46,6 +48,9 @@ export class ReportsComponent implements OnInit {
     pageSize: number = 5; // Changed to 5 stores per page
     totalPages: number = 0;
     loading: boolean = false;
+
+    // Export properties
+    exporting: boolean = false;
 
     constructor(private http: HttpClient) { }
 
@@ -104,7 +109,12 @@ export class ReportsComponent implements OnInit {
 
     async applyFilters(): Promise<void> {
         if (this.selectedAssignments.length === 0 && this.selectedStatuses.length === 0 && !this.startDate && !this.endDate) {
-            alert('Please select at least one filter criteria');
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Filters Selected',
+                text: 'Please select at least one filter criteria.',
+                confirmButtonText: 'OK'
+            });
             return;
         }
 
@@ -158,7 +168,12 @@ export class ReportsComponent implements OnInit {
             }
         } catch (error) {
             console.error('Error applying filters:', error);
-            alert('Error applying filters. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Filter Error',
+                text: 'Error applying filters. Please try again.',
+                confirmButtonText: 'OK'
+            });
         } finally {
             this.loading = false;
         }
@@ -384,11 +399,7 @@ export class ReportsComponent implements OnInit {
         // TODO: Implement PDF export functionality
     }
 
-    exportToExcel(): void {
-        console.log('Export to Excel clicked');
-        this.isExportDropdownOpen = false;
-        // TODO: Implement Excel export functionality
-    }
+
 
     getStatusClass(status: string): string {
         switch (status) {
@@ -399,5 +410,367 @@ export class ReportsComponent implements OnInit {
             default:
                 return 'status-default';
         }
+    }
+
+    // Excel Export Methods
+    async exportToExcel(): Promise<void> {
+        if (this.stores.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Data to Export',
+                text: 'Please apply filters and search to get data for export.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        this.exporting = true;
+
+        try {
+            // Get all filtered data for export (not just current page)
+            const exportData = await this.getExportData();
+            if (exportData && exportData.stores && exportData.stores.length > 0) {
+                await this.generateExcelFile(exportData.stores);
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Data Available',
+                    text: 'No data available for export with the current filters.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            console.error('Error exporting to Excel:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Failed',
+                text: 'Error exporting to Excel. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            this.exporting = false;
+        }
+    }
+
+    private async getExportData(): Promise<any> {
+        try {
+            // TODO: Get tenantId from auth service
+            const tenantId = 1; // Temporary hardcoded value
+
+            const params = new URLSearchParams();
+            params.append('tenantId', tenantId.toString());
+
+            if (this.selectedAssignments.length > 0) {
+                const assignmentIds = this.selectedAssignments.map(a => a.id).join(',');
+                params.append('assignmentIds', assignmentIds);
+            }
+
+            if (this.selectedStatuses.length > 0) {
+                const statusList = this.selectedStatuses.join(',');
+                params.append('statuses', statusList);
+            }
+
+            if (this.startDate) {
+                params.append('startDate', this.startDate);
+            }
+
+            if (this.endDate) {
+                params.append('endDate', this.endDate);
+            }
+
+            const response = await this.http.get<any>(`${environment.apiUrl}/report/export-data?${params.toString()}`).toPromise();
+            return response;
+        } catch (error) {
+            console.error('Error getting export data:', error);
+            throw error;
+        }
+    }
+
+    private async generateExcelFile(stores: any[]): Promise<void> {
+        try {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Store Reports');
+
+            // Define columns with the exact structure you specified
+            const columns = [
+                { header: 'RETAILER/OUTLET NAME', key: 'storeName' },
+                { header: 'LOCATION', key: 'location' },
+                { header: 'GPS LOCATION', key: 'gpsLocation' },
+                { header: 'MOBILE NUMBER', key: 'mobileNumber' },
+                { header: 'BRANDING TYPE', key: 'brandingType' },
+                { header: 'HEIGHT(FT)', key: 'heightFt' },
+                { header: 'WIDTH(FT)', key: 'widthFt' },
+                { header: 'HEIGHT(IN)', key: 'heightIn' },
+                { header: 'WIDTH(IN)', key: 'widthIn' },
+                { header: 'QTY', key: 'qty' },
+                { header: 'TOTAL SQ FT. SIZE', key: 'totalSqFt' },
+                { header: 'EACH RATE', key: 'eachRate' },
+                { header: 'GROSS AMOUNT', key: 'grossAmount' },
+                { header: 'GST', key: 'gst' },
+                { header: 'NET AMOUNT', key: 'netAmount' }
+            ];
+            worksheet.columns = columns.map(col => ({ ...col, width: 15 }));
+
+            // Add data rows
+            stores.forEach((store, index) => {
+                // Calculate dimensions and costs based on board/pole data
+                const boardWidth = store.boardWidth || 0;
+                const boardHeight = store.boardHeight || 0;
+                const boardCost = store.boardCost || 0;
+                const poleQuantity = store.poleQuantity || 0;
+                const poleWidth = store.poleWidth || 0;
+                const poleHeight = store.poleHeight || 0;
+                const poleCost = store.poleCost || 0;
+
+                // Parse GPS location
+                let gpsDisplay = '';
+                if (store.gpsLocation) {
+                    const gpsParts = store.gpsLocation.split('|');
+                    if (gpsParts.length >= 3) {
+                        gpsDisplay = gpsParts[0]; // Show address part
+                    } else {
+                        gpsDisplay = store.gpsLocation;
+                    }
+                }
+
+                // Create GPS hyperlink function
+                const createGpsHyperlink = (gpsLocation: string, displayText: string) => {
+                    if (gpsLocation) {
+                        const gpsParts = gpsLocation.split('|');
+                        if (gpsParts.length >= 3) {
+                            const lat = gpsParts[1];
+                            const lng = gpsParts[2];
+                            const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                            return {
+                                formula: `HYPERLINK("${googleMapsUrl}", "${displayText}")`
+                            };
+                        }
+                    }
+                    return displayText;
+                };
+
+                // Add board row if board details exist
+                if (boardWidth > 0 && boardHeight > 0) {
+                    // Convert inches to feet (same as branduser-store-view)
+                    const boardWidthInFeet = boardWidth / 12;
+                    const boardHeightInFeet = boardHeight / 12;
+                    const widthFt = +boardWidthInFeet.toFixed(2);
+                    const heightFt = +boardHeightInFeet.toFixed(2);
+                    const widthIn = boardWidth;
+                    const heightIn = boardHeight;
+
+                    // Calculate board costs (same logic as branduser-store-view)
+                    const boardArea = boardWidthInFeet * boardHeightInFeet;
+                    const boardGrossAmount = boardArea * boardCost;
+                    const boardNetAmount = boardGrossAmount * 1.18; // Adding 18% GST (same as branduser-store-view)
+
+                    const boardRow = worksheet.addRow({
+                        storeName: store.storeName || '',
+                        location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
+                        gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
+                        mobileNumber: store.storePhoneNumber || '',
+                        brandingType: `${store.boardName || 'Board'} (Board)`,
+                        heightFt: heightFt,
+                        widthFt: widthFt,
+                        heightIn: heightIn,
+                        widthIn: widthIn,
+                        qty: 1, // Board quantity is always 1
+                        totalSqFt: +boardArea.toFixed(2),
+                        eachRate: +boardCost.toFixed(2),
+                        grossAmount: +boardGrossAmount.toFixed(2),
+                        gst: +(boardGrossAmount * 0.18).toFixed(2),
+                        netAmount: +boardNetAmount.toFixed(2)
+                    });
+
+                    // Set GPS Location cell as hyperlink if coordinates are available
+                    if (store.gpsLocation) {
+                        const gpsParts = store.gpsLocation.split('|');
+                        if (gpsParts.length >= 3) {
+                            const gpsLocationCell = boardRow.getCell('gpsLocation');
+                            if (gpsLocationCell.value && typeof gpsLocationCell.value === 'object' && 'formula' in gpsLocationCell.value) {
+                                gpsLocationCell.font = { color: { argb: 'FF0000FF' }, underline: true };
+                            }
+                        }
+                    }
+                }
+
+                // Add pole row if pole details exist
+                if (poleQuantity > 0 && poleWidth > 0 && poleHeight > 0) {
+                    // Convert inches to feet (same as branduser-store-view)
+                    const poleWidthInFeet = poleWidth / 12;
+                    const poleHeightInFeet = poleHeight / 12;
+                    const widthFt = +poleWidthInFeet.toFixed(2);
+                    const heightFt = +poleHeightInFeet.toFixed(2);
+                    const widthIn = poleWidth;
+                    const heightIn = poleHeight;
+
+                    // Calculate pole costs (same logic as branduser-store-view)
+                    const poleArea = poleWidthInFeet * poleHeightInFeet;
+                    const totalPoleArea = poleArea * poleQuantity;
+                    const poleGrossAmount = totalPoleArea * poleCost;
+                    const poleNetAmount = poleGrossAmount * 1.18; // Adding 18% GST (same as branduser-store-view)
+
+                    const poleRow = worksheet.addRow({
+                        storeName: store.storeName || '',
+                        location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
+                        gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
+                        mobileNumber: store.storePhoneNumber || '',
+                        brandingType: `${store.boardName || 'Board'} (Pole)`,
+                        heightFt: heightFt,
+                        widthFt: widthFt,
+                        heightIn: heightIn,
+                        widthIn: widthIn,
+                        qty: poleQuantity,
+                        totalSqFt: +totalPoleArea.toFixed(2),
+                        eachRate: +poleCost.toFixed(2),
+                        grossAmount: +poleGrossAmount.toFixed(2),
+                        gst: +(poleGrossAmount * 0.18).toFixed(2),
+                        netAmount: +poleNetAmount.toFixed(2)
+                    });
+
+                    // Set GPS Location cell as hyperlink if coordinates are available
+                    if (store.gpsLocation) {
+                        const gpsParts = store.gpsLocation.split('|');
+                        if (gpsParts.length >= 3) {
+                            const gpsLocationCell = poleRow.getCell('gpsLocation');
+                            if (gpsLocationCell.value && typeof gpsLocationCell.value === 'object' && 'formula' in gpsLocationCell.value) {
+                                gpsLocationCell.font = { color: { argb: 'FF0000FF' }, underline: true };
+                            }
+                        }
+                    }
+                }
+
+                // If neither board nor pole exists, add a single row with default values
+                if ((!boardWidth || !boardHeight) && (!poleQuantity || !poleWidth || !poleHeight)) {
+                    const defaultRow = worksheet.addRow({
+                        storeName: store.storeName || '',
+                        location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
+                        gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
+                        mobileNumber: store.storePhoneNumber || '',
+                        brandingType: store.boardName || 'Board',
+                        heightFt: 0,
+                        widthFt: 0,
+                        heightIn: 0,
+                        widthIn: 0,
+                        qty: 0,
+                        totalSqFt: 0,
+                        eachRate: 0,
+                        grossAmount: 0,
+                        gst: 0,
+                        netAmount: 0
+                    });
+
+                    // Set GPS Location cell as hyperlink if coordinates are available
+                    if (store.gpsLocation) {
+                        const gpsParts = store.gpsLocation.split('|');
+                        if (gpsParts.length >= 3) {
+                            const gpsLocationCell = defaultRow.getCell('gpsLocation');
+                            if (gpsLocationCell.value && typeof gpsLocationCell.value === 'object' && 'formula' in gpsLocationCell.value) {
+                                gpsLocationCell.font = { color: { argb: 'FF0000FF' }, underline: true };
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Style the header row: sky blue background, bold, center, word wrap
+            const headerRow = worksheet.getRow(1);
+            headerRow.eachCell((cell) => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF87CEEB' } // Sky blue color
+                };
+                cell.font = { bold: true };
+                cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+            });
+
+            // Center align all data cells
+            worksheet.eachRow((row, rowNumber) => {
+                row.eachCell((cell) => {
+                    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: rowNumber === 1 };
+                });
+            });
+
+            // Apply thin borders to all cells
+            const lastRow = worksheet.lastRow ? worksheet.lastRow.number : worksheet.rowCount;
+            const lastCol = worksheet.columns.length;
+            for (let i = 1; i <= lastRow; i++) {
+                const row = worksheet.getRow(i);
+                for (let j = 1; j <= lastCol; j++) {
+                    const cell = row.getCell(j);
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                }
+            }
+
+            // Auto-fit column widths based on max length in each column
+            worksheet.columns.forEach((column) => {
+                let maxLength = 10;
+                if (typeof column.eachCell === 'function') {
+                    column.eachCell({ includeEmpty: true }, (cell) => {
+                        let cellValue = '';
+                        if (cell.value) {
+                            // Check if cell.value is a formula object (for GPS hyperlinks)
+                            if (typeof cell.value === 'object' && 'formula' in cell.value &&
+                                typeof (cell.value as any).formula === 'string' &&
+                                (cell.value as any).formula.startsWith('HYPERLINK')) {
+                                // Extract the display text from the formula string
+                                const match = (cell.value as any).formula.match(/HYPERLINK\(".*?",\s*"(.*?)"\)/);
+                                cellValue = match ? match[1] : '';
+                            } else if (typeof cell.value === 'object' && 'text' in cell.value) {
+                                // For rich text
+                                cellValue = (cell.value as any).text || '';
+                            } else {
+                                cellValue = cell.value.toString();
+                            }
+                        }
+                        maxLength = Math.max(maxLength, cellValue.length + 2);
+                    });
+                }
+                column.width = maxLength;
+            });
+
+            // Generate and download the file
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = this.getExcelFilename();
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Excel Exported',
+                text: 'Excel file exported successfully!',
+                confirmButtonText: 'OK',
+                timer: 1300,
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            console.error('Error generating Excel file:', error);
+            throw error;
+        }
+    }
+
+    private getExcelFilename(): string {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const hh = String(today.getHours()).padStart(2, '0');
+        const min = String(today.getMinutes()).padStart(2, '0');
+        const ss = String(today.getSeconds()).padStart(2, '0');
+        const dateTimeStr = `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+
+        return `Outlets_Report_${dateTimeStr}.xlsx`;
     }
 }

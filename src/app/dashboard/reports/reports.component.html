@@ -17,20 +17,20 @@
             </div>
             <div class="filters-content">
                 <div class="filters-row">
-                <div class="filter-group">
-                    <label for="assignmentFilter" class="filter-label">Assignment</label>
+                    <div class="filter-group">
+                        <label for="assignmentFilter" class="filter-label">Assignment</label>
                         <div class="custom-select assignment-dropdown" [class.open]="isAssignmentDropdownOpen"
                             (click)="toggleAssignmentDropdown($event)">
-                        <div class="select-display">
+                            <div class="select-display">
                                 <span class="select-text" [class.placeholder]="selectedAssignments.length === 0">
                                     {{ getSelectedAssignmentsText() }}
-                            </span>
-                            <span class="select-arrow">
-                                <span class="material-icons">keyboard_arrow_down</span>
-                            </span>
-                        </div>
-                        <div class="select-dropdown" *ngIf="isAssignmentDropdownOpen">
-                            <div class="dropdown-option" *ngFor="let assignment of assignments"
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isAssignmentDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let assignment of assignments"
                                     (click)="toggleAssignmentSelection(assignment, $event)">
                                     <div class="checkbox-wrapper">
                                         <input type="checkbox" [checked]="isAssignmentSelected(assignment)"
@@ -39,24 +39,24 @@
                                         <span class="checkbox-label">{{ assignment.name }}</span>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="filter-group">
-                    <label for="statusFilter" class="filter-label">Status</label>
+                    <div class="filter-group">
+                        <label for="statusFilter" class="filter-label">Status</label>
                         <div class="custom-select status-dropdown" [class.open]="isStatusDropdownOpen"
                             (click)="toggleStatusDropdown($event)">
-                        <div class="select-display">
+                            <div class="select-display">
                                 <span class="select-text" [class.placeholder]="selectedStatuses.length === 0">
                                     {{ getSelectedStatusesText() }}
-                            </span>
-                            <span class="select-arrow">
-                                <span class="material-icons">keyboard_arrow_down</span>
-                            </span>
-                        </div>
-                        <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
-                            <div class="dropdown-option" *ngFor="let status of statuses"
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let status of statuses"
                                     (click)="toggleStatusSelection(status, $event)">
                                     <div class="checkbox-wrapper">
                                         <input type="checkbox" [checked]="isStatusSelected(status)"
@@ -111,19 +111,19 @@
                                 <div class="date-picker-actions">
                                     <button class="btn btn-secondary" (click)="clearDateRange()">Clear</button>
                                     <button class="btn btn-primary" (click)="applyDateRange()">Apply</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="filter-actions">
+                    <div class="filter-actions">
                         <button class="btn btn-primary" (click)="search()" [disabled]="loading">
                             <l-tail-chase *ngIf="loading" size="sm" speed="1.5" color="white"></l-tail-chase>
                             Search
                         </button>
                         <button class="btn btn-secondary" (click)="clearSearch()" *ngIf="filtersApplied">
                             Clear
-                    </button>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -136,6 +136,11 @@
             <div class="results-header">
                 <h3 class="results-title">Store Results</h3>
                 <div class="results-summary">
+                    <button class="btn btn-secondary export-btn" (click)="exportToExcel()"
+                        [disabled]="loading || stores.length === 0">
+                        <span *ngIf="exporting" class="loading-spinner"></span>
+                        <span *ngIf="!exporting">Export to Excel</span>
+                    </button>
                     <span class="total-count">Total: {{ totalCount }} stores</span>
                 </div>
             </div>
