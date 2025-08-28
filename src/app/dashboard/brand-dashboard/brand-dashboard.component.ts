@@ -20,6 +20,7 @@ import { WorkflowsComponent } from '../workflows/workflows.component';
 import { CreateWorkflowComponent } from '../workflows/create-workflow/create-workflow.component';
 import { ViewWorkflowComponent } from '../workflows/view-workflow/view-workflow.component';
 import { BrandUserStoreViewComponent } from '../branduser-store-view/branduser-store-view.component';
+import { ReportsComponent } from '../reports/reports.component';
 import { ProfileComponent } from '../profile/profile.component';
 import { Subject, Subscription } from 'rxjs';
 
@@ -34,7 +35,7 @@ interface SidebarItem {
 @Component({
     selector: 'app-brand-dashboard',
     standalone: true,
-    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent, ProfileComponent],
+    imports: [CommonModule, RegionComponent, VendorComponent, DistributorComponent, ShopOutletsComponent, BoardDetailsComponent, UsersComponent, RolesComponent, AssignmentsComponent, CreateAssignmentComponent, ViewAssignmentComponent, WorkflowsComponent, CreateWorkflowComponent, ViewWorkflowComponent, BrandUserStoreViewComponent, ReportsComponent, ProfileComponent],
     templateUrl: './brand-dashboard.component.html',
     styleUrl: './brand-dashboard.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -43,6 +44,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
     sidebarItems: SidebarItem[] = [
         { name: 'Home', icon: 'home', route: '/dashboard', active: false, visible: true },
         { name: 'Assignments', icon: 'assignment', route: '/assignments', active: false, visible: true },
+        { name: 'Reports', icon: 'analytics', route: '/reports', active: false, visible: true },
         { name: 'Users', icon: 'people', route: '/users', active: false, visible: true },
         { name: 'Shop Outlets', icon: 'store', route: '/shop-outlets', active: false, visible: true },
         { name: 'Region', icon: 'public', route: '/region', active: false, visible: true },
@@ -350,6 +352,8 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
             activeItemName = 'Home';
         } else if (this.currentRoute === '/assignments' || this.currentRoute.startsWith('/assignments/')) {
             activeItemName = 'Assignments';
+        } else if (this.currentRoute === '/reports') {
+            activeItemName = 'Reports';
         } else if (this.currentRoute === '/users') {
             activeItemName = 'Users';
         } else if (this.currentRoute === '/shop-outlets') {

@@ -1,8 +1,9 @@
 /* Users Container */
 .users-container {
-    /* padding: 2rem; */
     max-width: 1400px;
     margin: 0 auto;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
 }
 
 /* Header Styles */
@@ -14,8 +15,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 111, 207, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 111, 207, 0.05);
 }
 
 .header-title {
@@ -25,13 +30,13 @@
 .page-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #006fcf;
+    color: #1e293b;
     margin: 0 0 0.5rem 0;
 }
 
 .page-description {
     font-size: 1rem;
-    color: #6c757d;
+    color: #64748b;
     margin: 0;
 }
 

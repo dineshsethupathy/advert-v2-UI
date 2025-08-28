@@ -1,0 +1,210 @@
+<div class="reports-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1 class="page-title">Reports</h1>
+                <p class="page-description">Generate and view various reports for your brand</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <div class="filters-card">
+            <div class="filters-header">
+                <h3 class="filters-title">Report Filters</h3>
+            </div>
+            <div class="filters-content">
+                <div class="filters-row">
+                <div class="filter-group">
+                    <label for="assignmentFilter" class="filter-label">Assignment</label>
+                        <div class="custom-select assignment-dropdown" [class.open]="isAssignmentDropdownOpen"
+                            (click)="toggleAssignmentDropdown($event)">
+                        <div class="select-display">
+                                <span class="select-text" [class.placeholder]="selectedAssignments.length === 0">
+                                    {{ getSelectedAssignmentsText() }}
+                            </span>
+                            <span class="select-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="select-dropdown" *ngIf="isAssignmentDropdownOpen">
+                            <div class="dropdown-option" *ngFor="let assignment of assignments"
+                                    (click)="toggleAssignmentSelection(assignment, $event)">
+                                    <div class="checkbox-wrapper">
+                                        <input type="checkbox" [checked]="isAssignmentSelected(assignment)"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="toggleAssignmentSelection(assignment, $event)">
+                                        <span class="checkbox-label">{{ assignment.name }}</span>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="statusFilter" class="filter-label">Status</label>
+                        <div class="custom-select status-dropdown" [class.open]="isStatusDropdownOpen"
+                            (click)="toggleStatusDropdown($event)">
+                        <div class="select-display">
+                                <span class="select-text" [class.placeholder]="selectedStatuses.length === 0">
+                                    {{ getSelectedStatusesText() }}
+                            </span>
+                            <span class="select-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
+                            <div class="dropdown-option" *ngFor="let status of statuses"
+                                    (click)="toggleStatusSelection(status, $event)">
+                                    <div class="checkbox-wrapper">
+                                        <input type="checkbox" [checked]="isStatusSelected(status)"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="toggleStatusSelection(status, $event)">
+                                        <span class="checkbox-label">{{ status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="dateRange" class="filter-label">Date Range</label>
+                        <div class="date-range-picker">
+                            <div class="date-range-display" (click)="toggleDatePicker()">
+                                <span class="date-range-text" [class.placeholder]="!startDate && !endDate">
+                                    {{ getDateRangeText() }}
+                                </span>
+                                <span class="date-range-icon">
+                                    <span class="material-icons">calendar_today</span>
+                                </span>
+                            </div>
+
+                            <div class="date-picker-dropdown" *ngIf="isDatePickerOpen">
+                                <div class="date-picker-header">
+                                    <button class="date-nav-btn" (click)="previousMonth()">
+                                        <span class="material-icons">chevron_left</span>
+                                    </button>
+                                    <span class="current-month">{{ getCurrentMonthYear() }}</span>
+                                    <button class="date-nav-btn" (click)="nextMonth()">
+                                        <span class="material-icons">chevron_right</span>
+                                    </button>
+                                </div>
+
+                                <div class="calendar-grid">
+                                    <div class="calendar-weekdays">
+                                        <span *ngFor="let day of weekdays">{{ day }}</span>
+                                    </div>
+                                    <div class="calendar-days">
+                                        <span *ngFor="let day of calendarDays" class="calendar-day"
+                                            [class.other-month]="!day.currentMonth"
+                                            [class.selected]="isDateSelected(day.date)"
+                                            [class.in-range]="isDateInRange(day.date)"
+                                            [class.range-start]="isRangeStart(day.date)"
+                                            [class.range-end]="isRangeEnd(day.date)" (click)="selectDate(day.date)">
+                                            {{ day.dayNumber }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="date-picker-actions">
+                                    <button class="btn btn-secondary" (click)="clearDateRange()">Clear</button>
+                                    <button class="btn btn-primary" (click)="applyDateRange()">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                        <button class="btn btn-primary" (click)="search()" [disabled]="loading">
+                            <l-tail-chase *ngIf="loading" size="sm" speed="1.5" color="white"></l-tail-chase>
+                            Search
+                        </button>
+                        <button class="btn btn-secondary" (click)="clearSearch()" *ngIf="filtersApplied">
+                            Clear
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" *ngIf="filtersApplied">
+        <div class="results-card">
+            <div class="results-header">
+                <h3 class="results-title">Store Results</h3>
+                <div class="results-summary">
+                    <span class="total-count">Total: {{ totalCount }} stores</span>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state" *ngIf="loading">
+                <l-tail-chase size="lg" speed="1.5" color="primary"></l-tail-chase>
+                <p>Loading stores...</p>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="results-grid" *ngIf="!loading && stores.length > 0">
+                <div class="table-container">
+                    <table class="stores-table">
+                        <thead>
+                            <tr>
+                                <th>Assignment</th>
+                                <th>Store Name</th>
+                                <th>SAP ID</th>
+                                <th>Region</th>
+                                <th>Overall Status</th>
+                                <th>Vendor Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let store of stores">
+                                <td>{{ store.assignmentName }}</td>
+                                <td>
+                                    <div class="store-info">
+                                        <div class="store-name">{{ store.storeName }}</div>
+                                        <!-- <div class="store-address" *ngIf="store.storeAddress">{{ store.storeAddress }}
+                                        </div> -->
+                                    </div>
+                                </td>
+                                <td>{{ store.sapId }}</td>
+                                <td>{{ store.regionName || '-' }}</td>
+                                <td>
+                                    <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
+                                        {{ store.overallStatus }}
+                                    </span>
+                                </td>
+                                <td>{{ store.vendorWorkStatus || '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" *ngIf="totalPages > 1">
+                    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
+                        Previous
+                    </button>
+
+                    <div class="page-numbers">
+                        <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+                    </div>
+
+                    <button class="pagination-btn" [disabled]="currentPage === totalPages"
+                        (click)="changePage(currentPage + 1)">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results" *ngIf="!loading && stores.length === 0">
+                <p>No stores found matching your criteria.</p>
+                <p>Try adjusting your filters or search parameters.</p>
+            </div>
+        </div>
+    </div>
+</div>

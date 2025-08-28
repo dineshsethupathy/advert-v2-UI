@@ -343,6 +343,11 @@
                 <app-assignments></app-assignments>
             </div>
 
+            <!-- Reports Content -->
+            <div *ngIf="currentRoute === '/reports'">
+                <app-reports></app-reports>
+            </div>
+
             <!-- Create Assignment Content -->
             <div *ngIf="currentRoute === '/assignments/create'">
                 <app-create-assignment></app-create-assignment>
