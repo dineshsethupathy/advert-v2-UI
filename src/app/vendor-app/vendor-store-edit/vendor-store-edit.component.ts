@@ -392,7 +392,9 @@ export class VendorStoreEditComponent implements OnInit {
                     icon: 'success',
                     title: 'Success',
                     text: 'Store form updated successfully!',
-                    confirmButtonColor: '#3085d6'
+                    showConfirmButton: false,
+                    // confirmButtonColor: '#3085d6',
+                    timer: 1500
                 }).then(() => {
                     // Navigate to store view
                     this.router.navigate(['/vendor-store-view', this.storeAssignmentId]);
@@ -445,7 +447,9 @@ export class VendorStoreEditComponent implements OnInit {
                             icon: 'success',
                             title: 'Completed!',
                             text: 'Store has been marked as complete successfully!',
-                            confirmButtonColor: '#3085d6'
+                            // confirmButtonColor: '#3085d6',
+                            showConfirmButton: false,
+                            timer: 1500
                         }).then(() => {
                             // Navigate to store view
                             this.router.navigate(['/vendor-store-view', this.storeAssignmentId]);

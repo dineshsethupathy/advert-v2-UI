@@ -62,7 +62,7 @@ export class VendorAssignmentViewComponent implements OnInit {
         Swal.fire({
             title: 'Update Status',
             text: `Are you sure you want to mark this store as "${status}"?`,
-            icon: 'question',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',

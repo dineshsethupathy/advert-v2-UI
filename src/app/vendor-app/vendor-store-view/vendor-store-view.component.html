@@ -49,32 +49,63 @@
                         {{ storeAssignment.vendorWorkStatus }}
                     </span>
                 </div>
-                <div class="info-item"
+            </div>
+        </div>
+
+        <!-- Board Details Section -->
+        <div class="board-details-section"
+            *ngIf="(storeAssignment.boardId || (storeAssignment.boardWidth && storeAssignment.boardHeight)) || (storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0)">
+            <h3>{{ (storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0) ? 'Board & Pole Details' : 'Board
+                Details' }}</h3>
+            <div class="board-details-grid"
+                [class.single-column]="!(storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0)">
+                <!-- Board Information -->
+                <div class="board-info"
                     *ngIf="storeAssignment.boardId || (storeAssignment.boardWidth && storeAssignment.boardHeight)">
-                    <label>Board Type</label>
-                    <span
-                        *ngIf="storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
-                        {{ storeAssignment.boardName }} ({{ storeAssignment.boardWidth }}" × {{
-                        storeAssignment.boardHeight }}")
-                    </span>
-                    <span
-                        *ngIf="storeAssignment.boardName && (!storeAssignment.boardWidth || !storeAssignment.boardHeight)">
-                        {{ storeAssignment.boardName }}
-                    </span>
-                    <span
-                        *ngIf="!storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
-                        {{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"
-                    </span>
+                    <div class="detail-item">
+                        <label>Board Type</label>
+                        <div class="detail-value">
+                            <span
+                                *ngIf="storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
+                                {{ storeAssignment.boardName }} ({{ storeAssignment.boardWidth }}" × {{
+                                storeAssignment.boardHeight }}")<span class="cost-display"
+                                    *ngIf="storeAssignment.boardCost" title="cost per sq ft"> ₹{{
+                                    storeAssignment.boardCost }}</span>
+                            </span>
+                            <span
+                                *ngIf="storeAssignment.boardName && (!storeAssignment.boardWidth || !storeAssignment.boardHeight)">
+                                {{ storeAssignment.boardName }}<span class="cost-display"
+                                    *ngIf="storeAssignment.boardCost" title="cost per sq ft"> ₹{{
+                                    storeAssignment.boardCost }}</span>
+                            </span>
+                            <span
+                                *ngIf="!storeAssignment.boardName && storeAssignment.boardWidth && storeAssignment.boardHeight">
+                                {{ storeAssignment.boardWidth }}" × {{ storeAssignment.boardHeight }}"<span
+                                    class="cost-display" *ngIf="storeAssignment.boardCost" title="cost per sq ft"> ₹{{
+                                    storeAssignment.boardCost }}</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item" *ngIf="storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0">
-                    <label>Pole(s)</label>
-                    <span *ngIf="storeAssignment.poleWidth && storeAssignment.poleHeight">
-                        {{ storeAssignment.poleQuantity }} ({{ storeAssignment.poleWidth }}" × {{
-                        storeAssignment.poleHeight }}")
-                    </span>
-                    <span *ngIf="!storeAssignment.poleWidth || !storeAssignment.poleHeight">
-                        {{ storeAssignment.poleQuantity }}
-                    </span>
+
+                <!-- Pole Information -->
+                <div class="pole-info" *ngIf="storeAssignment.poleQuantity && storeAssignment.poleQuantity > 0">
+                    <div class="detail-item">
+                        <label>Pole(s)</label>
+                        <div class="detail-value">
+                            <span *ngIf="storeAssignment.poleWidth && storeAssignment.poleHeight">
+                                {{ storeAssignment.poleQuantity }} ({{ storeAssignment.poleWidth }}" × {{
+                                storeAssignment.poleHeight }}")<span class="cost-display"
+                                    *ngIf="storeAssignment.poleCost" title="cost per sq ft"> ₹{{
+                                    storeAssignment.poleCost }}</span>
+                            </span>
+                            <span *ngIf="!storeAssignment.poleWidth || !storeAssignment.poleHeight">
+                                {{ storeAssignment.poleQuantity }}<span class="cost-display"
+                                    *ngIf="storeAssignment.poleCost" title="cost per sq ft"> ₹{{
+                                    storeAssignment.poleCost }}</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
