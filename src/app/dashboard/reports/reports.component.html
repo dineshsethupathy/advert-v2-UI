@@ -134,12 +134,17 @@
     <div class="results-section" *ngIf="filtersApplied">
         <div class="results-card">
             <div class="results-header">
-                <h3 class="results-title">Store Results</h3>
+                <h3 class="results-title">Shop Outlets Results</h3>
                 <div class="results-summary">
                     <button class="btn btn-secondary export-btn" (click)="exportToExcel()"
                         [disabled]="loading || stores.length === 0">
                         <span *ngIf="exporting" class="loading-spinner"></span>
                         <span *ngIf="!exporting">Export to Excel</span>
+                    </button>
+                    <button class="btn btn-secondary pdf-export-btn" (click)="exportToPdf()"
+                        [disabled]="loading || stores.length === 0">
+                        <span *ngIf="exportingPdf" class="loading-spinner"></span>
+                        <span *ngIf="!exportingPdf">Export to PDF</span>
                     </button>
                     <span class="total-count">Total: {{ totalCount }} stores</span>
                 </div>

@@ -3,6 +3,7 @@
     margin: 0 auto;
     min-height: 100vh;
     background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 1rem;
 }
 
 /* Page Header */
@@ -43,8 +44,6 @@
 .filters-section {
     margin-bottom: 2rem;
     position: relative;
-    z-index: 1001;
-    /* Higher than results section */
 }
 
 .filters-card {
@@ -246,27 +245,27 @@
     right: 0;
     background: white;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     z-index: 9999;
     margin-top: 4px;
-    padding: 16px;
-    min-width: 320px;
+    padding: 8px;
+    min-width: 240px;
 }
 
 .date-picker-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .date-nav-btn {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
+    padding: 4px;
+    border-radius: 3px;
     color: #6b7280;
     transition: all 0.2s ease;
 }
@@ -279,42 +278,42 @@
 .current-month {
     font-weight: 600;
     color: #1f2937;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 .calendar-grid {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .calendar-weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 8px;
+    gap: 1px;
+    margin-bottom: 4px;
 }
 
 .calendar-weekdays span {
     text-align: center;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     color: #6b7280;
-    padding: 8px 4px;
+    padding: 4px 1px;
 }
 
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 1px;
 }
 
 .calendar-day {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 36px;
-    border-radius: 6px;
+    height: 24px;
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 500;
     transition: all 0.2s ease;
     color: #1f2937;
@@ -344,30 +343,30 @@
     background-color: #3b82f6;
     color: white;
     font-weight: 600;
-    border-radius: 6px 0 0 6px;
+    border-radius: 3px 0 0 3px;
 }
 
 .calendar-day.range-end {
     background-color: #3b82f6;
     color: white;
     font-weight: 600;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 3px 3px 0;
 }
 
 .calendar-day.range-start.range-end {
-    border-radius: 6px;
+    border-radius: 3px;
 }
 
 .date-picker-actions {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: 6px;
 }
 
 .date-picker-actions .btn {
     flex: 1;
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 4px 8px;
+    font-size: 11px;
 }
 
 .btn {
@@ -410,7 +409,6 @@
 /* Results Section - Lower z-index */
 .results-section {
     margin-top: 2rem;
-    z-index: 1;
 }
 
 .results-header {
@@ -470,6 +468,41 @@
 }
 
 .export-btn .loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.pdf-export-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pdf-export-btn:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.pdf-export-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pdf-export-btn .loading-spinner {
     width: 16px;
     height: 16px;
     border: 2px solid transparent;

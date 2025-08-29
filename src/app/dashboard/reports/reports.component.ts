@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2';
+import { ReportService, StoreFrontendPdfData } from '../../services/report.service';
 
 @Component({
     selector: 'app-reports',
@@ -51,8 +52,9 @@ export class ReportsComponent implements OnInit {
 
     // Export properties
     exporting: boolean = false;
+    exportingPdf: boolean = false;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private reportService: ReportService) { }
 
     ngOnInit(): void {
         this.loadDropdownData();
@@ -98,12 +100,12 @@ export class ReportsComponent implements OnInit {
             }
         } catch (error) {
             console.error('Error loading dropdown data:', error);
-            // Fallback to sample data if API fails
-            this.assignments = [
-                { id: 1, name: 'Store Setup Assignment' },
-                { id: 2, name: 'Product Display Assignment' },
-                { id: 3, name: 'Promotional Material Assignment' }
-            ];
+            // dont want a fallback
+            // this.assignments = [
+            //     { id: 1, name: 'Store Setup Assignment' },
+            //     { id: 2, name: 'Product Display Assignment' },
+            //     { id: 3, name: 'Promotional Material Assignment' }
+            // ];
         }
     }
 
@@ -772,5 +774,88 @@ export class ReportsComponent implements OnInit {
         const dateTimeStr = `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
 
         return `Outlets_Report_${dateTimeStr}.xlsx`;
+    }
+
+    // PDF Export Methods
+    async exportToPdf(): Promise<void> {
+        if (this.stores.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Data to Export',
+                text: 'Please apply filters and search to get data for export.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        this.exportingPdf = true;
+
+        try {
+            // TODO: Get tenantId from auth service
+            const tenantId = 1; // Temporary hardcoded value
+
+            // Get assignment IDs and statuses from current filters
+            const assignmentIds = this.selectedAssignments.length > 0
+                ? this.selectedAssignments.map(a => a.id)
+                : undefined;
+
+            const statuses = this.selectedStatuses.length > 0
+                ? this.selectedStatuses
+                : undefined;
+
+            // Get frontend PDF data from backend
+            const frontendPdfData = await this.reportService.getFrontendPdfData(
+                tenantId,
+                assignmentIds,
+                statuses,
+                this.startDate,
+                this.endDate
+            );
+
+            if (frontendPdfData.stores.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Data Available',
+                    text: 'No data available for PDF generation with the current filters.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Generate PDF using frontend service
+            await this.reportService.generateFrontendPdf(frontendPdfData.stores);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'PDF Exported',
+                text: 'PDF report exported successfully!',
+                confirmButtonText: 'OK',
+                timer: 1300,
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            console.error('Error exporting to PDF:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Failed',
+                text: 'Error exporting to PDF. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            this.exportingPdf = false;
+        }
+    }
+
+    private getPdfFilename(): string {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const hh = String(today.getHours()).padStart(2, '0');
+        const min = String(today.getMinutes()).padStart(2, '0');
+        const ss = String(today.getSeconds()).padStart(2, '0');
+        const dateTimeStr = `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+
+        return `Outlets_Report_${dateTimeStr}.pdf`;
     }
 }
