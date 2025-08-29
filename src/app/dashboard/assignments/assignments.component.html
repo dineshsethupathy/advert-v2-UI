@@ -4,7 +4,7 @@
         <div class="header-content">
             <div class="header-title">
                 <h1 class="page-title">Assignments</h1>
-                <p class="page-description">Manage your store assignments and workflows</p>
+                <p class="page-description">Manage your outlet assignments and workflows</p>
             </div>
             <div class="header-actions">
                 <button class="add-btn" (click)="createNewAssignment()">
@@ -46,7 +46,7 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-number">{{ getTotalStores() }}</div>
-                    <div class="stat-label">Total Stores</div>
+                    <div class="stat-label">Total Outlets</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -55,7 +55,7 @@
                 </div>
                 <div class="stat-content">
                     <div class="stat-number">{{ getCompletedStores() }}</div>
-                    <div class="stat-label">Completed Stores</div>
+                    <div class="stat-label">Completed Outlets</div>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
                     <div class="table-cell">
                         <div class="progress-container">
                             <div class="progress-text">
-                                {{ assignment.completedStores }}/{{ assignment.totalStores }} stores
+                                {{ assignment.completedStores }}/{{ assignment.totalStores }} outlets
                             </div>
                             <div class="progress-bar">
                                 <div class="progress-fill" [style.width.%]="getProgressPercentage(assignment)"

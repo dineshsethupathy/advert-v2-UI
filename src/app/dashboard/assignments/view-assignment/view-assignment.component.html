@@ -14,7 +14,7 @@
             <div class="header-progress" *ngIf="assignment">
                 <div class="progress-info">
                     <div class="progress-text">
-                        {{ assignment.completedStores }}/{{ assignment.totalStores }} stores completed
+                        {{ assignment.completedStores }}/{{ assignment.totalStores }} outlets completed
                     </div>
                     <!-- <div class="progress-percentage">
                         {{ getProgressPercentage(assignment).toFixed(1) }}%
@@ -86,7 +86,7 @@
     <div class="stores-card">
         <div class="card-header">
             <h3 class="card-title">Shop Outlets</h3>
-            <p class="card-subtitle">Individual store progress and status</p>
+            <p class="card-subtitle">Individual outlet progress and status</p>
         </div>
 
         <!-- Tab Navigation -->
@@ -108,7 +108,7 @@
             <div class="tab-pane" [class.active]="activeTab === 'all'">
                 <div class="stores-table">
                     <div class="table-header">
-                        <div class="table-cell header-cell">Store Name</div>
+                        <div class="table-cell header-cell">Outlet Name</div>
                         <div class="table-cell header-cell">Address</div>
                         <div class="table-cell header-cell">Vendor Work Status</div>
                         <div class="table-cell header-cell">Approval Status</div>

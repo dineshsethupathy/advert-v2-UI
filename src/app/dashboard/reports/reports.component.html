@@ -146,7 +146,7 @@
                         <span *ngIf="exportingPdf" class="loading-spinner"></span>
                         <span *ngIf="!exportingPdf">Export to PDF</span>
                     </button>
-                    <span class="total-count">Total: {{ totalCount }} stores</span>
+                    <span class="total-count">Total: {{ totalCount }} Outlets</span>
                 </div>
             </div>
 
@@ -158,37 +158,155 @@
 
             <!-- Results Grid -->
             <div class="results-grid" *ngIf="!loading && stores.length > 0">
+                <div class="scroll-hint">
+                    <i class="scroll-icon">↔</i>
+                    <span>Scroll horizontally to view all columns</span>
+                </div>
                 <div class="table-container">
                     <table class="stores-table">
                         <thead>
                             <tr>
-                                <th>Assignment</th>
-                                <th>Store Name</th>
+                                <th>Assignment Name</th>
+                                <th>RETAILER/OUTLET NAME</th>
                                 <th>SAP ID</th>
-                                <th>Region</th>
                                 <th>Overall Status</th>
                                 <th>Vendor Status</th>
+                                <th>LOCATION</th>
+                                <th>GPS LOCATION</th>
+                                <th>MOBILE NUMBER</th>
+                                <th>BRANDING TYPE</th>
+                                <th>HEIGHT(FT)</th>
+                                <th>WIDTH(FT)</th>
+                                <th>HEIGHT(IN)</th>
+                                <th>WIDTH(IN)</th>
+                                <th>QTY</th>
+                                <th>TOTAL SQ FT. SIZE</th>
+                                <th>EACH RATE</th>
+                                <th>GROSS AMOUNT</th>
+                                <th>GST</th>
+                                <th>NET AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let store of stores">
-                                <td>{{ store.assignmentName }}</td>
-                                <td>
-                                    <div class="store-info">
-                                        <div class="store-name">{{ store.storeName }}</div>
-                                        <!-- <div class="store-address" *ngIf="store.storeAddress">{{ store.storeAddress }}
-                                        </div> -->
-                                    </div>
-                                </td>
-                                <td>{{ store.sapId }}</td>
-                                <td>{{ store.regionName || '-' }}</td>
-                                <td>
-                                    <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
-                                        {{ store.overallStatus }}
-                                    </span>
-                                </td>
-                                <td>{{ store.vendorWorkStatus || '-' }}</td>
-                            </tr>
+                            <ng-container *ngFor="let store of stores">
+                                <!-- Board Row -->
+                                <tr *ngIf="store.boardWidth && store.boardHeight">
+                                    <td>{{ store.assignmentName }}</td>
+                                    <td>
+                                        <div class="store-info">
+                                            <div class="store-name">{{ store.storeName }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ store.sapId }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
+                                            {{ store.overallStatus }}
+                                        </span>
+                                    </td>
+                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
+                                    <td>
+                                        <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
+                                            target="_blank" class="gps-link">
+                                            {{ getGpsDisplayText(store.gpsLocation) }}
+                                        </a>
+                                        <span *ngIf="!store.gpsLocation">-</span>
+                                    </td>
+                                    <td>{{ store.storePhoneNumber || '-' }}</td>
+                                    <td>{{ store.boardName || 'Board' }}</td>
+                                    <td>{{ getBoardHeightFt(store.boardHeight) }}</td>
+                                    <td>{{ getBoardWidthFt(store.boardWidth) }}</td>
+                                    <td>{{ store.boardHeight || 0 }}</td>
+                                    <td>{{ store.boardWidth || 0 }}</td>
+                                    <td>1</td>
+                                    <td>{{ getBoardArea(store.boardWidth, store.boardHeight) }}</td>
+                                    <td>{{ store.boardCost || 0 | number:'1.2-2' }}</td>
+                                    <td>{{ getBoardGrossAmount(store.boardWidth, store.boardHeight, store.boardCost) |
+                                        number:'1.2-2' }}</td>
+                                    <td>{{ getBoardGst(store.boardWidth, store.boardHeight, store.boardCost) |
+                                        number:'1.2-2' }}</td>
+                                    <td>{{ getBoardNetAmount(store.boardWidth, store.boardHeight, store.boardCost) |
+                                        number:'1.2-2' }}</td>
+                                </tr>
+
+                                <!-- Pole Row -->
+                                <tr *ngIf="store.poleQuantity && store.poleWidth && store.poleHeight" class="pole-row">
+                                    <td>{{ store.assignmentName }}</td>
+                                    <td>
+                                        <div class="store-info">
+                                            <div class="store-name">{{ store.storeName }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ store.sapId }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
+                                            {{ store.overallStatus }}
+                                        </span>
+                                    </td>
+                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
+                                    <td>
+                                        <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
+                                            target="_blank" class="gps-link">
+                                            {{ getGpsDisplayText(store.gpsLocation) }}
+                                        </a>
+                                        <span *ngIf="!store.gpsLocation">-</span>
+                                    </td>
+                                    <td>{{ store.storePhoneNumber || '-' }}</td>
+                                    <td>Pole</td>
+                                    <td>{{ getPoleHeightFt(store.poleHeight) }}</td>
+                                    <td>{{ getPoleWidthFt(store.poleWidth) }}</td>
+                                    <td>{{ store.poleHeight || 0 }}</td>
+                                    <td>{{ store.poleWidth || 0 }}</td>
+                                    <td>{{ store.poleQuantity || 0 }}</td>
+                                    <td>{{ getPoleArea(store.poleWidth, store.poleHeight, store.poleQuantity) }}</td>
+                                    <td>{{ store.poleCost || 0 | number:'1.2-2' }}</td>
+                                    <td>{{ getPoleGrossAmount(store.poleWidth, store.poleHeight, store.poleQuantity,
+                                        store.poleCost) | number:'1.2-2' }}</td>
+                                    <td>{{ getPoleGst(store.poleWidth, store.poleHeight, store.poleQuantity,
+                                        store.poleCost) | number:'1.2-2' }}</td>
+                                    <td>{{ getPoleNetAmount(store.poleWidth, store.poleHeight, store.poleQuantity,
+                                        store.poleCost) | number:'1.2-2' }}</td>
+                                </tr>
+
+                                <!-- Default Row (if neither board nor pole exists) -->
+                                <tr
+                                    *ngIf="(!store.boardWidth || !store.boardHeight) && (!store.poleQuantity || !store.poleWidth || !store.poleHeight)">
+                                    <td>{{ store.assignmentName }}</td>
+                                    <td>
+                                        <div class="store-info">
+                                            <div class="store-name">{{ store.storeName }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ store.sapId }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
+                                            {{ store.overallStatus }}
+                                        </span>
+                                    </td>
+                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
+                                    <td>
+                                        <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
+                                            target="_blank" class="gps-link">
+                                            {{ getGpsDisplayText(store.gpsLocation) }}
+                                        </a>
+                                        <span *ngIf="!store.gpsLocation">-</span>
+                                    </td>
+                                    <td>{{ store.storePhoneNumber || '-' }}</td>
+                                    <td>{{ store.boardName || 'Board' }}</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </div>

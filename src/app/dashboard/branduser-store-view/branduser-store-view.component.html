@@ -16,12 +16,13 @@
             <div class="header-actions" *ngIf="isMultiStoreMode">
                 <!-- Navigation buttons - only show when multiple stores -->
                 <div class="navigation-row" *ngIf="stores.length > 1">
-                    <span class="store-counter">Vendor Completed Store {{ currentStoreIndex + 1 }} of {{ stores.length
-                        }}</span>
+
                     <button class="nav-btn" [disabled]="currentStoreIndex === 0" (click)="previousStore()">
                         <span class="material-icons">navigate_before</span>
                         Previous
                     </button>
+                    <span class="store-counter">Vendor Completed Outlets {{ currentStoreIndex + 1 }} of {{ stores.length
+                        }}</span>
                     <button class="nav-btn" [disabled]="currentStoreIndex === stores.length - 1" (click)="nextStore()">
                         Next
                         <span class="material-icons">navigate_next</span>
@@ -67,13 +68,13 @@
     <!-- Store Details Card -->
     <div class="details-card">
         <div class="card-header">
-            <h3 class="card-title">Store Information</h3>
+            <h3 class="card-title">Outlet Information</h3>
         </div>
         <div class="details-table-container">
             <table class="details-table">
                 <tbody>
                     <tr>
-                        <td class="detail-label">Store Name:</td>
+                        <td class="detail-label">Outlet Name:</td>
                         <td class="detail-value">{{ storeViewData.storeAssignment.storeName }}</td>
                         <td class="detail-label">SAP ID:</td>
                         <td class="detail-value">{{ storeViewData.storeAssignment.sapId }}</td>

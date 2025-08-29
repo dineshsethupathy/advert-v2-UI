@@ -54,6 +54,7 @@
     padding: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 111, 207, 0.05);
     position: relative;
+    z-index: 10;
 }
 
 .filters-header {
@@ -169,6 +170,7 @@
     padding: 0.75rem 1rem;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    font-weight: 600;
 }
 
 .dropdown-option:hover {
@@ -178,6 +180,7 @@
 .dropdown-option.selected {
     background-color: #eff6ff;
     color: #1d4ed8;
+    font-weight: 700;
 }
 
 /* Checkbox Wrapper Styles */
@@ -409,6 +412,8 @@
 /* Results Section - Lower z-index */
 .results-section {
     margin-top: 2rem;
+    position: relative;
+    z-index: 1;
 }
 
 .results-header {
@@ -544,41 +549,232 @@
     margin-top: 1.5rem;
 }
 
+.scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px 8px 0 0;
+    padding: 3px 16px;
+    font-size: 13px;
+    color: #64748b;
+    border-bottom: none;
+}
+
+.scroll-icon {
+    font-style: normal;
+    font-size: 16px;
+    color: #3b82f6;
+    /* animation: scroll-hint 2s ease-in-out infinite; */
+}
+
+@keyframes scroll-hint {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+}
+
 .table-container {
     overflow-x: auto;
-    border-radius: 8px;
+    border-radius: 0 0 8px 8px;
     border: 1px solid #e5e7eb;
     background: white;
+    max-width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.table-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8));
+    pointer-events: none;
+    z-index: 1;
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 .stores-table {
     width: 100%;
+    min-width: 2000px;
+    /* Ensure table has minimum width for all columns */
     border-collapse: collapse;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
     line-height: 1.4;
+    border: 1px solid #e2e8f0;
 }
 
 .stores-table th {
     background: #f8fafc;
     color: #1e293b;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 16px 12px;
-    text-align: left;
+    padding: 16px 8px;
+    text-align: center;
     border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
     white-space: nowrap;
+    min-width: 100px;
 }
 
 .stores-table td {
-    padding: 16px 12px;
+    padding: 16px 8px;
     border-bottom: 1px solid #f1f5f9;
-    color: #334155;
-    font-size: 14px;
+    border-right: 1px solid #e2e8f0;
+    color: #000000;
+    font-size: 13px;
     vertical-align: top;
+    white-space: nowrap;
+    min-width: 100px;
 }
+
+/* Specific column widths for better layout */
+.stores-table th:nth-child(1),
+.stores-table td:nth-child(1) {
+    min-width: 120px;
+    border-left: 1px solid #e2e8f0;
+}
+
+/* Assignment Name */
+.stores-table th:nth-child(2),
+.stores-table td:nth-child(2) {
+    min-width: 150px;
+}
+
+/* Store Name */
+.stores-table th:nth-child(3),
+.stores-table td:nth-child(3) {
+    min-width: 80px;
+}
+
+/* SAP ID */
+.stores-table th:nth-child(4),
+.stores-table td:nth-child(4) {
+    min-width: 100px;
+}
+
+/* Overall Status */
+.stores-table th:nth-child(5),
+.stores-table td:nth-child(5) {
+    min-width: 100px;
+}
+
+/* Vendor Status */
+.stores-table th:nth-child(6),
+.stores-table td:nth-child(6) {
+    min-width: 200px;
+}
+
+/* Location */
+.stores-table th:nth-child(7),
+.stores-table td:nth-child(7) {
+    min-width: 150px;
+}
+
+/* GPS Location */
+.stores-table th:nth-child(8),
+.stores-table td:nth-child(8) {
+    min-width: 120px;
+}
+
+/* Mobile Number */
+.stores-table th:nth-child(9),
+.stores-table td:nth-child(9) {
+    min-width: 120px;
+}
+
+/* Branding Type */
+.stores-table th:nth-child(10),
+.stores-table td:nth-child(10) {
+    min-width: 80px;
+}
+
+/* Height(FT) */
+.stores-table th:nth-child(11),
+.stores-table td:nth-child(11) {
+    min-width: 80px;
+}
+
+/* Width(FT) */
+.stores-table th:nth-child(12),
+.stores-table td:nth-child(12) {
+    min-width: 80px;
+}
+
+/* Height(IN) */
+.stores-table th:nth-child(13),
+.stores-table td:nth-child(13) {
+    min-width: 80px;
+}
+
+/* Width(IN) */
+.stores-table th:nth-child(14),
+.stores-table td:nth-child(14) {
+    min-width: 60px;
+}
+
+/* QTY */
+.stores-table th:nth-child(15),
+.stores-table td:nth-child(15) {
+    min-width: 120px;
+}
+
+/* Total SQ FT */
+.stores-table th:nth-child(16),
+.stores-table td:nth-child(16) {
+    min-width: 100px;
+}
+
+/* Each Rate */
+.stores-table th:nth-child(17),
+.stores-table td:nth-child(17) {
+    min-width: 120px;
+}
+
+/* Gross Amount */
+.stores-table th:nth-child(18),
+.stores-table td:nth-child(18) {
+    min-width: 80px;
+}
+
+/* NET AMOUNT */
+.stores-table th:nth-child(19),
+.stores-table td:nth-child(19) {
+    min-width: 120px;
+    border-right: none;
+}
+
+/* Net Amount */
 
 .stores-table tbody tr:hover {
     background-color: #f8fafc;
@@ -587,6 +783,57 @@
 
 .stores-table tbody tr:last-child td {
     border-bottom: none;
+}
+
+/* Remove right border from last column headers and cells */
+.stores-table th:last-child,
+.stores-table td:last-child {
+    border-right: none;
+}
+
+/* GPS Link Styling */
+.gps-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.gps-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Number formatting for financial columns */
+.stores-table td:nth-child(15),
+.stores-table td:nth-child(16),
+.stores-table td:nth-child(17),
+.stores-table td:nth-child(18),
+.stores-table td:nth-child(19) {
+    text-align: right;
+    /* font-family: 'Courier New', monospace; */
+    /* font-weight: 500; */
+}
+
+.stores-table td:nth-child(19) {
+    font-weight: bold;
+    background-color: #e5f6ea;
+}
+
+/* Highlight branding type cell for pole rows */
+.stores-table tbody tr.pole-row td:nth-child(9) {
+    /* background-color: #dedede; */
+    font-weight: 600;
+    color: #000000;
+}
+
+/* Dimension columns alignment */
+.stores-table td:nth-child(10),
+.stores-table td:nth-child(11),
+.stores-table td:nth-child(12),
+.stores-table td:nth-child(13),
+.stores-table td:nth-child(14) {
+    text-align: center;
 }
 
 /* Store Info Styling */

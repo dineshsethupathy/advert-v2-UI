@@ -6,11 +6,12 @@ import { environment } from '../../../environments/environment';
 import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2';
 import { ReportService, StoreFrontendPdfData } from '../../services/report.service';
+import { TrimPipe } from './trim.pipe';
 
 @Component({
     selector: 'app-reports',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TrimPipe],
     templateUrl: './reports.component.html',
     styleUrl: './reports.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -165,7 +166,8 @@ export class ReportsComponent implements OnInit {
                     totalPages: this.totalPages,
                     currentPage: this.currentPage,
                     filtersApplied: this.filtersApplied,
-                    storesCount: this.stores.length
+                    storesCount: this.stores.length,
+                    stores: this.stores
                 });
             }
         } catch (error) {
@@ -412,6 +414,104 @@ export class ReportsComponent implements OnInit {
             default:
                 return 'status-default';
         }
+    }
+
+    // Helper methods for board calculations
+    getBoardHeightFt(heightIn: number): number {
+        if (!heightIn) return 0;
+        return +(heightIn / 12).toFixed(2);
+    }
+
+    getBoardWidthFt(widthIn: number): number {
+        if (!widthIn) return 0;
+        return +(widthIn / 12).toFixed(2);
+    }
+
+    getBoardArea(widthIn: number, heightIn: number): number {
+        console.log('widthIn..', widthIn);
+        if (!widthIn || !heightIn) return 0;
+        const widthFt = widthIn / 12;
+        const heightFt = heightIn / 12;
+        return +(widthFt * heightFt).toFixed(2);
+    }
+
+    getBoardGrossAmount(widthIn: number, heightIn: number, cost: number): number {
+        if (!widthIn || !heightIn || !cost) return 0;
+        const area = this.getBoardArea(widthIn, heightIn);
+        return +(area * cost).toFixed(2);
+    }
+
+    getBoardGst(widthIn: number, heightIn: number, cost: number): number {
+        if (!widthIn || !heightIn || !cost) return 0;
+        const grossAmount = this.getBoardGrossAmount(widthIn, heightIn, cost);
+        return +(grossAmount * 0.18).toFixed(2);
+    }
+
+    getBoardNetAmount(widthIn: number, heightIn: number, cost: number): number {
+        if (!widthIn || !heightIn || !cost) return 0;
+        const grossAmount = this.getBoardGrossAmount(widthIn, heightIn, cost);
+        const gst = this.getBoardGst(widthIn, heightIn, cost);
+        return +(grossAmount + gst).toFixed(2);
+    }
+
+    // Helper methods for pole calculations
+    getPoleHeightFt(heightIn: number): number {
+        if (!heightIn) return 0;
+        return +(heightIn / 12).toFixed(2);
+    }
+
+    getPoleWidthFt(widthIn: number): number {
+        if (!widthIn) return 0;
+        return +(widthIn / 12).toFixed(2);
+    }
+
+    getPoleArea(widthIn: number, heightIn: number, quantity: number): number {
+        if (!widthIn || !heightIn || !quantity) return 0;
+        const widthFt = widthIn / 12;
+        const heightFt = heightIn / 12;
+        const area = widthFt * heightFt;
+        return +(area * quantity).toFixed(2);
+    }
+
+    getPoleGrossAmount(widthIn: number, heightIn: number, quantity: number, cost: number): number {
+        if (!widthIn || !heightIn || !quantity || !cost) return 0;
+        const area = this.getPoleArea(widthIn, heightIn, quantity);
+        return +(area * cost).toFixed(2);
+    }
+
+    getPoleGst(widthIn: number, heightIn: number, quantity: number, cost: number): number {
+        if (!widthIn || !heightIn || !quantity || !cost) return 0;
+        const grossAmount = this.getPoleGrossAmount(widthIn, heightIn, quantity, cost);
+        return +(grossAmount * 0.18).toFixed(2);
+    }
+
+    getPoleNetAmount(widthIn: number, heightIn: number, quantity: number, cost: number): number {
+        if (!widthIn || !heightIn || !quantity || !cost) return 0;
+        const grossAmount = this.getPoleGrossAmount(widthIn, heightIn, quantity, cost);
+        const gst = this.getPoleGst(widthIn, heightIn, quantity, cost);
+        return +(grossAmount + gst).toFixed(2);
+    }
+
+    // GPS helper methods
+    getGpsDisplayText(gpsLocation: string): string {
+        if (!gpsLocation) return '';
+        const gpsParts = gpsLocation.split('|');
+        if (gpsParts.length >= 3) {
+            return gpsParts[0]; // Show address part
+        }
+        return gpsLocation;
+    }
+
+    getGoogleMapsUrl(gpsLocation: string): string {
+        console.log('gpsLocation..', gpsLocation);
+        if (!gpsLocation) return '';
+        const gpsParts = gpsLocation.split('|');
+        if (gpsParts.length >= 3) {
+            const lat = gpsParts[1];
+            const lng = gpsParts[2];
+            return `https://www.google.com/maps?q=${lat},${lng}`;
+        }
+        return '';
     }
 
     // Excel Export Methods

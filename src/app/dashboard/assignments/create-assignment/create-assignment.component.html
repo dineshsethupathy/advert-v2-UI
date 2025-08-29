@@ -2,7 +2,7 @@
     <div class="form-card">
         <div class="form-header">
             <h1 class="form-title">Create New Assignment</h1>
-            <p class="form-subtitle">Assign stores to a vendor with a specific workflow</p>
+            <p class="form-subtitle">Assign outlets to a vendor with a specific workflow</p>
             <button type="button" class="close-btn" (click)="cancel()" title="Close">
                 <span class="close-icon">×</span>
             </button>
@@ -101,7 +101,7 @@
 
             <!-- Store Selection -->
             <div class="form-section">
-                <h3 class="section-title">Store Selection</h3>
+                <h3 class="section-title">Outlet Selection</h3>
 
                 <!-- Filters -->
                 <div class="filters-container" [formGroup]="filterForm">
@@ -149,7 +149,7 @@
                                             <input type="checkbox" [checked]="selectAllPages"
                                                 (change)="selectAllStores()">
                                             <span class="checkmark"></span>
-                                            Select All Stores
+                                            Select All Outlets
                                         </label>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@
 
                             <div class="right-controls">
                                 <div class="pagination-info">
-                                    Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} stores
+                                    Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} outlets
                                 </div>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                                 <input type="checkbox" [checked]="showStoresOver90Days"
                                     (change)="toggleStoresOver90DaysFilter()">
                                 <span class="checkmark"></span>
-                                Show stores that haven't had an assignment in the last 90 days
+                                Show outlets that haven't had an assignment in the last 90 days
                             </label>
                         </div>
 
