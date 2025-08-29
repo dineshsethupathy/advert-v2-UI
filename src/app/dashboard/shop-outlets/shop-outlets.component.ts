@@ -263,12 +263,21 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
                 });
             },
             error: (error) => {
-                console.error('Error deleting shop:', error);
+                console.error('Error deleting shop:', error.error.error);
                 this.errorMessage = 'Failed to delete shop';
                 this.loading = false;
+
+                // Extract error message from backend response
+                let errorMessage = 'Internal error message occurred';
+                if (error.error && error.error.error) {
+                    if (error.error.error.includes('Cannot delete store with active assignments')) {
+                        errorMessage = 'Cannot delete outlet with active assignments';
+                    }
+                }
+
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Failed to delete shop.',
+                    text: errorMessage,
                     icon: 'error',
                     confirmButtonColor: '#dc3545'
                 });

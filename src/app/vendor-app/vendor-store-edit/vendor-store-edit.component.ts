@@ -566,7 +566,7 @@ export class VendorStoreEditComponent implements OnInit {
         if (hasPole) {
             // Add required validators when checkbox is checked
             this.storeForm.get('poleQuantity')?.setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
-            this.storeForm.get('poleWidth')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(100)]);
+            this.storeForm.get('poleWidth')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(1000)]);
             this.storeForm.get('poleHeight')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(1000)]);
             this.storeForm.get('poleCost')?.setValidators([Validators.required, Validators.min(0.01), Validators.max(10000)]);
         } else {

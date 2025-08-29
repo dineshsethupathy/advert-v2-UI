@@ -151,26 +151,6 @@
                     <!-- Store Grid Header -->
                     <div *ngIf="!loading" class="store-selection-content">
                         <div class="store-grid-header">
-                            <div class="selection-controls">
-                                <div class="filter-controls">
-                                    <div class="select-all-section">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" [checked]="selectAllPages"
-                                                (change)="selectAllStores()">
-                                            <span class="checkmark"></span>
-                                            Select All Outlets
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- <label class="checkbox-label">
-                                    <input type="checkbox" [checked]="selectCurrentPage"
-                                        (change)="selectCurrentPageStores()">
-                                    <span class="checkmark"></span>
-                                    Select Current Page
-                                </label> -->
-                            </div>
-
                             <div class="right-controls">
                                 <div class="pagination-info">
                                     Showing {{ startIndex + 1 }}-{{ endIndex }} of {{ totalStores }} outlets
@@ -180,42 +160,60 @@
 
 
 
-                        <!-- Store Grid -->
-                        <div class="store-grid">
-                            <div *ngFor="let store of currentPageStores" class="store-item">
-                                <label class="store-checkbox">
-                                    <input type="checkbox" [checked]="isStoreSelected(store.id)"
-                                        (change)="toggleStoreSelection(store.id)">
-                                    <span class="checkmark"></span>
-                                    <div class="store-info">
-                                        <div class="store-main-info">
-                                            <span class="store-name">{{ store.name }}</span>
-                                            <span class="store-address">{{ store.address }}</span>
-                                            <span class="store-region">{{ store.regionName }}</span>
-                                        </div>
-
-                                        <div class="store-assignment-info">
-                                            <!-- Last Assignment Date -->
-                                            <div class="assignment-info-item" *ngIf="store.lastAssignmentDate">
-                                                <span class="info-label">Last Assignment Date:</span>
-                                                <span class="info-value">{{ store.lastAssignmentDate | date:'shortDate'
-                                                    }}</span>
-                                            </div>
-
-                                            <!-- Board Details -->
-                                            <div class="assignment-info-item" *ngIf="store.lastAssignedBoardType">
-                                                <span class="info-label">Board:</span>
-                                                <span class="info-value">{{ store.lastAssignedBoardType }}</span>
-                                            </div>
-
-                                            <!-- New Store Indicator -->
-                                            <div class="info-chip new-store" *ngIf="!store.lastAssignmentDate">
-                                                <span class="chip-text">New Store</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
+                        <!-- Store Table -->
+                        <div class="store-table-container">
+                            <table class="store-table">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-header">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" [checked]="selectAllPages"
+                                                    (change)="selectAllStores()">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </th>
+                                        <th (click)="sortBy('name')" class="sortable-header">
+                                            Store Name
+                                            <span class="sort-icon">{{ getSortIcon('name') }}</span>
+                                        </th>
+                                        <th (click)="sortBy('address')" class="sortable-header">
+                                            Address
+                                            <span class="sort-icon">{{ getSortIcon('address') }}</span>
+                                        </th>
+                                        <th (click)="sortBy('regionName')" class="sortable-header">
+                                            Region
+                                            <span class="sort-icon">{{ getSortIcon('regionName') }}</span>
+                                        </th>
+                                        <th (click)="sortBy('lastAssignmentDate')" class="sortable-header">
+                                            Last Assignment Date
+                                            <span class="sort-icon">{{ getSortIcon('lastAssignmentDate') }}</span>
+                                        </th>
+                                        <th (click)="sortBy('lastAssignedBoardType')" class="sortable-header">
+                                            Board Type
+                                            <span class="sort-icon">{{ getSortIcon('lastAssignedBoardType') }}</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let store of currentPageStores" class="store-row">
+                                        <td class="checkbox-cell">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" [checked]="isStoreSelected(store.id)"
+                                                    (change)="toggleStoreSelection(store.id)">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </td>
+                                        <td class="store-name">{{ store.name || '-' }}</td>
+                                        <td class="store-address">{{ store.address || '-' }}</td>
+                                        <td class="store-region">{{ store.regionName || '-' }}</td>
+                                        <td class="last-assignment-date">
+                                            {{ store.lastAssignmentDate ? (store.lastAssignmentDate | date:'shortDate')
+                                            : '-' }}
+                                        </td>
+                                        <td class="board-type">{{ store.lastAssignedBoardType || '-' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
                         <!-- Pagination -->

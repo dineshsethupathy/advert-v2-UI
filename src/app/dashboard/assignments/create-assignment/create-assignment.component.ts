@@ -46,6 +46,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     loading = false;
     submitting = false;
 
+    // Sorting properties
+    currentSortField: string = 'name';
+    currentSortDirection: 'asc' | 'desc' = 'asc';
+
     // Filter states
     // showStoresOver90Days = false; // Replaced with customizable days filter
 
@@ -195,6 +199,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
                                         // console.log('Stores loaded successfully:', stores);
                                         this.stores = stores;
                                         this.filteredStores = stores;
+
+                                        // Apply initial sort by Store Name in ascending order
+                                        this.sortStores();
+
                                         this.updatePagination();
                                         this.updateSelectionCheckboxes();
                                         this.loading = false;
@@ -343,13 +351,21 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         }
 
         this.totalStores = this.filteredStores.length;
+
+        // Apply sorting if a sort field is selected
+        if (this.currentSortField) {
+            this.sortStores();
+        }
+
         console.log('Stores filtered:', {
             totalStores: this.totalStores,
             filteredStores: this.filteredStores.length,
             currentPageStores: this.currentPageStores.length,
             currentPage: this.currentPage,
             pageSize: this.pageSize,
-            daysFilter: filterValues.daysFilter
+            daysFilter: filterValues.daysFilter,
+            sortField: this.currentSortField,
+            sortDirection: this.currentSortDirection
         });
         this.updateSelectionCheckboxes(); // Update checkbox states after filtering
     }
@@ -457,6 +473,60 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     isStoreSelected(storeId: number): boolean {
         return this.selectedStoreIds.includes(storeId);
+    }
+
+    // =============================================
+    // SORTING METHODS
+    // =============================================
+
+    sortBy(field: string): void {
+        if (this.currentSortField === field) {
+            // Toggle direction if same field
+            this.currentSortDirection = this.currentSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // New field, start with ascending
+            this.currentSortField = field;
+            this.currentSortDirection = 'asc';
+        }
+
+        this.sortStores();
+        this.updatePagination();
+    }
+
+    sortStores(): void {
+        if (!this.currentSortField) return;
+
+        this.filteredStores.sort((a: any, b: any) => {
+            let aValue = a[this.currentSortField];
+            let bValue = b[this.currentSortField];
+
+            // Handle null/undefined values
+            if (aValue === null || aValue === undefined) aValue = '';
+            if (bValue === null || bValue === undefined) bValue = '';
+
+            // Handle date sorting
+            if (this.currentSortField === 'lastAssignmentDate') {
+                if (!aValue) aValue = new Date(0);
+                if (!bValue) bValue = new Date(0);
+                aValue = new Date(aValue);
+                bValue = new Date(bValue);
+            }
+
+            // Convert to strings for comparison
+            aValue = aValue.toString().toLowerCase();
+            bValue = bValue.toString().toLowerCase();
+
+            if (this.currentSortDirection === 'asc') {
+                return aValue.localeCompare(bValue);
+            } else {
+                return bValue.localeCompare(aValue);
+            }
+        });
+    }
+
+    getSortIcon(field: string): string {
+        if (this.currentSortField !== field) return '';
+        return this.currentSortDirection === 'asc' ? '↑' : '↓';
     }
 
 
