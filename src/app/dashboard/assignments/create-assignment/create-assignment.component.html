@@ -71,6 +71,7 @@
 
                     <div class="form-group half-width">
                         <label for="workflowSelect" class="form-label">Select Workflow *</label>
+                        <!-- NOTE: Vendor Workflow is filtered out in the component to prevent brand users from selecting it -->
                         <div class="custom-select" [class.open]="workflowDropdownOpen"
                             (click)="toggleWorkflowDropdown()">
                             <div class="select-display">

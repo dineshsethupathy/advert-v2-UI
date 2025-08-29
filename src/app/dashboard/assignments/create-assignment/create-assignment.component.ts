@@ -177,7 +177,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
                 this.workflowService.getWorkflows().subscribe({
                     next: (workflows) => {
                         // console.log('Workflows loaded successfully:', workflows);
-                        this.workflows = workflows;
+                        // Filter out 'Vendor Workflow' from the dropdown options
+                        // NOTE: Vendor Workflow should not be selectable for brand users creating assignments
+                        // as it's specifically designed for vendor app workflow management
+                        this.workflows = workflows.filter(workflow => workflow.name !== 'Vendor Workflow');
 
                         // Then load regions
                         this.regionService.getRegions().subscribe({
