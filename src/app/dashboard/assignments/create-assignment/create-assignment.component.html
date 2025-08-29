@@ -104,41 +104,49 @@
             <div class="form-section">
                 <h3 class="section-title">Outlet Selection</h3>
 
-                <!-- Filters -->
-                <div class="filters-container" [formGroup]="filterForm">
-                    <div class="filter-group">
-                        <label for="regionFilter" class="form-label">Region Filter</label>
-                        <div class="custom-select" [class.open]="regionDropdownOpen" (click)="toggleRegionDropdown()">
-                            <div class="select-display">
-                                <span class="select-text" [class.placeholder]="!selectedRegionName">
-                                    {{ selectedRegionName || 'All Regions' }}
-                                </span>
-                                <span class="select-arrow">
-                                    <span class="material-icons">keyboard_arrow_down</span>
-                                </span>
-                            </div>
-                            <div class="select-dropdown" *ngIf="regionDropdownOpen" (click)="$event.stopPropagation()">
-                                <div class="dropdown-option" (click)="selectRegion(null)">
-                                    All Regions
+                <!-- Store Selection Interface -->
+                <div class="store-selection-section">
+
+                    <!-- Filters -->
+                    <div class="filters-container" [formGroup]="filterForm">
+                        <div class="filter-group">
+                            <label for="regionFilter" class="form-label">Region Filter</label>
+                            <div class="custom-select" [class.open]="regionDropdownOpen"
+                                (click)="toggleRegionDropdown()">
+                                <div class="select-display">
+                                    <span class="select-text" [class.placeholder]="!selectedRegionName">
+                                        {{ selectedRegionName || 'All Regions' }}
+                                    </span>
+                                    <span class="select-arrow">
+                                        <span class="material-icons">keyboard_arrow_down</span>
+                                    </span>
                                 </div>
-                                <div class="dropdown-option" *ngFor="let region of regions"
-                                    [class.selected]="selectedRegion === region.id" (click)="selectRegion(region)">
-                                    {{ region.name }}
+                                <div class="select-dropdown" *ngIf="regionDropdownOpen"
+                                    (click)="$event.stopPropagation()">
+                                    <div class="dropdown-option" (click)="selectRegion(null)">
+                                        All Regions
+                                    </div>
+                                    <div class="dropdown-option" *ngFor="let region of regions"
+                                        [class.selected]="selectedRegion === region.id" (click)="selectRegion(region)">
+                                        {{ region.name }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                    </div>
+                        <div class="filter-group">
+                            <label for="cityFilter" class="form-label">City Filter</label>
+                            <input type="text" id="cityFilter" name="cityFilter" formControlName="cityFilter"
+                                class="form-input" placeholder="Search by City">
+                        </div>
 
-                    <div class="filter-group">
-                        <label for="cityFilter" class="form-label">City Filter</label>
-                        <input type="text" id="cityFilter" name="cityFilter" formControlName="cityFilter"
-                            class="form-input" placeholder="Search by city...">
+                        <div class="filter-group">
+                            <label for="daysFilter" class="form-label">Days Since Last Assignment</label>
+                            <input type="number" id="daysFilter" name="daysFilter" formControlName="daysFilter"
+                                class="form-input" placeholder="Enter days (e.g., 90)" min="1" max="365">
+                            <small class="form-help">Leave empty to show all outlets</small>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Store Selection Interface -->
-                <div class="store-selection-section">
 
                     <!-- Store Grid Header -->
                     <div *ngIf="!loading" class="store-selection-content">
@@ -170,15 +178,7 @@
                             </div>
                         </div>
 
-                        <!-- 90+ Days Filter Label -->
-                        <div class="filter-label-section">
-                            <label class="checkbox-label filter-label">
-                                <input type="checkbox" [checked]="showStoresOver90Days"
-                                    (change)="toggleStoresOver90DaysFilter()">
-                                <span class="checkmark"></span>
-                                Show outlets that haven't had an assignment in the last 90 days
-                            </label>
-                        </div>
+
 
                         <!-- Store Grid -->
                         <div class="store-grid">
