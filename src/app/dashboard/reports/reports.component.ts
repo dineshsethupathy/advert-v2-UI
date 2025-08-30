@@ -47,7 +47,7 @@ export class ReportsComponent implements OnInit {
     stores: any[] = [];
     totalCount: number = 0;
     currentPage: number = 1;
-    pageSize: number = 5; // Changed to 5 stores per page
+    pageSize: number = 10; // Changed to 10 stores per page
     totalPages: number = 0;
     loading: boolean = false;
 
@@ -183,11 +183,18 @@ export class ReportsComponent implements OnInit {
         }
     }
 
-    async changePage(page: number): Promise<void> {
+    changePage(page: number): void {
         if (page < 1 || page > this.totalPages) return;
 
         this.currentPage = page;
-        await this.applyFilters();
+        this.applyFilters();
+    }
+
+    onPageSizeChange(): void {
+        // Reset to first page when changing page size
+        this.currentPage = 1;
+        this.totalPages = 0;
+        this.applyFilters();
     }
 
     clearFilters(): void {

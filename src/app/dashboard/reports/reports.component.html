@@ -116,53 +116,69 @@
                         </div>
                     </div>
 
+                    <!-- Search and Clear buttons in the same row -->
                     <div class="filter-actions">
-                        <button class="btn btn-primary" (click)="search()" [disabled]="loading">
-                            <l-tail-chase *ngIf="loading" size="sm" speed="1.5" color="white"></l-tail-chase>
-                            Search
+                        <button class="btn btn-primary search-btn" (click)="applyFilters()" [disabled]="loading">
+                            <l-tail-chase *ngIf="loading" size="20" speed="1.75" color="white"></l-tail-chase>
+                            <span *ngIf="!loading">Search Reports</span>
                         </button>
-                        <button class="btn btn-secondary" (click)="clearSearch()" *ngIf="filtersApplied">
-                            Clear
+                        <button class="btn btn-secondary clear-btn" (click)="clearFilters()" *ngIf="filtersApplied">
+                            Clear Filters
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Results Section -->
-    <div class="results-section" *ngIf="filtersApplied">
-        <div class="results-card">
-            <div class="results-header">
-                <h3 class="results-title">Shop Outlets Results</h3>
-                <div class="results-summary">
-                    <button class="btn btn-secondary export-btn" (click)="exportToExcel()"
-                        [disabled]="loading || stores.length === 0">
-                        <span *ngIf="exporting" class="loading-spinner"></span>
-                        <span *ngIf="!exporting">Export to Excel</span>
-                    </button>
-                    <button class="btn btn-secondary pdf-export-btn" (click)="exportToPdf()"
-                        [disabled]="loading || stores.length === 0">
-                        <span *ngIf="exportingPdf" class="loading-spinner"></span>
-                        <span *ngIf="!exportingPdf">Export to PDF</span>
-                    </button>
-                    <span class="total-count">Total: {{ totalCount }} Outlets</span>
+                <!-- Initial State Message - Show when no filters applied yet -->
+                <div class="initial-state" *ngIf="!filtersApplied">
+                    <div class="initial-state-content">
+                        <div class="initial-state-icon">
+                            <span class="material-icons">search</span>
+                        </div>
+                        <h3>Ready to Search Reports</h3>
+                        <p>Use the filters above to search for specific reports. Select assignments, statuses, and date
+                            ranges
+                            to get started.</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Loading State -->
-            <div class="loading-state" *ngIf="loading">
-                <l-tail-chase size="lg" speed="1.5" color="primary"></l-tail-chase>
-                <p>Loading stores...</p>
-            </div>
+                <!-- Export Actions - Show when there are results -->
+                <div class="export-actions" *ngIf="filtersApplied && stores.length > 0">
+                    <!-- Left side: Page size selector -->
+                    <div class="left-section">
+                        <div class="page-size-selector">
+                            <label for="pageSize" class="page-size-label">Show:</label>
+                            <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()"
+                                class="page-size-select">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="page-size-text">records per page</span>
+                        </div>
+                        <div class="results-summary">
+                            <span class="total-count">Total: {{ totalCount }} Outlets</span>
+                        </div>
+                    </div>
 
-            <!-- Results Grid -->
-            <div class="results-grid" *ngIf="!loading && stores.length > 0">
-                <div class="scroll-hint">
-                    <i class="scroll-icon">↔</i>
-                    <span>Scroll horizontally to view all columns</span>
+                    <!-- Right side: Export buttons -->
+                    <div class="export-buttons">
+                        <button class="btn btn-secondary export-btn" (click)="exportToExcel()" [disabled]="exporting">
+                            <l-tail-chase *ngIf="exporting" size="20" speed="1.75" color="#374151"></l-tail-chase>
+                            <span *ngIf="exporting">Exporting..</span>
+                            <span *ngIf="!exporting">Export to Excel</span>
+                        </button>
+                        <button class="btn btn-secondary pdf-export-btn" (click)="exportToPdf()"
+                            [disabled]="exportingPdf">
+                            <l-tail-chase *ngIf="exportingPdf" size="20" speed="1.75" color="#374151"></l-tail-chase>
+                            <span *ngIf="exportingPdf">Exporting..</span>
+                            <span *ngIf="!exportingPdf">Export to PDF</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="table-container">
+
+                <!-- Table Container - Only show when filters are applied -->
+                <div class="table-container" *ngIf="filtersApplied && !loading">
                     <table class="stores-table">
                         <thead>
                             <tr>
@@ -311,8 +327,14 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
-                <div class="pagination" *ngIf="totalPages > 1">
+                <!-- Loading State -->
+                <div class="loading-state" *ngIf="filtersApplied && loading">
+                    <l-tail-chase size="40" speed="1.75" color="#6366f1"></l-tail-chase>
+                    <p>Loading stores...</p>
+                </div>
+
+                <!-- Pagination - Only show when filters are applied and there are results -->
+                <div class="pagination" *ngIf="filtersApplied && totalPages > 1">
                     <button class="pagination-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
                         Previous
                     </button>
@@ -326,12 +348,11 @@
                         Next
                     </button>
                 </div>
-            </div>
 
-            <!-- No Results -->
-            <div class="no-results" *ngIf="!loading && stores.length === 0">
-                <p>No stores found matching your criteria.</p>
-                <p>Try adjusting your filters or search parameters.</p>
+                <!-- No Results - Only show when filters are applied but no results found -->
+                <div class="no-results" *ngIf="filtersApplied && !loading && stores.length === 0">
+                    <p>No stores found matching your criteria.</p>
+                </div>
             </div>
         </div>
     </div>
