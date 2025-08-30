@@ -200,7 +200,7 @@
                                 </div>
                                 <div class="pending-list">
                                     <div *ngFor="let action of dashboardAnalytics.pendingActions.slice(0, 5)"
-                                        class="pending-item">
+                                        class="pending-item" (click)="navigateToAssignments()" style="cursor: pointer;">
                                         <div class="pending-icon" [class]="'priority-' + action.priority">
                                             <span class="material-icons">
                                                 {{ action.type === 'approval' ? 'approval' :
@@ -211,8 +211,6 @@
                                             <div class="pending-title">{{ action.title }}</div>
                                             <div class="pending-description">{{ action.description }}</div>
                                             <div class="pending-meta">
-                                                <span class="priority-badge" [class]="'priority-' + action.priority">{{
-                                                    action.priority }}</span>
                                                 <span class="assignment-name" *ngIf="action.assignmentName">{{
                                                     action.assignmentName }}</span>
                                             </div>

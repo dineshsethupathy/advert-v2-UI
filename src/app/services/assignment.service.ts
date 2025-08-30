@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ApprovalWorkflowStageResponse } from './brand-user-approval.service';
 
@@ -34,6 +35,42 @@ export interface AssignmentResponse {
     completedStores: number;
     createdDt: string;
     updatedDt?: string;
+}
+
+export interface PendingWorkflowActionResponse {
+    workflowProgressId: number;
+    storeAssignmentId: number;
+    workflowStageId: number;
+    stageName: string;
+    stageOrder: number;
+    roleName: string;
+    status: string;
+    assignedToType: string;
+    assignedToId: number;
+    pendingSince: string;
+
+    // Store information
+    storeId: number;
+    storeName: string;
+    storeSAPId: string;
+    storeAddress: string;
+
+    // Assignment information
+    assignmentId: number;
+    assignmentName: string;
+    assignmentStatus: string;
+
+    // Vendor information
+    vendorId: number;
+    vendorName: string;
+
+    // Region information
+    regionName?: string;
+}
+
+export interface AssignmentsResponse {
+    assignments: AssignmentResponse[];
+    pendingWorkflowActions: PendingWorkflowActionResponse[];
 }
 
 export interface StoreAssignmentResponse {
@@ -187,7 +224,14 @@ export class AssignmentService {
     }
 
     getAssignments(): Observable<AssignmentResponse[]> {
-        return this.http.get<AssignmentResponse[]>(this.apiUrl);
+        return this.http.get<AssignmentsResponse>(this.apiUrl)
+            .pipe(
+                map(response => response.assignments)
+            );
+    }
+
+    getAssignmentsWithPendingActions(): Observable<AssignmentsResponse> {
+        return this.http.get<AssignmentsResponse>(this.apiUrl);
     }
 
     getAssignment(id: number): Observable<AssignmentResponse> {

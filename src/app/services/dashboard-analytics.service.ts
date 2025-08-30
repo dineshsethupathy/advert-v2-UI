@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AssignmentService, AssignmentResponse } from './assignment.service';
+import { AssignmentService, AssignmentResponse, AssignmentsResponse, PendingWorkflowActionResponse } from './assignment.service';
 
 export interface DashboardAnalytics {
     assignmentStats: AssignmentStats;
@@ -10,6 +10,7 @@ export interface DashboardAnalytics {
     vendorStats: VendorStats;
     recentActivities: DashboardActivity[];
     pendingActions: PendingAction[];
+    pendingActionsCount: number; // Total count of pending actions
     performanceMetrics: PerformanceMetrics;
 }
 
@@ -76,7 +77,7 @@ export interface PendingAction {
     type: 'approval' | 'status_update' | 'assignment_review';
     title: string;
     description: string;
-    priority: 'low' | 'medium' | 'high';
+    priority?: 'low' | 'medium' | 'high';
     dueDate?: string;
     assignmentId?: number;
     assignmentName?: string;
@@ -115,23 +116,21 @@ export class DashboardAnalyticsService {
     ) { }
 
     getDashboardAnalytics(): Observable<DashboardAnalytics> {
-        return forkJoin({
-            assignments: this.assignmentService.getAssignments(),
-            // Add other API calls as needed
-        }).pipe(
-            map(data => this.processAnalytics(data))
+        return this.assignmentService.getAssignmentsWithPendingActions().pipe(
+            map(response => this.processAnalytics(response))
         );
     }
 
-    private processAnalytics(data: any): DashboardAnalytics {
-        const assignments = data.assignments as AssignmentResponse[];
+    private processAnalytics(data: AssignmentsResponse): DashboardAnalytics {
+        const { assignments, pendingWorkflowActions } = data;
 
         return {
             assignmentStats: this.calculateAssignmentStats(assignments),
             workflowStats: this.calculateWorkflowStats(assignments),
             vendorStats: this.calculateVendorStats(assignments),
             recentActivities: this.generateRecentActivities(assignments),
-            pendingActions: this.generatePendingActions(assignments),
+            pendingActions: this.generatePendingActions(assignments, pendingWorkflowActions),
+            pendingActionsCount: pendingWorkflowActions.length, // Total count of pending actions
             performanceMetrics: this.calculatePerformanceMetrics(assignments)
         };
     }
@@ -257,26 +256,26 @@ export class DashboardAnalyticsService {
         return activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     }
 
-    private generatePendingActions(assignments: AssignmentResponse[]): PendingAction[] {
+    private generatePendingActions(assignments: AssignmentResponse[], pendingWorkflowActions: PendingWorkflowActionResponse[]): PendingAction[] {
         const actions: PendingAction[] = [];
 
-        assignments.filter(a => a.status === 'Active').slice(0, 5).forEach(assignment => {
-            if (assignment.totalStores > assignment.completedStores) {
-                actions.push({
-                    id: assignment.id,
-                    type: 'status_update',
-                    title: 'Assignment Progress Update',
-                    description: `Assignment "${assignment.name}" has ${assignment.totalStores - assignment.completedStores} outlets pending`,
-                    priority: 'medium',
-                    assignmentId: assignment.id,
-                    assignmentName: assignment.name,
-                    vendorId: assignment.vendorId,
-                    vendorName: assignment.vendorName
-                });
-            }
+        // First, add workflow-specific pending actions
+        pendingWorkflowActions.forEach(workflowAction => {
+            actions.push({
+                id: workflowAction.workflowProgressId,
+                type: 'approval',
+                title: `${workflowAction.stageName}`,
+                description: `Store "${workflowAction.storeName}" in assignment "${workflowAction.assignmentName}" is waiting for ${workflowAction.roleName} approval`,
+                assignmentId: workflowAction.assignmentId,
+                assignmentName: workflowAction.assignmentName,
+                storeId: workflowAction.storeId,
+                storeName: workflowAction.storeName,
+                vendorId: workflowAction.vendorId,
+                vendorName: workflowAction.vendorName
+            });
         });
 
-        return actions;
+        return actions.slice(0, 3); // Show only top 3 pending actions for UI
     }
 
     private calculatePerformanceMetrics(assignments: AssignmentResponse[]): PerformanceMetrics {
