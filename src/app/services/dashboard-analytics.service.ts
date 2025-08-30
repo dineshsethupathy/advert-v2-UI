@@ -266,7 +266,7 @@ export class DashboardAnalyticsService {
                     id: assignment.id,
                     type: 'status_update',
                     title: 'Assignment Progress Update',
-                    description: `Assignment "${assignment.name}" has ${assignment.totalStores - assignment.completedStores} stores pending`,
+                    description: `Assignment "${assignment.name}" has ${assignment.totalStores - assignment.completedStores} outlets pending`,
                     priority: 'medium',
                     assignmentId: assignment.id,
                     assignmentName: assignment.name,
