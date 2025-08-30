@@ -109,6 +109,11 @@
 
                     <!-- Filters -->
                     <div class="filters-container" [formGroup]="filterForm">
+                        <div class="filter-header">
+                            <span class="filter-icon">🔍</span>
+                            <span class="filter-message">Filter outlets based on these criteria</span>
+                        </div>
+
                         <div class="filter-group">
                             <label for="regionFilter" class="form-label">Region Filter</label>
                             <div class="custom-select" [class.open]="regionDropdownOpen"

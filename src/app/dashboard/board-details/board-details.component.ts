@@ -184,7 +184,9 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
                     title: 'Success!',
                     text: 'Board created successfully',
                     icon: 'success',
-                    confirmButtonColor: '#28a745'
+                    confirmButtonColor: '#28a745',
+                    timer: 1500,
+                    timerProgressBar: true
                 });
             },
             error: (error) => {
@@ -240,7 +242,9 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
                     title: 'Success!',
                     text: 'Board updated successfully',
                     icon: 'success',
-                    confirmButtonColor: '#28a745'
+                    confirmButtonColor: '#28a745',
+                    timer: 1500,
+                    timerProgressBar: true
                 });
             },
             error: (error) => {

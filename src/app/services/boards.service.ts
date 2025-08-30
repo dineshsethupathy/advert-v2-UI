@@ -20,7 +20,7 @@ export interface CreateBoardRequest {
     brandName: string;
     width: number;
     height: number;
-    cost?: number;
+    cost?: number | string;
     imageUrl?: string;
 }
 
@@ -30,7 +30,7 @@ export interface UpdateBoardRequest {
     brandName: string;
     width: number;
     height: number;
-    cost?: number;
+    cost?: number | string;
     imageUrl?: string;
 }
 
@@ -61,7 +61,7 @@ export class BoardsService {
         formData.append('width', request.width.toString());
         formData.append('height', request.height.toString());
 
-        if (request.cost !== undefined) {
+        if (request.cost !== undefined && request.cost !== null && request.cost !== '') {
             formData.append('cost', request.cost.toString());
         }
 
@@ -80,7 +80,7 @@ export class BoardsService {
         formData.append('width', request.width.toString());
         formData.append('height', request.height.toString());
 
-        if (request.cost !== undefined) {
+        if (request.cost !== undefined && request.cost !== null && request.cost !== '') {
             formData.append('cost', request.cost.toString());
         }
 
