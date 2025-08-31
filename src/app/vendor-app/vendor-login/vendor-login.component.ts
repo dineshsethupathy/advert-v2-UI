@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,12 +25,14 @@ interface LoginError {
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
     templateUrl: './vendor-login.component.html',
-    styleUrl: './vendor-login.component.css'
+    styleUrl: './vendor-login.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class VendorLoginComponent {
     loginForm: FormGroup;
     loading = false;
     showPassword = false;
+    errorMessage = '';
 
     constructor(
         private fb: FormBuilder,
@@ -40,8 +42,16 @@ export class VendorLoginComponent {
     ) {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required]]
+            password: ['', [Validators.required, Validators.minLength(6)]]
         });
+    }
+
+    getTenantColors(): any {
+        // Default colors for vendor portal
+        return {
+            primary: '#006fcf',
+            secondary: '#005bb8'
+        };
     }
 
     onSubmit(): void {
@@ -50,6 +60,7 @@ export class VendorLoginComponent {
         }
 
         this.loading = true;
+        this.errorMessage = '';
         const formData = this.loginForm.value;
 
         this.vendorAuthService.login(formData).subscribe({
@@ -68,13 +79,7 @@ export class VendorLoginComponent {
             error: (error: LoginError) => {
                 this.loading = false;
                 console.error('Login error:', error);
-                const errorMessage = error.error?.message || 'Invalid credentials. Please try again.';
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: errorMessage,
-                    confirmButtonColor: '#3085d6'
-                });
+                this.errorMessage = error.error?.message || 'Invalid credentials. Please try again.';
             }
         });
     }

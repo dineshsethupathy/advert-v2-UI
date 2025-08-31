@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { VendorAssignmentService, VendorAssignment } from '../../services/vendor-assignment.service';
@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule, VendorHeaderComponent],
     templateUrl: './vendor-dashboard.component.html',
-    styleUrl: './vendor-dashboard.component.css'
+    styleUrl: './vendor-dashboard.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class VendorDashboardComponent implements OnInit {
     assignments: VendorAssignment[] = [];

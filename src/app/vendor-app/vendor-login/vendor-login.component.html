@@ -1,70 +1,73 @@
-<div class="login-container">
-    <!-- Left Section - Privacy Policy SVG -->
-    <div class="left-section">
-        <div class="svg-container">
-            <img src="assets/images/Privacy policy.svg" alt="Privacy Policy Illustration" class="privacy-svg">
-        </div>
-    </div>
+<div class="login-container" [style.--primary-color]="getTenantColors()?.primary"
+    [style.--secondary-color]="getTenantColors()?.secondary">
 
-    <!-- Right Section - Login Form -->
-    <div class="right-section">
+    <!-- Login Card - Centered for Mobile -->
+    <div class="login-card-container">
         <div class="login-card">
-            <!-- Header -->
             <div class="login-header">
-                <div class="logo">
-                    <img src="assets/images/T_logo.png" alt="T Logo" class="app-logo">
+                <div class="logo-section">
+                    <div class="logo-placeholder">
+                        <img src="assets/images/T_logo.png" alt="T Logo" class="logo-image">
+                    </div>
+                    <div class="brand-info">
+                        <h1 class="brand-name">VENDOR PORTAL</h1>
+                        <!-- <p class="brand-subtitle">Sign in to your vendor account</p> -->
+                    </div>
                 </div>
-                <h2>Vendor Login</h2>
-                <p>Sign in to access your vendor dashboard</p>
             </div>
 
-            <!-- Login Form -->
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+                <!-- Email Field -->
                 <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" formControlName="email" placeholder="Enter your email address"
-                        class="form-control"
-                        [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">email</span>
+                        <input type="email" id="email" formControlName="email" class="form-input"
+                            placeholder="Enter your email"
+                            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
+                    </div>
                     <div class="error-message"
                         *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-                        Please enter a valid email address
+                        <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+                        <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
                     </div>
                 </div>
 
+                <!-- Password Field -->
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-input">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">lock</span>
                         <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-                            placeholder="Enter your password" class="form-control"
-                            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                            class="form-input" placeholder="Enter your password"
+                            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
                         <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
-                            <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+                            <span class="material-icons">
+                                {{ showPassword ? 'visibility_off' : 'visibility' }}
+                            </span>
                         </button>
                     </div>
                     <div class="error-message"
                         *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-                        Password is required
+                        <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+                        <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6
+                            characters</span>
                     </div>
                 </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || loading">
-                        <span class="loading-spinner-small" *ngIf="loading"></span>
-                        <span *ngIf="!loading">Sign In</span>
-                    </button>
+                <!-- Error Message -->
+                <div class="error-message global-error" *ngIf="errorMessage">
+                    <span class="material-icons">error</span>
+                    {{ errorMessage }}
                 </div>
 
-                <!-- <div class="form-links">
-                    <button type="button" class="link-btn" (click)="forgotPassword()">
-                        Forgot Password?
-                    </button>
-                </div> -->
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn" [disabled]="loading || loginForm.invalid">
+                    <span class="material-icons" *ngIf="!loading">login</span>
+                    <l-tail-chase *ngIf="loading" size="20" speed="1.75" color="white"></l-tail-chase>
+                    {{ loading ? 'Signing In...' : 'Sign In' }}
+                </button>
             </form>
-
-            <!-- Footer -->
-            <!-- <div class="login-footer">
-                <p>Don't have an account? <a href="/vendor-signup">Sign up here</a></p>
-            </div> -->
         </div>
     </div>
 </div>
