@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,8 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
     templateUrl: './roles.component.html',
-    styleUrl: './roles.component.css'
+    styleUrl: './roles.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class RolesComponent implements OnInit {
     roles: Role[] = [];
