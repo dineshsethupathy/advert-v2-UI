@@ -492,9 +492,11 @@
 }
 
 .export-btn:disabled {
-    background: #c0d7eb;
+    background: #006fcf;
+    color: #6b7280;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.8;
+    transform: none;
 }
 
 .export-btn .loading-spinner {
@@ -527,9 +529,11 @@
 }
 
 .pdf-export-btn:disabled {
-    background: #c0d7eb;
+    background: #006fcf;
+    color: #6b7280;
     cursor: not-allowed;
-    /* opacity: 0.6; */
+    opacity: 0.8;
+    transform: none;
 }
 
 .pdf-export-btn .loading-spinner {

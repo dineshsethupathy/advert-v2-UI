@@ -165,13 +165,13 @@
                     <div class="export-buttons">
                         <button class="btn btn-secondary export-btn" (click)="exportToExcel()" [disabled]="exporting">
                             <l-tail-chase *ngIf="exporting" size="20" speed="1.75" color="#374151"></l-tail-chase>
-                            <span *ngIf="exporting">Exporting..</span>
+                            <!-- <span *ngIf="exporting">Exporting..</span> -->
                             <span *ngIf="!exporting">Export to Excel</span>
                         </button>
                         <button class="btn btn-secondary pdf-export-btn" (click)="exportToPdf()"
                             [disabled]="exportingPdf">
                             <l-tail-chase *ngIf="exportingPdf" size="20" speed="1.75" color="#374151"></l-tail-chase>
-                            <span *ngIf="exportingPdf">Exporting..</span>
+                            <!-- <span *ngIf="exportingPdf">Exporting..</span> -->
                             <span *ngIf="!exportingPdf">Export to PDF</span>
                         </button>
                     </div>
