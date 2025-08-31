@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     activeTab: 'draw' | 'upload' = 'draw';
     isDragOver = false;
     uploadedImage: string | null = null;
+    savingSignature = false;
 
     // Canvas drawing properties
     private canvas!: HTMLCanvasElement;
@@ -349,6 +350,9 @@ export class ProfileComponent implements OnInit, AfterViewInit {
             return;
         }
 
+        // Set loading state
+        this.savingSignature = true;
+
         // Save signature to backend
         if (this.currentUser) {
             this.userService.updateSignature({
@@ -373,6 +377,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
                     });
 
                     this.closeSignatureModal();
+                    this.savingSignature = false;
                 },
                 error: (error) => {
                     console.error('Error saving signature:', error);
@@ -381,6 +386,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
                         title: 'Error',
                         text: 'Failed to save signature. Please try again.'
                     });
+                    this.savingSignature = false;
                 }
             });
         }

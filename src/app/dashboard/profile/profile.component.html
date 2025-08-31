@@ -263,9 +263,10 @@
 
         <div class="modal-actions">
             <button class="btn secondary" (click)="closeSignatureModal()">Cancel</button>
-            <button class="btn primary" (click)="saveSignature()" [disabled]="!canSaveSignature()">
-                <span class="material-icons">save</span>
-                Save Signature
+            <button class="btn primary" (click)="saveSignature()" [disabled]="!canSaveSignature() || savingSignature">
+                <l-tail-chase *ngIf="savingSignature" size="20" speed="1.75" color="white"></l-tail-chase>
+                <span class="material-icons" *ngIf="!savingSignature">save</span>
+                {{ savingSignature ? 'Saving...' : 'Save Signature' }}
             </button>
         </div>
     </div>
