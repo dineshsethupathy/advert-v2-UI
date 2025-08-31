@@ -111,9 +111,11 @@
                 </div> -->
 
                 <div class="modal-actions">
-                    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
-                    <button type="submit" class="btn primary" [disabled]="roleForm.invalid">
-                        {{ getSubmitButtonText() }}
+                    <button type="button" class="btn secondary" (click)="closeModal()"
+                        [disabled]="submitting">Cancel</button>
+                    <button type="submit" class="btn primary" [disabled]="roleForm.invalid || submitting">
+                        <l-tail-chase *ngIf="submitting" size="20" speed="1.75" color="#ffffff"></l-tail-chase>
+                        <span *ngIf="!submitting">{{ getSubmitButtonText() }}</span>
                     </button>
                 </div>
             </form>

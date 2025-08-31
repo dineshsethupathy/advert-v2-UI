@@ -18,6 +18,7 @@ export class RolesComponent implements OnInit {
     roles: Role[] = [];
     permissions: Permission[] = [];
     loading = false;
+    submitting = false;
     showAddModal = false;
     editingRole: Role | null = null;
 
@@ -97,11 +98,13 @@ export class RolesComponent implements OnInit {
     closeModal(): void {
         this.showAddModal = false;
         this.editingRole = null;
+        this.submitting = false;
         this.roleForm.reset();
     }
 
     onSubmit(): void {
         if (this.roleForm.valid) {
+            this.submitting = true;
             const formData = this.roleForm.value;
 
             if (this.editingRole) {
@@ -119,15 +122,19 @@ export class RolesComponent implements OnInit {
                             this.roles[index] = updatedRole;
                         }
 
+                        this.submitting = false;
                         this.closeModal();
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
                             text: 'Role updated successfully',
-                            confirmButtonColor: '#3085d6'
+                            confirmButtonColor: '#3085d6',
+                            timer: 1500,
+                            timerProgressBar: true,
                         });
                     },
                     error: (error) => {
+                        this.submitting = false;
                         console.error('Error updating role:', error);
                         let errorMessage = 'Failed to update role. Please try again.';
                         let showStyledError = false;
@@ -185,15 +192,19 @@ export class RolesComponent implements OnInit {
                 this.roleService.createRole(createRequest).subscribe({
                     next: (newRole) => {
                         this.roles.unshift(newRole);
+                        this.submitting = false;
                         this.closeModal();
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
                             text: 'Role created successfully',
-                            confirmButtonColor: '#3085d6'
+                            confirmButtonColor: '#3085d6',
+                            timer: 1500,
+                            timerProgressBar: true,
                         });
                     },
                     error: (error) => {
+                        this.submitting = false;
                         console.error('Error creating role:', error);
                         let errorMessage = 'Failed to create role. Please try again.';
                         let showStyledError = false;
@@ -272,7 +283,9 @@ export class RolesComponent implements OnInit {
                             icon: 'success',
                             title: 'Deleted!',
                             text: 'Role has been deleted successfully.',
-                            confirmButtonColor: '#3085d6'
+                            confirmButtonColor: '#3085d6',
+                            timer: 1500,
+                            timerProgressBar: true,
                         });
                     },
                     error: (error) => {
