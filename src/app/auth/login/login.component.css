@@ -1,106 +1,31 @@
-/* Login Container */
+/* Login Container - Mobile First Design */
 .login-container {
     min-height: 100vh;
     display: flex;
+    align-items: center;
+    justify-content: center;
     background: #ffffff;
+    padding: 1rem;
     position: relative;
     overflow: hidden;
 }
 
-/* Left Side - Illustration */
-.login-left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: #f8fafc;
-    position: relative;
-}
-
-.illustration-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 500px;
+/* Login Card Container */
+.login-card-container {
     width: 100%;
-}
-
-.login-illustration {
-    width: 100%;
-    height: auto;
-    max-width: 400px;
-    filter: drop-shadow(0 10px 20px rgba(0, 111, 207, 0.1));
-}
-
-.left-content {
-    text-align: center;
-    color: #006fcf;
-    margin-top: 2rem;
-}
-
-.left-content h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #006fcf;
-}
-
-.left-content p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    color: #666;
-}
-
-.feature-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.feature-list li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: rgba(0, 111, 207, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(0, 111, 207, 0.1);
-}
-
-.feature-list .material-icons {
-    margin-right: 1rem;
-    font-size: 1.5rem;
-    color: #006fcf;
-}
-
-.feature-list span:last-child {
-    font-size: 0.95rem;
-    color: #333;
-}
-
-/* Right Side - Login Card */
-.login-right {
-    flex: 1;
+    max-width: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: #ffffff;
 }
 
+/* Login Card */
 .login-card {
     background: white;
     border-radius: 20px;
-    padding: 3rem;
+    padding: 2rem;
     box-shadow: 0 20px 40px rgba(0, 111, 207, 0.1);
     width: 100%;
-    max-width: 450px;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(0, 111, 207, 0.1);
@@ -116,9 +41,10 @@
     background: linear-gradient(90deg, #006fcf, #005bb8);
 }
 
+/* Login Header */
 .login-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .logo-section {
@@ -129,8 +55,8 @@
 }
 
 .logo-placeholder {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,7 +71,7 @@
 }
 
 .brand-info h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #006fcf;
     margin-bottom: 0.5rem;
@@ -153,17 +79,17 @@
 
 .brand-subtitle {
     color: #666;
-    font-size: 1rem;
+    font-size: 0.95rem;
     margin: 0;
 }
 
 /* Form Styles */
 .login-form {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .form-label {
@@ -184,13 +110,13 @@
     position: absolute;
     left: 1rem;
     color: #999;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     z-index: 1;
 }
 
 .form-input {
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
     border: 2px solid #e1e5e9;
     border-radius: 12px;
     font-size: 1rem;
@@ -228,14 +154,14 @@
 
 .error-message {
     color: #dc3545;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
 }
 
 .error-message .material-icons {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-right: 0.25rem;
 }
 
@@ -243,13 +169,13 @@
     background: #fff5f5;
     border: 1px solid #fed7d7;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.875rem;
     margin-bottom: 1rem;
 }
 
 .login-btn {
     width: 100%;
-    padding: 1rem;
+    padding: 0.875rem;
     background: linear-gradient(135deg, #006fcf, #005bb8);
     color: white;
     border: none;
@@ -277,159 +203,116 @@
     transform: none;
 }
 
-/* Demo Credentials */
-.demo-info {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border-left: 4px solid #006fcf;
-}
-
-.demo-info h4 {
-    margin: 0 0 1rem 0;
-    color: #333;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.demo-credentials {
-    font-size: 0.9rem;
-}
-
-.credential-item {
-    margin-bottom: 0.5rem;
-    color: #666;
-}
-
-.credential-item strong {
-    color: #333;
-}
-
-/* Footer */
-.login-footer {
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e1e5e9;
-}
-
-.login-footer p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.link {
-    color: #006fcf;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.link:hover {
-    color: #005bb8;
-    text-decoration: underline;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Tablet Styles */
+@media (min-width: 768px) {
     .login-container {
-        flex-direction: column;
+        padding: 2rem;
     }
 
-    .login-left {
-        flex: none;
-        height: 40vh;
-        padding: 1rem;
+    .login-card {
+        padding: 2.5rem;
     }
 
-    .login-right {
-        flex: none;
-        height: 60vh;
-        padding: 1rem;
+    .logo-placeholder {
+        width: 80px;
+        height: 80px;
     }
 
-    .login-illustration {
-        max-width: 300px;
-    }
-
-    .left-content h2 {
+    .brand-info h1 {
         font-size: 2rem;
     }
 
-    .feature-list {
-        max-width: 300px;
-    }
-}
-
-@media (max-width: 768px) {
-    .login-left {
-        height: 30vh;
-    }
-
-    .login-right {
-        height: 70vh;
-    }
-
-    .login-card {
-        padding: 2rem;
-        margin: 0 1rem;
-    }
-
-    .login-illustration {
-        max-width: 250px;
-    }
-
-    .left-content h2 {
-        font-size: 1.5rem;
-    }
-
-    .feature-list {
-        max-width: 250px;
-    }
-
-    .feature-list li {
-        padding: 0.25rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .feature-list .material-icons {
-        font-size: 1.2rem;
-        margin-right: 0.5rem;
-    }
-
-    .feature-list span:last-child {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .login-left {
-        height: 25vh;
-    }
-
-    .login-right {
-        height: 75vh;
-    }
-
-    .login-card {
-        padding: 1.5rem;
-    }
-
-    .login-illustration {
-        max-width: 200px;
-    }
-
-    .left-content h2 {
-        font-size: 1.25rem;
-    }
-
-    .left-content p {
+    .brand-subtitle {
         font-size: 1rem;
     }
 
-    .feature-list {
-        max-width: 200px;
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-input {
+        padding: 1rem 1rem 1rem 3rem;
+    }
+
+    .input-icon {
+        font-size: 1.2rem;
+    }
+
+    .login-btn {
+        padding: 1rem;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 1024px) {
+    /* .login-container {
+        padding: 3rem;
+    } */
+
+    .login-card {
+        padding: 3rem;
+    }
+
+    .login-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .logo-section {
+        margin-bottom: 2rem;
+    }
+
+    .logo-placeholder {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 1.5rem;
+    }
+
+    .brand-info h1 {
+        font-size: 2.25rem;
+    }
+
+    .brand-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .form-input {
+        padding: 1.125rem 1rem 1.125rem 3.25rem;
+        font-size: 1.05rem;
+    }
+
+    .input-icon {
+        font-size: 1.3rem;
+    }
+
+    .login-btn {
+        padding: 1.125rem;
+        font-size: 1.05rem;
+    }
+}
+
+/* Large Desktop Styles */
+@media (min-width: 1440px) {
+    .login-card-container {
+        max-width: 500px;
+    }
+
+    /* .login-card {
+        padding: 3.5rem;
+    } */
+
+    .brand-info h1 {
+        font-size: 2.5rem;
+    }
+
+    .brand-subtitle {
+        font-size: 1.2rem;
     }
 }

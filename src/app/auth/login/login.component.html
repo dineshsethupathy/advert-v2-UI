@@ -1,37 +1,8 @@
 <div class="login-container" [style.--primary-color]="getTenantColors().primary"
     [style.--secondary-color]="getTenantColors().secondary">
 
-    <!-- Left Side - Illustration -->
-    <div class="login-left">
-        <div class="illustration-container">
-            <img src="assets/images/login.jpg" alt="Login Illustration" class="login-illustration">
-        </div>
-        <!-- <div class="left-content">
-            <h2>Welcome to {{ tenantName }}</h2>
-            <p>Access your dashboard to manage:</p>
-            <ul class="feature-list">
-                <li>
-                    <span class="material-icons">dashboard</span>
-                    <span>Real-time analytics and insights</span>
-                </li>
-                <li>
-                    <span class="material-icons">store</span>
-                    <span>Store and outlet management</span>
-                </li>
-                <li>
-                    <span class="material-icons">people</span>
-                    <span>User and role management</span>
-                </li>
-                <li>
-                    <span class="material-icons">assignment</span>
-                    <span>Workflow and task automation</span>
-                </li>
-            </ul>
-        </div> -->
-    </div>
-
-    <!-- Right Side - Login Card -->
-    <div class="login-right">
+    <!-- Login Card - Centered for Mobile -->
+    <div class="login-card-container">
         <div class="login-card">
             <div class="login-header">
                 <div class="logo-section">
@@ -39,7 +10,6 @@
                         <img src="assets/images/T_logo.png" alt="T Logo" class="logo-image">
                     </div>
                     <div class="brand-info">
-                        <!-- <h1 class="brand-name">{{ tenantName }}</h1> -->
                         <h1 class="brand-name">ADVERT</h1>
                         <p class="brand-subtitle">Sign in to your account</p>
                     </div>
@@ -93,26 +63,7 @@
                     <l-tail-chase *ngIf="loading" size="20" speed="1.75" color="white"></l-tail-chase>
                     {{ loading ? 'Signing In...' : 'Sign In' }}
                 </button>
-
-                <!-- Demo Credentials -->
-                <!-- <div class="demo-info">
-                    <h4>Demo Credentials</h4>
-                    <div class="demo-credentials">
-                        <div class="credential-item">
-                            <strong>Email:</strong> admin@{{ tenantSubdomain }}.com
-                        </div>
-                        <div class="credential-item">
-                            <strong>Password:</strong> admin123
-                        </div>
-                    </div>
-                </div> -->
             </form>
-
-            <!-- Footer -->
-            <!-- <div class="login-footer">
-                <p>Don't have an account? <a href="#" class="link">Contact your administrator</a></p>
-                <p><a href="#" class="link">Forgot your password?</a></p>
-            </div> -->
         </div>
     </div>
 </div>
