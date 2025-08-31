@@ -53,7 +53,7 @@
             <!-- Board Details -->
             <div class="form-section">
                 <h3>Board Details</h3>
-                <div class="form-row three-columns">
+                <div class="form-row four-columns">
                     <div class="form-group">
                         <label for="boardId">Board Type *</label>
                         <div class="custom-select" [class.open]="isBoardDropdownOpen" (click)="toggleBoardDropdown()">
@@ -81,41 +81,35 @@
                     <div class="form-group">
                         <label for="boardWidth">Board Width (inches) *</label>
                         <input type="number" id="boardWidth" formControlName="boardWidth"
-                            placeholder="Enter board width" step="0.1" min="1" max="1000">
+                            placeholder="Enter board width" step="0.1" min="1">
                         <div class="error-message"
                             *ngIf="storeForm.get('boardWidth')?.invalid && storeForm.get('boardWidth')?.touched">
                             <span *ngIf="storeForm.get('boardWidth')?.errors?.['required']">Board width is
                                 required</span>
                             <span *ngIf="storeForm.get('boardWidth')?.errors?.['min']">Board width must be at least 1
                                 inch</span>
-                            <span *ngIf="storeForm.get('boardWidth')?.errors?.['max']">Board width cannot exceed 1000
-                                inches</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="boardHeight">Board Height (inches) *</label>
                         <input type="number" id="boardHeight" formControlName="boardHeight"
-                            placeholder="Enter board height" step="0.1" min="1" max="1000">
+                            placeholder="Enter board height" step="0.1" min="1">
                         <div class="error-message"
                             *ngIf="storeForm.get('boardHeight')?.invalid && storeForm.get('boardHeight')?.touched">
                             <span *ngIf="storeForm.get('boardHeight')?.errors?.['required']">Board height is
                                 required</span>
-                            <span *ngIf="storeForm.get('boardHeight')?.errors?.['max']">Board height cannot exceed 1000
-                                inches</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="boardCost">Board Cost (₹) *</label>
                         <input type="number" id="boardCost" formControlName="boardCost" placeholder="Enter board cost"
-                            step="0.01" min="0.01" max="10000">
+                            step="0.01" min="0.01">
                         <div class="error-message"
                             *ngIf="storeForm.get('boardCost')?.invalid && storeForm.get('boardCost')?.touched">
                             <span *ngIf="storeForm.get('boardCost')?.errors?.['required']">Board cost is
                                 required</span>
                             <span *ngIf="storeForm.get('boardCost')?.errors?.['min']">Board cost must be at least
                                 $0.01</span>
-                            <span *ngIf="storeForm.get('boardCost')?.errors?.['max']">Board cost cannot exceed
-                                $10,000</span>
                         </div>
                     </div>
                 </div>
@@ -132,13 +126,13 @@
                         </div>
                         <div class="pole-fields" *ngIf="storeForm.get('hasPole')?.value">
                             <input type="number" id="poleQuantity" formControlName="poleQuantity" placeholder="Quantity"
-                                step="1" min="1" max="100">
+                                step="1" min="1">
                             <input type="number" id="poleWidth" formControlName="poleWidth" placeholder="Width (inches)"
-                                step="0.1" min="0.1" max="100">
+                                step="0.1" min="0.1">
                             <input type="number" id="poleHeight" formControlName="poleHeight"
-                                placeholder="Height (inches)" step="0.1" min="0.1" max="1000">
+                                placeholder="Height (inches)" step="0.1" min="0.1">
                             <input type="number" id="poleCost" formControlName="poleCost" placeholder="Cost (₹)"
-                                step="0.01" min="0.01" max="10000">
+                                step="0.01" min="0.01">
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     regions: Region[] = [];
 
     // Store selection properties
-    selectedRegion: number | null = null;
+    selectedRegionFilters: number[] = [];
     cityFilter: string = '';
     currentPage: number = 1;
     pageSize: number = 50;
@@ -56,14 +56,13 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     // Custom dropdown states
     vendorDropdownOpen = false;
     workflowDropdownOpen = false;
-    regionDropdownOpen = false;
+    isFilterDropdownOpen = false;
 
     // Selected values for display
     selectedVendor: string = '';
     selectedVendorId: number | null = null;
     selectedWorkflow: string = '';
     selectedWorkflowId: number | null = null;
-    selectedRegionName: string = '';
 
     private destroy$ = new Subject<void>();
 
@@ -84,7 +83,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         });
 
         this.filterForm = this.fb.group({
-            selectedRegion: [null],
             cityFilter: [''],
             daysFilter: [null]
         });
@@ -109,10 +107,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     onDocumentClick(event: Event): void {
         // Close dropdowns when clicking outside
         const target = event.target as HTMLElement;
-        if (!target.closest('.custom-select')) {
+        if (!target.closest('.custom-select') && !target.closest('.multi-select-dropdown')) {
             this.vendorDropdownOpen = false;
             this.workflowDropdownOpen = false;
-            this.regionDropdownOpen = false;
+            this.isFilterDropdownOpen = false;
         }
     }
 
@@ -123,17 +121,19 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     toggleVendorDropdown(): void {
         this.vendorDropdownOpen = !this.vendorDropdownOpen;
         this.workflowDropdownOpen = false;
-        this.regionDropdownOpen = false;
+        this.isFilterDropdownOpen = false;
     }
 
     toggleWorkflowDropdown(): void {
         this.workflowDropdownOpen = !this.workflowDropdownOpen;
         this.vendorDropdownOpen = false;
-        this.regionDropdownOpen = false;
+        this.isFilterDropdownOpen = false;
     }
 
-    toggleRegionDropdown(): void {
-        this.regionDropdownOpen = !this.regionDropdownOpen;
+
+
+    toggleFilterDropdown(): void {
+        this.isFilterDropdownOpen = !this.isFilterDropdownOpen;
         this.vendorDropdownOpen = false;
         this.workflowDropdownOpen = false;
     }
@@ -153,17 +153,36 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.workflowDropdownOpen = false;
     }
 
-    selectRegion(region: Region | null): void {
-        if (region) {
-            this.selectedRegionName = region.name;
-            this.selectedRegion = region.id;
-            this.filterForm.patchValue({ selectedRegion: region.id });
+
+
+    onRegionFilterChange(regionId: number, checked: boolean): void {
+        if (checked) {
+            if (!this.selectedRegionFilters.includes(regionId)) {
+                this.selectedRegionFilters.push(regionId);
+            }
         } else {
-            this.selectedRegionName = '';
-            this.selectedRegion = null;
-            this.filterForm.patchValue({ selectedRegion: null });
+            this.selectedRegionFilters = this.selectedRegionFilters.filter(id => id !== regionId);
         }
-        this.regionDropdownOpen = false;
+        this.applyFilters();
+    }
+
+    isRegionSelected(regionId: number): boolean {
+        return this.selectedRegionFilters.includes(regionId);
+    }
+
+    getFilterDisplayText(): string {
+        if (this.selectedRegionFilters.length === 0) {
+            return 'All Regions';
+        } else if (this.selectedRegionFilters.length === 1) {
+            const region = this.regions.find(r => r.id === this.selectedRegionFilters[0]);
+            return region ? region.name : '1 Region Selected';
+        } else {
+            return `${this.selectedRegionFilters.length} Regions Selected`;
+        }
+    }
+
+    clearFilters(): void {
+        this.selectedRegionFilters = [];
         this.applyFilters();
     }
 
@@ -320,17 +339,16 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     filterStores(): void {
         const filterValues = this.filterForm.value;
-        this.selectedRegion = filterValues.selectedRegion;
         this.cityFilter = filterValues.cityFilter;
 
         console.log('Filtering stores with:', {
-            selectedRegion: this.selectedRegion,
+            selectedRegionFilters: this.selectedRegionFilters,
             cityFilter: this.cityFilter,
             totalStores: this.stores.length
         });
 
         this.filteredStores = this.stores.filter(store => {
-            const regionMatch = !this.selectedRegion || store.regionId === this.selectedRegion;
+            const regionMatch = this.selectedRegionFilters.length === 0 || this.selectedRegionFilters.includes(store.regionId);
             const cityMatch = !this.cityFilter ||
                 store.address?.toLowerCase().includes(this.cityFilter.toLowerCase());
             return regionMatch && cityMatch;

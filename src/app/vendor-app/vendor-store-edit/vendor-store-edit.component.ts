@@ -49,14 +49,14 @@ export class VendorStoreEditComponent implements OnInit {
     ) {
         this.storeForm = this.fb.group({
             boardId: [null, [Validators.required]],
-            boardWidth: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
-            boardHeight: [null, [Validators.required, Validators.min(1), Validators.max(1000)]],
-            boardCost: [null, [Validators.required, Validators.min(0.01), Validators.max(10000)]],
+            boardWidth: [null, [Validators.required, Validators.min(1)]],
+            boardHeight: [null, [Validators.required, Validators.min(1)]],
+            boardCost: [null, [Validators.required, Validators.min(0.01)]],
             hasPole: [false],
-            poleQuantity: [null, [Validators.min(1), Validators.max(100)]],
-            poleWidth: [null, [Validators.min(0.1), Validators.max(100)]],
-            poleHeight: [null, [Validators.min(0.1), Validators.max(1000)]],
-            poleCost: [null, [Validators.min(0.01), Validators.max(10000)]],
+            poleQuantity: [null, [Validators.min(1)]],
+            poleWidth: [null, [Validators.min(0.1)]],
+            poleHeight: [null, [Validators.min(0.1)]],
+            poleCost: [null, [Validators.min(0.01)]],
             notes: ['']
         });
     }
@@ -308,9 +308,9 @@ export class VendorStoreEditComponent implements OnInit {
         const poleHeight = this.storeForm.get('poleHeight')?.value;
 
         return poleQuantity && poleWidth && poleHeight &&
-            poleQuantity >= 1 && poleQuantity <= 100 &&
-            poleWidth >= 0.1 && poleWidth <= 100 &&
-            poleHeight >= 0.1 && poleHeight <= 1000;
+            poleQuantity >= 1 &&
+            poleWidth >= 0.1 &&
+            poleHeight >= 0.1;
     }
 
     // Check if form is valid including pole fields
@@ -565,10 +565,10 @@ export class VendorStoreEditComponent implements OnInit {
     handlePoleCheckboxChange(hasPole: boolean): void {
         if (hasPole) {
             // Add required validators when checkbox is checked
-            this.storeForm.get('poleQuantity')?.setValidators([Validators.required, Validators.min(1), Validators.max(100)]);
-            this.storeForm.get('poleWidth')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(1000)]);
-            this.storeForm.get('poleHeight')?.setValidators([Validators.required, Validators.min(0.1), Validators.max(1000)]);
-            this.storeForm.get('poleCost')?.setValidators([Validators.required, Validators.min(0.01), Validators.max(10000)]);
+            this.storeForm.get('poleQuantity')?.setValidators([Validators.required, Validators.min(1)]);
+            this.storeForm.get('poleWidth')?.setValidators([Validators.required, Validators.min(0.1)]);
+            this.storeForm.get('poleHeight')?.setValidators([Validators.required, Validators.min(0.1)]);
+            this.storeForm.get('poleCost')?.setValidators([Validators.required, Validators.min(0.01)]);
         } else {
             // Clear validators when checkbox is unchecked
             this.storeForm.get('poleQuantity')?.clearValidators();
