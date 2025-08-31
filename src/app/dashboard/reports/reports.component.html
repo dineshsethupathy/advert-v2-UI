@@ -182,6 +182,7 @@
                     <table class="stores-table">
                         <thead>
                             <tr>
+                                <th class="sno-column">S.No.</th>
                                 <th>Assignment Name</th>
                                 <th>RETAILER/OUTLET NAME</th>
                                 <th>SAP ID</th>
@@ -204,9 +205,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <ng-container *ngFor="let store of stores">
+                            <ng-container *ngFor="let store of stores; let i = index">
                                 <!-- Board Row -->
                                 <tr *ngIf="store.boardWidth && store.boardHeight">
+                                    <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
                                     <td>
                                         <div class="store-info">
@@ -247,6 +249,7 @@
 
                                 <!-- Pole Row -->
                                 <tr *ngIf="store.poleQuantity && store.poleWidth && store.poleHeight" class="pole-row">
+                                    <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
                                     <td>
                                         <div class="store-info">
@@ -288,6 +291,7 @@
                                 <!-- Default Row (if neither board nor pole exists) -->
                                 <tr
                                     *ngIf="(!store.boardWidth || !store.boardHeight) && (!store.poleQuantity || !store.poleWidth || !store.poleHeight)">
+                                    <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
                                     <td>
                                         <div class="store-info">
