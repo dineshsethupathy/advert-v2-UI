@@ -106,20 +106,25 @@ export class WorkflowsComponent implements OnInit {
     }
 
     getActiveWorkflows(): number {
-        return this.workflows.filter(w => w.assignmentCount > 0).length;
+        return this.filteredWorkflows.filter(w => w.assignmentCount > 0).length;
     }
 
     getAverageStages(): number {
-        if (this.workflows.length === 0) return 0;
-        const totalStages = this.workflows.reduce((sum, w) => sum + w.stageCount, 0);
-        return Math.round(totalStages / this.workflows.length);
+        if (this.filteredWorkflows.length === 0) return 0;
+        const totalStages = this.filteredWorkflows.reduce((sum, w) => sum + w.stageCount, 0);
+        return Math.round(totalStages / this.filteredWorkflows.length);
     }
 
     getTotalAssignments(): number {
-        return this.workflows.reduce((sum, w) => sum + w.assignmentCount, 0);
+        return this.filteredWorkflows.reduce((sum, w) => sum + w.assignmentCount, 0);
     }
 
     formatDate(dateString: string): string {
         return new Date(dateString).toLocaleDateString();
+    }
+
+    // Get filtered workflows excluding system-configured workflows that users cannot edit/delete
+    get filteredWorkflows(): WorkflowResponse[] {
+        return this.workflows.filter(workflow => workflow.name !== 'Vendor Workflow');
     }
 } 

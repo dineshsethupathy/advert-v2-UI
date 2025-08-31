@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -10,7 +10,8 @@ import { RoleService, Role } from '../../../services/role.service';
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
     templateUrl: './create-workflow.component.html',
-    styleUrl: './create-workflow.component.css'
+    styleUrl: './create-workflow.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CreateWorkflowComponent implements OnInit, AfterViewInit {
     workflowForm: FormGroup;

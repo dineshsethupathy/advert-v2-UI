@@ -94,7 +94,8 @@
                 <div class="table-cell header-cell actions-cell">Actions</div>
             </div>
             <div class="table-body">
-                <div *ngFor="let workflow of workflows" class="table-row">
+                <!-- Filter out 'Vendor Workflow' as it's a system-configured workflow that users cannot edit/delete -->
+                <div *ngFor="let workflow of filteredWorkflows" class="table-row">
                     <div class="table-cell">
                         <div class="workflow-info">
                             <span class="workflow-name" (click)="viewWorkflow(workflow.id)">{{ workflow.name }}</span>

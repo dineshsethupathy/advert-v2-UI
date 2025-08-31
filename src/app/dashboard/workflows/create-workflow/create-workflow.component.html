@@ -9,7 +9,7 @@
         <!-- Loading State -->
         <div *ngIf="loading" class="loading-state">
             <div class="loading-spinner">
-                <span class="material-icons">refresh</span>
+                <l-tail-chase size="40" speed="1.75" color="#006fcf"></l-tail-chase>
             </div>
             <p>{{ isEditMode ? 'Loading workflow for editing...' : 'Loading...' }}</p>
         </div>
@@ -118,9 +118,9 @@
                 </button>
                 <button type="submit" class="btn btn-primary"
                     [disabled]="isSubmitting || workflowForm.invalid || stages.length === 0">
+                    <l-tail-chase *ngIf="isSubmitting" size="20" speed="1.75" color="#ffffff"></l-tail-chase>
                     <span class="material-icons" *ngIf="!isSubmitting">{{ isEditMode ? 'save' : 'add' }}</span>
-                    <span class="material-icons loading-icon" *ngIf="isSubmitting">refresh</span>
-                    {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Workflow' : 'Create Workflow') }}
+                    <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update Workflow' : 'Create Workflow' }}</span>
                 </button>
             </div>
         </form>
