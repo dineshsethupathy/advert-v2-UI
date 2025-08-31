@@ -208,6 +208,8 @@
                         <div class="header-cell">SAP ID</div>
                         <div class="header-cell">Contact</div>
                         <div class="header-cell">Region</div>
+                        <div class="header-cell">Last Assigned</div>
+                        <div class="header-cell">Board Type</div>
                         <div class="header-cell">Created By</div>
                         <div class="header-cell actions-header">Actions</div>
                     </div>
@@ -237,6 +239,14 @@
                                     [style.border-color]="getRegionBadgeColor(shop.regionName).border">
                                     {{ shop.regionName }}
                                 </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="last-assignment-date">
+                                    {{ shop.lastAssignmentDate ? (shop.lastAssignmentDate | date:'shortDate') : '-' }}
+                                </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="board-type">{{ shop.lastAssignedBoardType || '-' }}</div>
                             </div>
                             <div class="table-cell">
                                 <div class="created-by">{{ shop.createdBy }}</div>

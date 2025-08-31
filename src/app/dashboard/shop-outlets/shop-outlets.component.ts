@@ -4,18 +4,11 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { RegionService, Region } from '../../services/region.service';
-import { StoresService, Store, CreateStoreRequest, UpdateStoreRequest, ImportResponse } from '../../services/stores.service';
+import { StoresService, Store, StoreWithAssignmentHistory, CreateStoreRequest, UpdateStoreRequest, ImportResponse } from '../../services/stores.service';
 import Swal from 'sweetalert2';
 
-export interface ShopOutlet {
-    id: number;
-    name: string;
-    sapId: string;
-    phoneNumber?: string;
-    address?: string;
-    regionId: number;
-    regionName: string;
-    createdBy: string;
+export interface ShopOutlet extends StoreWithAssignmentHistory {
+    // Extends StoreWithAssignmentHistory to include lastAssignmentDate and lastAssignedBoardType
 }
 
 @Component({
@@ -89,7 +82,8 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
 
         // console.log('loadShops() called');
         this.loading = true;
-        this.storesService.getStores().subscribe({
+        // Use getStoresForAssignmentCreation to get stores with assignment history
+        this.storesService.getStoresForAssignmentCreation().subscribe({
             next: (stores) => {
                 // console.log('Stores loaded:', stores.length);
                 this.shops = stores.map(store => ({
@@ -100,7 +94,11 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
                     address: store.address,
                     regionId: store.regionId,
                     regionName: store.regionName,
-                    createdBy: store.createdBy
+                    createdBy: store.createdBy,
+                    lastAssignmentDate: store.lastAssignmentDate,
+                    lastAssignedBoardName: store.lastAssignedBoardName,
+                    lastAssignedBoardType: store.lastAssignedBoardType,
+                    lastAssignedBoardCost: store.lastAssignedBoardCost
                 }));
                 this.filterShops();
                 this.loading = false;
