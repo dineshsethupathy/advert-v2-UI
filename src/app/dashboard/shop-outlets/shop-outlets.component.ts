@@ -24,6 +24,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     regions: Region[] = [];
     filteredShops: ShopOutlet[] = [];
     selectedRegionFilters: number[] = [];
+    selectedStateFilters: string[] = [];
     loading = false;
     formLoading = false;
     showForm = false;
@@ -36,6 +37,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     formSubmitted = false;
     isRegionDropdownOpen = false;
     isFilterDropdownOpen = false;
+    isStateFilterDropdownOpen = false;
     private isInitialized = false;
 
     constructor(
@@ -392,11 +394,19 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     }
 
     filterShops(): void {
-        if (this.selectedRegionFilters.length === 0) {
-            this.filteredShops = [...this.shops];
-        } else {
-            this.filteredShops = this.shops.filter(shop => this.selectedRegionFilters.includes(shop.regionId));
+        let filtered = [...this.shops];
+
+        // Apply region filters
+        if (this.selectedRegionFilters.length > 0) {
+            filtered = filtered.filter(shop => this.selectedRegionFilters.includes(shop.regionId));
         }
+
+        // Apply state filters
+        if (this.selectedStateFilters.length > 0) {
+            filtered = filtered.filter(shop => this.selectedStateFilters.includes(shop.stateName));
+        }
+
+        this.filteredShops = filtered;
     }
 
     onRegionFilterChange(regionId: number, checked: boolean): void {
@@ -410,12 +420,28 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         this.filterShops();
     }
 
+    onStateFilterChange(stateName: string, checked: boolean): void {
+        if (checked) {
+            if (!this.selectedStateFilters.includes(stateName)) {
+                this.selectedStateFilters.push(stateName);
+            }
+        } else {
+            this.selectedStateFilters = this.selectedStateFilters.filter(name => name !== stateName);
+        }
+        this.filterShops();
+    }
+
     isRegionSelected(regionId: number): boolean {
         return this.selectedRegionFilters.includes(regionId);
     }
 
+    isStateSelected(stateName: string): boolean {
+        return this.selectedStateFilters.includes(stateName);
+    }
+
     clearFilters(): void {
         this.selectedRegionFilters = [];
+        this.selectedStateFilters = [];
         this.filterShops();
     }
 
@@ -444,12 +470,24 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         this.isFilterDropdownOpen = !this.isFilterDropdownOpen;
     }
 
+    toggleStateFilterDropdown(): void {
+        this.isStateFilterDropdownOpen = !this.isStateFilterDropdownOpen;
+    }
+
     selectRegion(regionId: number, regionName: string, event?: Event): void {
         if (event) {
             event.stopPropagation();
         }
         this.shopForm.patchValue({ regionId: regionId });
         this.isRegionDropdownOpen = false;
+    }
+
+    selectState(stateName: string, event?: Event): void {
+        if (event) {
+            event.stopPropagation();
+        }
+        this.shopForm.patchValue({ stateName: stateName });
+        this.isStateFilterDropdownOpen = false;
     }
 
     getSelectedRegionText(): string {
@@ -459,6 +497,14 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         }
         const selectedRegion = this.regions.find(region => region.id === selectedRegionId);
         return selectedRegion ? selectedRegion.name : 'Select a region';
+    }
+
+    getSelectedStateText(): string {
+        const selectedStateName = this.shopForm.get('stateName')?.value;
+        if (!selectedStateName) {
+            return 'Select a state';
+        }
+        return selectedStateName;
     }
 
     @HostListener('document:click', ['$event'])
@@ -473,6 +519,11 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         // Close filter dropdown if clicked outside
         if (!target.closest('.multi-select-dropdown')) {
             this.isFilterDropdownOpen = false;
+        }
+
+        // Close state filter dropdown if clicked outside
+        if (!target.closest('.multi-select-dropdown')) {
+            this.isStateFilterDropdownOpen = false;
         }
     }
 
@@ -497,7 +548,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
 
     getFilterDisplayText(): string {
         if (this.selectedRegionFilters.length === 0) {
-            return 'All Regions';
+            return 'Filter by Region';
         } else if (this.selectedRegionFilters.length === 1) {
             const regionId = this.selectedRegionFilters[0];
             const region = this.regions.find(r => r.id === regionId);
@@ -505,6 +556,21 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
         } else {
             return `${this.selectedRegionFilters.length} regions selected`;
         }
+    }
+
+    getStateFilterDisplayText(): string {
+        if (this.selectedStateFilters.length === 0) {
+            return 'Filter by State';
+        } else if (this.selectedStateFilters.length === 1) {
+            return this.selectedStateFilters[0];
+        } else {
+            return `${this.selectedStateFilters.length} states selected`;
+        }
+    }
+
+    getUniqueStates(): string[] {
+        const states = this.shops.map(shop => shop.stateName).filter(state => state && state !== '-');
+        return [...new Set(states)];
     }
 
     getRegionBadgeColor(regionName: string): { bg: string; text: string; border: string } {

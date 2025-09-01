@@ -153,8 +153,7 @@
         <div class="shops-card">
             <div class="shops-header">
                 <h3>Shop Outlets ({{ filteredShops.length }})</h3>
-                <div class="filter-group">
-                    <label class="filter-label">Filter by Region:</label>
+                <div class="filters-container">
                     <div class="multi-select-dropdown" [class.open]="isFilterDropdownOpen"
                         (click)="toggleFilterDropdown()">
                         <div class="filter-display">
@@ -176,6 +175,34 @@
                                 </label>
                             </div>
                             <div class="filter-actions" *ngIf="selectedRegionFilters.length > 0">
+                                <button class="clear-filters-btn" (click)="clearFilters(); $event.stopPropagation()">
+                                    Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="multi-select-dropdown" [class.open]="isStateFilterDropdownOpen"
+                        (click)="toggleStateFilterDropdown()">
+                        <div class="filter-display">
+                            <span class="filter-text">
+                                {{ getStateFilterDisplayText() }}
+                            </span>
+                            <span class="filter-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="filter-dropdown" *ngIf="isStateFilterDropdownOpen"
+                            (click)="$event.stopPropagation()">
+                            <div class="filter-option" *ngFor="let state of getUniqueStates()">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" [checked]="isStateSelected(state)"
+                                        (click)="$event.stopPropagation()"
+                                        (change)="onStateFilterChange(state, $event.target.checked)">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">{{ state }}</span>
+                                </label>
+                            </div>
+                            <div class="filter-actions" *ngIf="selectedStateFilters.length > 0">
                                 <button class="clear-filters-btn" (click)="clearFilters(); $event.stopPropagation()">
                                     Clear Filters
                                 </button>
