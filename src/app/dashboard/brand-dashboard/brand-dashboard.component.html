@@ -73,9 +73,11 @@
                 <!-- <div class="nav-title">Navigation</div> -->
                 <ul class="nav-list">
                     <li *ngFor="let item of getVisibleSidebarItems()" class="nav-item" [class.active]="item.active"
-                        (click)="selectItem(item)">
-                        <a class="nav-link">
-                            <span class="material-icons nav-icon">{{ item.icon }}</span>
+                        (click)="selectItem(item)" (keydown)="onSidebarItemKeyDown($event, item)">
+                        <a class="nav-link" [title]="isSidebarCollapsed ? item.name : ''"
+                            [attr.aria-label]="isSidebarCollapsed ? item.name : item.name" role="button" tabindex="0">
+                            <span class="material-icons nav-icon" [title]="isSidebarCollapsed ? item.name : ''"
+                                [attr.aria-hidden]="!isSidebarCollapsed">{{ item.icon }}</span>
                             <span class="nav-text" [class.hidden]="isSidebarCollapsed">{{ item.name }}</span>
                         </a>
                     </li>

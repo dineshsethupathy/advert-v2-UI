@@ -533,7 +533,8 @@
     transform: translateX(3px);
 }
 
-.nav-item.active .nav-link:hover {
+.nav-item.active .nav-link:hover,
+.nav-item.active .nav-link:focus {
     transform: none;
 }
 
@@ -578,6 +579,88 @@
     margin-right: 0;
     width: 24px;
     height: 24px;
+}
+
+/* Enhanced tooltip styling for collapsed sidebar */
+.sidebar.collapsed .nav-link {
+    position: relative;
+}
+
+/* Add a small delay to tooltip appearance */
+.sidebar.collapsed .nav-link:hover::after,
+.sidebar.collapsed .nav-link:hover::before,
+.sidebar.collapsed .nav-link:focus::after,
+.sidebar.collapsed .nav-link:focus::before {
+    animation-delay: 0.3s;
+}
+
+.sidebar.collapsed .nav-link:hover::after,
+.sidebar.collapsed .nav-link:focus::after {
+    content: attr(title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-left: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease-in-out forwards;
+}
+
+.sidebar.collapsed .nav-link:hover::before,
+.sidebar.collapsed .nav-link:focus::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: rgba(0, 0, 0, 0.8);
+    margin-left: 6px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease-in-out forwards;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+/* Ensure tooltips don't interfere with hover effects */
+.sidebar.collapsed .nav-link:hover,
+.sidebar.collapsed .nav-link:focus {
+    transform: none;
+}
+
+/* Focus styles for accessibility */
+.sidebar.collapsed .nav-link:focus {
+    outline: 2px solid #006fcf;
+    outline-offset: 2px;
+    background: rgba(0, 111, 207, 0.05);
+}
+
+/* Ensure active state styling is preserved */
+.nav-item.active .sidebar.collapsed .nav-link:focus {
+    background: linear-gradient(135deg, #006fcf 0%, #005bb8 100%);
+    outline-color: white;
 }
 
 /* Content Area */
@@ -1397,6 +1480,14 @@
         /* Keep full width on mobile */
     }
 
+    /* Disable tooltips on mobile since sidebar is horizontal */
+    .sidebar.collapsed .nav-link:hover::after,
+    .sidebar.collapsed .nav-link:hover::before,
+    .sidebar.collapsed .nav-link:focus::after,
+    .sidebar.collapsed .nav-link:focus::before {
+        display: none;
+    }
+
     .content-area {
         margin-left: 0;
         margin-top: 80px;
@@ -1486,6 +1577,14 @@
     .sidebar.collapsed {
         max-height: 70px;
         /* Keep consistent height on mobile */
+    }
+
+    /* Disable tooltips on mobile since sidebar is horizontal */
+    .sidebar.collapsed .nav-link:hover::after,
+    .sidebar.collapsed .nav-link:hover::before,
+    .sidebar.collapsed .nav-link:focus::after,
+    .sidebar.collapsed .nav-link:focus::before {
+        display: none;
     }
 
     .content-area {

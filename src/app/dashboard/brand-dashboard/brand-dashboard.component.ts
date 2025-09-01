@@ -251,6 +251,13 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         this.router.navigate([item.route]);
     }
 
+    onSidebarItemKeyDown(event: KeyboardEvent, item: SidebarItem): void {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.selectItem(item);
+        }
+    }
+
     logout(event: Event): void {
         // Prevent event from bubbling up to document click handler
         event.stopPropagation();
