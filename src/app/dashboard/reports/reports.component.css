@@ -660,18 +660,22 @@
 }
 
 .stores-table th {
-    background: #f8fafc;
-    color: #1e293b;
+    background: transparent;
+    color: #006fcf;
     font-weight: 600;
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 12px 8px;
     text-align: center;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid rgba(0, 111, 207, 0.1);
     border-right: 1px solid #e2e8f0;
     white-space: nowrap;
     min-width: 100px;
+}
+
+.stores-table thead {
+    background: linear-gradient(135deg, #8dc6ff 0%, #e6d6fb 100%);
 }
 
 .stores-table td {
@@ -731,6 +735,7 @@
 .stores-table th:nth-child(6),
 .stores-table td:nth-child(6) {
     min-width: 200px;
+    text-align: center;
 }
 
 /* Location */
@@ -891,6 +896,16 @@
     text-align: center;
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-weight: 500;
+}
+
+/* Pole Row Highlighting - Only highlight pole rows */
+.stores-table tbody tr.pole-row {
+    background-color: #f0eeee !important;
+    border-left: 3px solid #0ea5e9;
+}
+
+.stores-table tbody tr.pole-row:hover {
+    background-color: #ebf3f9 !important;
 }
 
 /* S.No. column - use professional font for consistent number alignment */
