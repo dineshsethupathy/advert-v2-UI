@@ -135,7 +135,7 @@ export class ReportService {
             const pdfDoc = pdfMake.createPdf(docDefinition);
 
             // Download PDF
-            const filename = `Store_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+            const filename = `Outlet_Report_${new Date().toISOString().split('T')[0]}.pdf`;
             pdfDoc.download(filename);
         } catch (error) {
             console.error('Error generating frontend PDF:', error);
