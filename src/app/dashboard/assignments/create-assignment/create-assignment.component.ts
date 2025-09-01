@@ -30,7 +30,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     // Store selection properties
     selectedRegionFilters: number[] = [];
-    cityFilter: string = '';
+    selectedStateFilters: number[] = [];
     currentPage: number = 1;
     pageSize: number = 50;
     totalStores: number = 0;
@@ -57,12 +57,16 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     vendorDropdownOpen = false;
     workflowDropdownOpen = false;
     isFilterDropdownOpen = false;
+    stateDropdownOpen = false;
 
     // Selected values for display
     selectedVendor: string = '';
     selectedVendorId: number | null = null;
     selectedWorkflow: string = '';
     selectedWorkflowId: number | null = null;
+
+    // Available states for filtering
+    availableStates: { id: number; name: string }[] = [];
 
     private destroy$ = new Subject<void>();
 
@@ -83,7 +87,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         });
 
         this.filterForm = this.fb.group({
-            cityFilter: [''],
             daysFilter: [null]
         });
     }
@@ -111,6 +114,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
             this.vendorDropdownOpen = false;
             this.workflowDropdownOpen = false;
             this.isFilterDropdownOpen = false;
+            this.stateDropdownOpen = false;
         }
     }
 
@@ -136,6 +140,14 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.isFilterDropdownOpen = !this.isFilterDropdownOpen;
         this.vendorDropdownOpen = false;
         this.workflowDropdownOpen = false;
+        this.stateDropdownOpen = false;
+    }
+
+    toggleStateDropdown(): void {
+        this.stateDropdownOpen = !this.stateDropdownOpen;
+        this.vendorDropdownOpen = false;
+        this.workflowDropdownOpen = false;
+        this.isFilterDropdownOpen = false;
     }
 
     selectVendor(vendor: Vendor): void {
@@ -153,8 +165,6 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.workflowDropdownOpen = false;
     }
 
-
-
     onRegionFilterChange(regionId: number, checked: boolean): void {
         if (checked) {
             if (!this.selectedRegionFilters.includes(regionId)) {
@@ -166,8 +176,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         this.applyFilters();
     }
 
+    onStateFilterChange(stateId: number, checked: boolean): void {
+        if (checked) {
+            if (!this.selectedStateFilters.includes(stateId)) {
+                this.selectedStateFilters.push(stateId);
+            }
+        } else {
+            this.selectedStateFilters = this.selectedStateFilters.filter(id => id !== stateId);
+        }
+        this.applyFilters();
+    }
+
     isRegionSelected(regionId: number): boolean {
         return this.selectedRegionFilters.includes(regionId);
+    }
+
+    isStateSelected(stateId: number): boolean {
+        return this.selectedStateFilters.includes(stateId);
     }
 
     getFilterDisplayText(): string {
@@ -181,8 +206,25 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         }
     }
 
+    getStateFilterDisplayText(): string {
+        if (this.selectedStateFilters.length === 0) {
+            return 'All States';
+        } else if (this.selectedStateFilters.length === 1) {
+            const state = this.availableStates.find(s => s.id === this.selectedStateFilters[0]);
+            return state ? state.name : '1 State Selected';
+        } else {
+            return `${this.selectedStateFilters.length} States Selected`;
+        }
+    }
+
     clearFilters(): void {
         this.selectedRegionFilters = [];
+        this.selectedStateFilters = [];
+        this.applyFilters();
+    }
+
+    clearStateFilters(): void {
+        this.selectedStateFilters = [];
         this.applyFilters();
     }
 
@@ -218,6 +260,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
                                         // console.log('Stores loaded successfully:', stores);
                                         this.stores = stores;
                                         this.filteredStores = stores;
+                                        this.extractUniqueStates(); // Extract unique states from loaded stores
 
                                         // Apply initial sort by Store Name in ascending order
                                         this.sortStores();
@@ -297,6 +340,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
                 // console.log('Stores loaded successfully:', stores);
                 this.stores = stores;
                 this.filteredStores = stores;
+                this.extractUniqueStates(); // Extract unique states from loaded stores
                 this.updatePagination();
                 this.updateSelectionCheckboxes(); // Update checkbox states after loading
                 this.loading = false;
@@ -339,19 +383,17 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     filterStores(): void {
         const filterValues = this.filterForm.value;
-        this.cityFilter = filterValues.cityFilter;
 
         console.log('Filtering stores with:', {
             selectedRegionFilters: this.selectedRegionFilters,
-            cityFilter: this.cityFilter,
+            selectedStateFilters: this.selectedStateFilters,
             totalStores: this.stores.length
         });
 
         this.filteredStores = this.stores.filter(store => {
             const regionMatch = this.selectedRegionFilters.length === 0 || this.selectedRegionFilters.includes(store.regionId);
-            const cityMatch = !this.cityFilter ||
-                store.address?.toLowerCase().includes(this.cityFilter.toLowerCase());
-            return regionMatch && cityMatch;
+            const stateMatch = this.selectedStateFilters.length === 0 || this.selectedStateFilters.includes(this.getStateIdByName(store.stateName));
+            return regionMatch && stateMatch;
         });
 
         // Apply customizable days filter if specified
@@ -685,5 +727,26 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
         } else {
             this.router.navigate(['/assignments']);
         }
+    }
+
+    private getStateNameById(stateId: number): string {
+        const state = this.availableStates.find(s => s.id === stateId);
+        return state ? state.name : '';
+    }
+
+    private extractUniqueStates(): void {
+        const stateMap = new Map<number, string>();
+        this.stores.forEach(store => {
+            if (store.stateName && store.stateName !== '-') {
+                stateMap.set(this.getStateIdByName(store.stateName), store.stateName);
+            }
+        });
+        this.availableStates = Array.from(stateMap.entries()).map(([id, name]) => ({ id, name }));
+    }
+
+    private getStateIdByName(stateName: string): number {
+        // This is a simple implementation - in a real app, you might want to maintain a states list
+        // For now, we'll use a hash of the state name as an ID
+        return stateName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     }
 } 

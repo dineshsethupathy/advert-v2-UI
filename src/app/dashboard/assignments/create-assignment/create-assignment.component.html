@@ -148,9 +148,36 @@
                         </div>
 
                         <div class="filter-group">
-                            <label for="cityFilter" class="form-label">City Filter</label>
-                            <input type="text" id="cityFilter" name="cityFilter" formControlName="cityFilter"
-                                class="form-input" placeholder="Search by City">
+                            <label class="form-label">Filter by State:</label>
+                            <div class="multi-select-dropdown" [class.open]="stateDropdownOpen"
+                                (click)="toggleStateDropdown()">
+                                <div class="filter-display">
+                                    <span class="filter-text">
+                                        {{ getStateFilterDisplayText() }}
+                                    </span>
+                                    <span class="filter-arrow">
+                                        <span class="material-icons">keyboard_arrow_down</span>
+                                    </span>
+                                </div>
+                                <div class="filter-dropdown" *ngIf="stateDropdownOpen"
+                                    (click)="$event.stopPropagation()">
+                                    <div class="filter-option" *ngFor="let state of availableStates">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" [checked]="isStateSelected(state.id)"
+                                                (click)="$event.stopPropagation()"
+                                                (change)="onStateFilterChange(state.id, $event.target.checked)">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">{{ state.name }}</span>
+                                        </label>
+                                    </div>
+                                    <div class="filter-actions" *ngIf="selectedStateFilters.length > 0">
+                                        <button class="clear-filters-btn"
+                                            (click)="clearStateFilters(); $event.stopPropagation()">
+                                            Clear State Filters
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="filter-group">
@@ -197,6 +224,10 @@
                                             Region
                                             <span class="sort-icon">{{ getSortIcon('regionName') }}</span>
                                         </th>
+                                        <th (click)="sortBy('stateName')" class="sortable-header">
+                                            State
+                                            <span class="sort-icon">{{ getSortIcon('stateName') }}</span>
+                                        </th>
                                         <th (click)="sortBy('lastAssignmentDate')" class="sortable-header">
                                             Last Assignment Date
                                             <span class="sort-icon">{{ getSortIcon('lastAssignmentDate') }}</span>
@@ -219,6 +250,7 @@
                                         <td class="store-name">{{ store.name || '-' }}</td>
                                         <td class="store-address">{{ store.address || '-' }}</td>
                                         <td class="store-region">{{ store.regionName || '-' }}</td>
+                                        <td class="store-state">{{ store.stateName || '-' }}</td>
                                         <td class="last-assignment-date">
                                             {{ store.lastAssignmentDate ? (store.lastAssignmentDate | date:'shortDate')
                                             : '-' }}
