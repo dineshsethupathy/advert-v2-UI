@@ -6,7 +6,7 @@
                 <h1 class="page-title">Regions</h1>
                 <p class="page-description">Manage your business regions and territories</p>
             </div>
-            <button class="add-btn" (click)="showAddRegionForm()">
+            <button class="add-btn" (click)="showAddRegionModal()">
                 <span class="material-icons">add</span>
                 <span>Add Region</span>
             </button>
@@ -15,39 +15,67 @@
 
 
 
-    <!-- Add/Edit Form Section -->
-    <div class="form-section" *ngIf="showAddForm">
-        <div class="form-card">
-            <div class="form-header">
-                <h2 class="form-title">{{ getFormTitle() }}</h2>
-                <button class="close-btn" (click)="cancelForm()">
+    <!-- Add/Edit Region Modal -->
+    <div *ngIf="showAddModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>{{ getFormTitle() }}</h2>
+                <button class="modal-close" (click)="closeModal()">
                     <span class="material-icons">close</span>
                 </button>
             </div>
-            <form class="region-form" (ngSubmit)="saveRegion()">
+
+            <form (ngSubmit)="saveRegion()" class="modal-form">
                 <div class="form-group">
-                    <label for="regionName" class="form-label">Region Name *</label>
-                    <input type="text" id="regionName" name="regionName" [(ngModel)]="regionForm.name"
-                        class="form-input" placeholder="Enter region name" required>
+                    <label for="regionName">Region Name *</label>
+                    <input type="text" id="regionName" [(ngModel)]="regionForm.name" name="regionName"
+                        placeholder="Enter region name" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="regionDescription" class="form-label">Description</label>
-                    <textarea id="regionDescription" name="regionDescription" [(ngModel)]="regionForm.description"
-                        class="form-textarea" placeholder="Enter region description" rows="3"></textarea>
+                    <label for="stateId">State *</label>
+                    <div class="custom-select" [class.open]="isStatesDropdownOpen">
+                        <div class="select-display" (click)="toggleStatesDropdown()">
+                            <span class="select-text" *ngIf="!isStatesDropdownOpen">
+                                {{ getSelectedStateText() }}
+                            </span>
+                            <input type="text" class="select-input" *ngIf="isStatesDropdownOpen"
+                                [placeholder]="'Search states...'" [value]="stateSearchText"
+                                (input)="onStateSearchInput($event)" (keydown)="onStateSearchKeyDown($event)"
+                                (click)="$event.stopPropagation()">
+                            <span class="select-arrow">
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </span>
+                        </div>
+                        <div class="select-dropdown" *ngIf="isStatesDropdownOpen">
+                            <div class="dropdown-option" *ngFor="let state of filteredStates"
+                                (click)="selectState(state.id, state.name, $event)"
+                                [class.selected]="regionForm.stateId === state.id">
+                                {{ state.name }}
+                            </div>
+                            <div class="no-results" *ngIf="filteredStates.length === 0">
+                                No states found matching "{{ stateSearchText }}"
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-actions">
-                    <div class="form-actions-left">
-                        <div *ngIf="showError" class="error-text">{{ errorMessage }}</div>
-                    </div>
-                    <div class="form-actions-right">
-                        <button type="button" class="btn btn-secondary" (click)="cancelForm()">
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <span class="material-icons">save</span>
-                            {{ getSaveButtonText() }}
-                        </button>
-                    </div>
+
+                <div class="form-group">
+                    <label for="regionDescription">Description</label>
+                    <textarea id="regionDescription" [(ngModel)]="regionForm.description" name="regionDescription"
+                        placeholder="Enter region description" rows="3"></textarea>
+                </div>
+
+                <div *ngIf="showError" class="error-message">
+                    {{ errorMessage }}
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
+                    <button type="submit" class="btn primary"
+                        [disabled]="!regionForm.name.trim() || !regionForm.stateId">
+                        {{ getSaveButtonText() }}
+                    </button>
                 </div>
             </form>
         </div>
@@ -82,6 +110,7 @@
             <div class="regions-table">
                 <div class="table-header">
                     <div class="table-cell header-cell">Region Name</div>
+                    <div class="table-cell header-cell">State</div>
                     <div class="table-cell header-cell">Description</div>
                     <div class="table-cell header-cell">Created Date</div>
                     <div class="table-cell header-cell actions-cell">Actions</div>
@@ -94,6 +123,9 @@
                             </div>
                         </div>
                         <div class="table-cell">
+                            <span class="state-name">{{ getStateName(region.stateId) }}</span>
+                        </div>
+                        <div class="table-cell">
                             <span class="region-description">{{ region.description || 'No description' }}</span>
                         </div>
                         <div class="table-cell">
@@ -101,7 +133,7 @@
                         </div>
                         <div class="table-cell actions-cell">
                             <div class="action-buttons">
-                                <button class="action-btn edit-btn" (click)="showEditRegionForm(region)"
+                                <button class="action-btn edit-btn" (click)="showEditRegionModal(region)"
                                     title="Edit Region">
                                     <span class="material-icons">edit</span>
                                 </button>

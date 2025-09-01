@@ -208,6 +208,7 @@
                         <div class="header-cell">SAP ID</div>
                         <div class="header-cell">Contact</div>
                         <div class="header-cell">Region</div>
+                        <div class="header-cell">State</div>
                         <div class="header-cell">Last Assigned</div>
                         <div class="header-cell">Board Type</div>
                         <div class="header-cell">Created By</div>
@@ -227,7 +228,7 @@
                             <div class="table-cell">
                                 <div class="contact-info">
                                     <div class="phone-number" *ngIf="shop.phoneNumber">
-                                        <span class="material-icons">phone</span>
+                                        <!-- <span class="material-icons">phone</span> -->
                                         {{ shop.phoneNumber }}
                                     </div>
                                 </div>
@@ -238,6 +239,11 @@
                                     [style.color]="getRegionBadgeColor(shop.regionName).text"
                                     [style.border-color]="getRegionBadgeColor(shop.regionName).border">
                                     {{ shop.regionName }}
+                                </div>
+                            </div>
+                            <div class="table-cell">
+                                <div class="state-badge">
+                                    {{ shop.stateName }}
                                 </div>
                             </div>
                             <div class="table-cell">

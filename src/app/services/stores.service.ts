@@ -11,6 +11,7 @@ export interface Store {
     address?: string;
     regionId: number;
     regionName: string;
+    stateName: string;
     createdBy: string;
 }
 

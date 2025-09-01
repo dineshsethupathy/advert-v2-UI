@@ -94,6 +94,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
                     address: store.address,
                     regionId: store.regionId,
                     regionName: store.regionName,
+                    stateName: store.stateName,
                     createdBy: store.createdBy,
                     lastAssignmentDate: store.lastAssignmentDate,
                     lastAssignedBoardName: store.lastAssignedBoardName,
@@ -419,7 +420,7 @@ export class ShopOutletsComponent implements OnInit, OnDestroy {
     }
 
     downloadTemplate(): void {
-        const template = 'Name,SAPId,PhoneNumber,Address,RegionName\nExample Shop,SAP001,1234567890,123 Main St,North Region';
+        const template = 'Name,SAPId,PhoneNumber,Address,RegionName,StateName\nExample Shop,SAP001,1234567890,123 Main St,North Region,State Name';
         const blob = new Blob([template], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

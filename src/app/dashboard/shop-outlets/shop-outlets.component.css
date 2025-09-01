@@ -894,19 +894,25 @@ l-tail-chase {
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.5);
+    min-width: 0;
+}
+
+.shops-table .table-header,
+.shops-table .table-body {
+    min-width: 0;
 }
 
 .table-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
     gap: 1rem;
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     background: linear-gradient(135deg,
             #8dc6ff 0%,
             #e6d6fb 100%);
     border-bottom: 2px solid #e2e8f0;
     font-weight: 600;
-    color: #475569;
+    color: #000000;
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -918,7 +924,7 @@ l-tail-chase {
 
 .table-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
     gap: 1rem;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #f1f5f9;
@@ -939,16 +945,26 @@ l-tail-chase {
     align-items: center;
     min-height: 40px;
     word-break: break-word;
+    overflow: hidden;
+}
+
+.table-cell>* {
+    /* width: 100%; */
+    overflow: hidden;
 }
 
 .header-cell {
     display: flex;
     align-items: center;
+    justify-content: center;
     font-weight: 600;
-    color: #475569;
+    color: #000000;
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .header-cell.actions-header {
@@ -959,11 +975,23 @@ l-tail-chase {
     justify-content: flex-end;
 }
 
+.table-cell:not(.actions-cell) {
+    justify-content: center;
+}
+
+/* Specific alignment for multi-line content cells */
+.table-cell:first-child,
+.table-cell:nth-child(3) {
+    justify-content: flex-start;
+}
+
 /* Shop Info */
 .shop-info {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    align-items: flex-start;
+    width: 100%;
 }
 
 .shop-name {
@@ -991,6 +1019,7 @@ l-tail-chase {
     text-align: center;
     min-width: 80px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: fit-content;
 }
 
 /* Contact Info */
@@ -998,6 +1027,8 @@ l-tail-chase {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    align-items: flex-start;
+    width: 100%;
 }
 
 .phone-number {
@@ -1022,6 +1053,7 @@ l-tail-chase {
     font-size: 0.8rem;
     font-weight: 600;
     transition: all 0.2s ease;
+    width: fit-content;
 }
 
 .region-badge:hover {
@@ -1029,10 +1061,38 @@ l-tail-chase {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* State Badge */
+.state-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+    min-width: 80px;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: fit-content;
+}
+
+.state-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f1f5f9;
+}
+
 /* Created By */
 .created-by {
     color: #64748b;
     font-size: 0.85rem;
+    text-align: center;
+    width: 100%;
 }
 
 /* Action Buttons */
@@ -1082,6 +1142,7 @@ l-tail-chase {
     text-align: center;
     color: #7c3aed;
     font-weight: 500;
+    width: 100%;
 }
 
 /* Last Assignment Date */
@@ -1089,6 +1150,7 @@ l-tail-chase {
     text-align: center;
     color: #059669;
     font-weight: 500;
+    width: 100%;
 }
 
 /* Responsive Design */
@@ -1134,9 +1196,16 @@ l-tail-chase {
 
     .table-header,
     .table-row {
-        grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 0.8fr;
         gap: 0.75rem;
         padding: 0.75rem 1rem;
+    }
+
+    .state-badge {
+        min-width: 60px;
+        max-width: 100px;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
     }
 }
 
@@ -1168,10 +1237,17 @@ l-tail-chase {
 
     .table-header,
     .table-row {
-        grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.6fr;
+        grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.6fr;
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
+    }
+
+    .state-badge {
+        min-width: 50px;
+        max-width: 80px;
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
     }
 
     .form-actions {

@@ -7,6 +7,8 @@ export interface Region {
     id: number;
     name: string;
     description: string;
+    stateId: number;
+    stateName?: string; // For display purposes
     createdDate: string;
     createdBy: number;
     isDeleted: boolean;
@@ -15,12 +17,14 @@ export interface Region {
 export interface CreateRegionRequest {
     name: string;
     description: string;
+    stateId: number;
 }
 
 export interface UpdateRegionRequest {
     id: number;
     name: string;
     description: string;
+    stateId: number;
 }
 
 @Injectable({
@@ -48,6 +52,7 @@ export class RegionService {
     }
 
     deleteRegion(id: number): Observable<void> {
+        console.log('deleteRegion', id);
         return this.http.delete<void>(`${this.API_URL}/region/${id}`);
     }
 } 
