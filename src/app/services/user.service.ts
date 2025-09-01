@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Region } from './region.service';
 
 export interface User {
     id: number;
@@ -12,6 +13,8 @@ export interface User {
     signature?: string;
     roleName: string;
     roleId: number;
+    regions?: string; // Comma-separated region IDs
+    regionList?: Region[]; // Parsed region objects for display
 }
 
 export interface CreateUserRequest {
@@ -20,6 +23,7 @@ export interface CreateUserRequest {
     firstName: string;
     lastName: string;
     roleId: number;
+    regionIds?: number[]; // List of region IDs to assign
 }
 
 export interface UpdateUserRequest {
@@ -28,6 +32,7 @@ export interface UpdateUserRequest {
     firstName: string;
     lastName: string;
     roleId: number;
+    regionIds?: number[]; // List of region IDs to assign
 }
 
 export interface UpdateSignatureRequest {

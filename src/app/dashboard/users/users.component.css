@@ -152,9 +152,9 @@
 
 .grid-header {
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr 1.5fr 1fr;
     gap: 1rem;
-    padding: 1.5rem;
+    padding: 0.6rem 1.5rem;
     background: linear-gradient(135deg, #8dc6ff 0%, #e6d6fb 100%);
     border-bottom: 1px solid rgba(0, 111, 207, 0.1);
 }
@@ -165,30 +165,88 @@
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-align: center !important;
 }
 
-.grid-row {
-    display: grid;
-    grid-template-columns: 2fr 2fr 1fr 1fr;
-    gap: 1rem;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease;
+/* Move Actions header to the left */
+.header-cell:last-child {
+    text-align: left !important;
+    padding-left: 1rem;
 }
 
-.grid-row:hover {
-    background: rgba(0, 111, 207, 0.02);
+/* Center the Name header (first column) */
+.header-cell:first-child {
+    text-align: center !important;
+    padding-left: 2rem;
 }
 
-.grid-row:last-child {
-    border-bottom: none;
+/* Ensure Email header is centered */
+.header-cell:nth-child(2) {
+    text-align: center !important;
 }
 
+/* Ensure Role header is centered */
+.header-cell:nth-child(3) {
+    text-align: center !important;
+}
+
+/* Ensure Regions header is centered */
+.header-cell:nth-child(4) {
+    text-align: center !important;
+}
+
+/* Grid cell specific styling */
 .grid-cell {
     display: flex;
     align-items: center;
     font-size: 0.95rem;
     color: #495057;
+    min-height: 2.5rem;
+}
+
+/* Regions column specific styling */
+.grid-cell:nth-child(4) {
+    align-items: flex-start;
+    padding-top: 0.5rem;
+}
+
+/* Ensure proper alignment for all columns */
+.grid-cell:nth-child(1) {
+    align-items: center;
+}
+
+.grid-cell:nth-child(2) {
+    align-items: center;
+}
+
+.grid-cell:nth-child(3) {
+    align-items: center;
+}
+
+.grid-cell:nth-child(5) {
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Improve grid row appearance */
+.grid-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1.5fr 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+    align-items: stretch;
+}
+
+.grid-row:hover {
+    background: rgba(0, 111, 207, 0.02);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.05);
+}
+
+.grid-row:last-child {
+    border-bottom: none;
 }
 
 /* User Info */
@@ -350,7 +408,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem;
+    padding: 0.6rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -393,11 +451,12 @@
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
-    display: block;
+    /* display: block; */
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #212529;
@@ -411,6 +470,150 @@
     font-size: 0.95rem;
     transition: all 0.3s ease;
     background: white;
+}
+
+/* Ensure proper spacing for regions dropdown */
+.form-group:last-of-type {
+    margin-bottom: 1rem;
+}
+
+/* Multi-select dropdown styles - Fixed checkbox visibility */
+.multi-select-dropdown {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+}
+
+.filter-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+    min-height: 48px;
+}
+
+.multi-select-dropdown.open .filter-display {
+    border-color: #006fcf;
+    box-shadow: 0 0 0 3px rgba(0, 111, 207, 0.1);
+}
+
+.filter-text {
+    color: #495057;
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.filter-text.placeholder {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.filter-arrow {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    transition: transform 0.3s ease;
+}
+
+.multi-select-dropdown.open .filter-arrow {
+    transform: rotate(180deg);
+    color: #006fcf;
+}
+
+.filter-arrow .material-icons {
+    font-size: 1.2rem;
+}
+
+.filter-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #006fcf;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1002;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+.filter-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.filter-option:last-child {
+    border-bottom: none;
+}
+
+.filter-option:hover {
+    background: rgba(0, 111, 207, 0.05);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #495057;
+    padding: 0.25rem 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    min-height: 24px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0, 111, 207, 0.3);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    background: white;
+    display: block !important;
+    order: 1;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom {
+    background: #006fcf;
+    border-color: #006fcf;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.checkbox-text {
+    flex: 1;
+    font-weight: 500;
+    order: 2;
+    line-height: 1.2;
 }
 
 /* Custom Select Styles */
@@ -504,6 +707,250 @@
     font-weight: 500;
 }
 
+/* Regions display styles */
+.regions-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    min-height: 2rem;
+}
+
+.no-regions {
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+}
+
+.regions-link {
+    color: #006fcf;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.25rem 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.regions-link:hover {
+    color: #005bb8;
+    text-decoration: underline;
+}
+
+.region-badge {
+    background: linear-gradient(135deg, rgba(0, 111, 207, 0.1) 0%, rgba(0, 111, 207, 0.15) 100%);
+    color: #006fcf;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 111, 207, 0.2);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.region-badge:hover {
+    background: linear-gradient(135deg, rgba(0, 111, 207, 0.15) 0%, rgba(0, 111, 207, 0.2) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.2);
+}
+
+/* Regions Modal Styles */
+.regions-modal {
+    max-width: 600px;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.user-info-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-info-section .user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #006fcf 0%, #005bb8 100%);
+    color: white;
+    flex-shrink: 0;
+}
+
+.user-info-section .user-avatar .material-icons {
+    font-size: 1.5rem;
+}
+
+.user-info-section .user-details h3 {
+    margin: 0 0 0.25rem 0;
+    color: #212529;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.user-email {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.regions-list-section h4 {
+    margin: 0 0 1rem 0;
+    color: #212529;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.no-regions-message {
+    color: #9ca3af;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+.regions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.region-item {
+    display: flex;
+    align-items: center;
+}
+
+.region-badge-large {
+    background: linear-gradient(135deg, rgba(0, 111, 207, 0.1) 0%, rgba(0, 111, 207, 0.15) 100%);
+    color: #006fcf;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 111, 207, 0.2);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.region-badge-large:hover {
+    background: linear-gradient(135deg, rgba(0, 111, 207, 0.15) 0%, rgba(0, 111, 207, 0.2) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 111, 207, 0.2);
+}
+
+/* Fix modal actions positioning for regions modal */
+.regions-modal .modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: right;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.regions-modal .modal-actions .btn {
+    min-width: 120px;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced hover effects and transitions */
+.multi-select-dropdown:hover .filter-display {
+    border-color: rgba(0, 111, 207, 0.3);
+}
+
+.multi-select-dropdown.open .filter-display {
+    border-color: #006fcf;
+    box-shadow: 0 0 0 3px rgba(0, 111, 207, 0.1);
+}
+
+.checkbox-label:hover .checkbox-custom {
+    border-color: rgba(0, 111, 207, 0.5);
+}
+
+.checkbox-label:hover .checkbox-text {
+    color: #006fcf;
+}
+
+/* Ensure checkbox visibility and proper styling */
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0, 111, 207, 0.3);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    background: white;
+    display: block !important;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom {
+    background: #006fcf;
+    border-color: #006fcf;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Improve dropdown positioning and z-index */
+.filter-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #006fcf;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1002;
+    max-height: 300px;
+    overflow-y: auto;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+/* Ensure proper spacing in form row */
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+.form-row .form-group:last-child {
+    margin-bottom: 1.5rem;
+}
+
+/* Form input focus states */
 .form-group input:focus {
     outline: none;
     border-color: #006fcf;
@@ -512,6 +959,7 @@
 
 .form-group input.error {
     border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 .error-message {
@@ -520,6 +968,7 @@
     margin-top: 0.25rem;
 }
 
+/* Modal actions and buttons */
 .modal-actions {
     display: flex;
     gap: 1rem;
@@ -547,6 +996,7 @@
 .btn.primary:hover:not(:disabled) {
     background: #005bb8;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 111, 207, 0.3);
 }
 
 .btn.primary:disabled {
@@ -562,6 +1012,7 @@
 
 .btn.secondary:hover {
     background: rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
 /* Responsive Design */
@@ -569,7 +1020,16 @@
 
     .grid-header,
     .grid-row {
-        grid-template-columns: 1.5fr 1.5fr 1fr 1fr;
+        grid-template-columns: 1.5fr 1.5fr 1fr 1.5fr 1fr;
+    }
+
+    /* Preserve header alignment on tablet */
+    .header-cell {
+        text-align: center !important;
+    }
+
+    .header-cell:last-child {
+        text-align: left !important;
     }
 }
 
@@ -621,4 +1081,18 @@
     .form-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: all 0.2s ease;
+}
+
+/* Specific transitions for certain elements */
+.grid-row,
+.action-btn,
+.btn,
+.custom-select,
+.multi-select-dropdown {
+    transition: all 0.3s ease;
 }

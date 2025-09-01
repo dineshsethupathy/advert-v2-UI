@@ -35,6 +35,22 @@ export interface UpdateRolePermissionsRequest {
     permissionIds: number[];
 }
 
+export interface Region {
+    id: number;
+    name: string;
+    description: string;
+    stateId: number;
+    stateName?: string;
+    createdDate: string;
+    createdBy: number;
+    isDeleted: boolean;
+}
+
+export interface RolesAndRegionsResponse {
+    roles: Role[];
+    regions: Region[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -73,5 +89,9 @@ export class RoleService {
 
     getAllPermissions(): Observable<Permission[]> {
         return this.http.get<Permission[]>(`${this.API_URL}/role/permissions`);
+    }
+
+    getRolesAndRegions(): Observable<RolesAndRegionsResponse> {
+        return this.http.get<RolesAndRegionsResponse>(`${this.API_URL}/role/roles-and-regions`);
     }
 } 

@@ -33,6 +33,7 @@
             <div class="grid-cell header-cell">Name</div>
             <div class="grid-cell header-cell">Email</div>
             <div class="grid-cell header-cell">Role</div>
+            <div class="grid-cell header-cell">Regions</div>
             <div class="grid-cell header-cell">Actions</div>
         </div>
 
@@ -56,6 +57,17 @@
             <div class="grid-cell">{{ user.email }}</div>
             <div class="grid-cell">
                 <span class="role-badge">{{ getRoleName(user.roleId) }}</span>
+            </div>
+            <div class="grid-cell">
+                <div class="regions-display">
+                    <span *ngIf="!user.regions || user.regions.trim() === ''" class="no-regions">No regions
+                        assigned</span>
+                    <a *ngIf="user.regions && user.regions.trim() !== ''" href="javascript:void(0)" class="regions-link"
+                        (click)="showRegionsModal(user)">
+                        {{ getUserRegionsCount(user.regions) }} region{{ getUserRegionsCount(user.regions) !== 1 ? 's' :
+                        '' }} assigned
+                    </a>
+                </div>
             </div>
             <div class="grid-cell">
                 <div class="action-buttons">
@@ -110,37 +122,108 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="roleId">Role *</label>
-                    <div class="custom-select" [class.open]="isRoleDropdownOpen" (click)="toggleRoleDropdown()">
-                        <div class="select-display">
-                            <span class="select-text" [class.placeholder]="!userForm.get('roleId')?.value">
-                                {{ getSelectedRoleText() }}
-                            </span>
-                            <span class="select-arrow">
-                                <span class="material-icons">keyboard_arrow_down</span>
-                            </span>
-                        </div>
-                        <div class="select-dropdown" *ngIf="isRoleDropdownOpen">
-                            <div class="dropdown-option" *ngFor="let role of roles"
-                                (click)="selectRole(role.id, role.name, $event)"
-                                [class.selected]="userForm.get('roleId')?.value === role.id">
-                                {{ role.name }}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roleId">Role *</label>
+                        <div class="custom-select" [class.open]="isRoleDropdownOpen" (click)="toggleRoleDropdown()">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="!userForm.get('roleId')?.value">
+                                    {{ getSelectedRoleText() }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isRoleDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let role of roles"
+                                    (click)="selectRole(role.id, role.name, $event)"
+                                    [class.selected]="userForm.get('roleId')?.value === role.id">
+                                    {{ role.name }}
+                                </div>
                             </div>
                         </div>
+                        <div *ngIf="formSubmitted && userForm.get('roleId')?.invalid" class="error-message">
+                            Please select a role
+                        </div>
                     </div>
-                    <div *ngIf="formSubmitted && userForm.get('roleId')?.invalid" class="error-message">
-                        Please select a role
+
+                    <div class="form-group">
+                        <label for="regionIds">Regions</label>
+                        <div class="multi-select-dropdown" [class.open]="isRegionDropdownOpen"
+                            (click)="toggleRegionDropdown()">
+                            <div class="filter-display">
+                                <span class="filter-text">
+                                    {{ getSelectedRegionsText() }}
+                                </span>
+                                <span class="filter-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="filter-dropdown" *ngIf="isRegionDropdownOpen"
+                                (click)="$event.stopPropagation()">
+                                <div class="filter-option" *ngFor="let region of regions">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" [checked]="isRegionSelected(region.id)"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="onRegionChange(region.id, $event.target.checked)">
+                                        <span class="checkbox-custom"></span>
+                                        <span class="checkbox-text">{{ region.name }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn secondary" (click)="closeModal()">Cancel</button>
-                    <button type="submit" class="btn primary" [disabled]="userForm.invalid">
-                        {{ getSubmitButtonText() }}
+                    <button type="button" class="btn secondary" (click)="closeModal()"
+                        [disabled]="submitting">Cancel</button>
+                    <button type="submit" class="btn primary" [disabled]="userForm.invalid || submitting">
+                        <l-tail-chase *ngIf="submitting" size="20" speed="1.75" color="#ffffff"></l-tail-chase>
+                        <span *ngIf="!submitting">{{ getSubmitButtonText() }}</span>
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Regions Modal -->
+    <div *ngIf="showRegionsModalFlag" class="modal-overlay">
+        <div class="modal-content regions-modal">
+            <div class="modal-header">
+                <h2>User Regions</h2>
+                <button class="modal-close" (click)="closeRegionsModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="user-info-section">
+                    <div class="user-avatar">
+                        <span class="material-icons">person</span>
+                    </div>
+                    <div class="user-details">
+                        <h3>{{ selectedUserForRegions?.firstName }} {{ selectedUserForRegions?.lastName }}</h3>
+                        <p class="user-email">{{ selectedUserForRegions?.email }}</p>
+                    </div>
+                </div>
+
+                <div class="regions-list-section">
+                    <h4>Assigned Regions</h4>
+                    <div *ngIf="getUserRegionIds(selectedUserForRegions?.regions).length === 0"
+                        class="no-regions-message">
+                        No regions assigned to this user.
+                    </div>
+                    <div *ngIf="getUserRegionIds(selectedUserForRegions?.regions).length > 0" class="regions-list">
+                        <div *ngFor="let regionId of getUserRegionIds(selectedUserForRegions?.regions)"
+                            class="region-item">
+                            <span class="region-badge-large">{{ getRegionName(regionId) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" (click)="closeRegionsModal()">Close</button>
+            </div>
         </div>
     </div>
 
