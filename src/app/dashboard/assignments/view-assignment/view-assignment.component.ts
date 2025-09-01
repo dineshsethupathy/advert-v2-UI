@@ -129,11 +129,11 @@ export class ViewAssignmentComponent implements OnInit {
     getVendorStatusColor(status: string): string {
         switch (status.toLowerCase()) {
             case 'started':
-                return 'primary';
+                return 'secondary';
             case 'before execution':
                 return 'warning';
             case 'after execution':
-                return 'info';
+                return 'warning';
             case 'completed':
                 return 'success';
             default:
@@ -144,7 +144,7 @@ export class ViewAssignmentComponent implements OnInit {
     getApprovalStatusColor(status: string): string {
         switch (status.toLowerCase()) {
             case 'pending':
-                return 'warning';
+                return 'primary';
             case 'bde approved':
                 return 'info';
             case 'bdm approved':
