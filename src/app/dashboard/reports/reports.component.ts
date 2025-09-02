@@ -257,7 +257,7 @@ export class ReportsComponent implements OnInit {
     }
 
     getSelectedStatusesText(): string {
-        if (this.selectedStatuses.length === 0) return 'Select Statuses';
+        if (this.selectedStatuses.length === 0) return 'Select Status';
         if (this.selectedStatuses.length === 1) return this.selectedStatuses[0];
         return `${this.selectedStatuses.length} Statuses Selected`;
     }
