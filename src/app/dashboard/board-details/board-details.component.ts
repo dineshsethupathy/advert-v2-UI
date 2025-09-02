@@ -44,8 +44,8 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         this.boardForm = this.fb.group({
             name: ['', [Validators.required, Validators.minLength(2)]],
             brandName: ['', [Validators.required, Validators.minLength(2)]],
-            width: ['', [Validators.required, Validators.min(0.01)]],
-            height: ['', [Validators.required, Validators.min(0.01)]],
+            // width: ['', [Validators.required, Validators.min(0.01)]],
+            // height: ['', [Validators.required, Validators.min(0.01)]],
             cost: ['', [Validators.min(0)]],
             imageUrl: ['']
         });
@@ -106,8 +106,6 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         this.boardForm.reset({
             name: '',
             brandName: '',
-            width: '',
-            height: '',
             cost: '',
             imageUrl: ''
         });
@@ -124,8 +122,6 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         this.boardForm.patchValue({
             name: board.name,
             brandName: board.brandName,
-            width: board.width,
-            height: board.height,
             cost: board.cost || '',
             imageUrl: board.imageUrl || ''
         });
@@ -143,8 +139,6 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         this.boardForm.reset({
             name: '',
             brandName: '',
-            width: '',
-            height: '',
             cost: '',
             imageUrl: ''
         });
@@ -191,7 +185,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             },
             error: (error) => {
                 console.error('Error creating board:', error);
-                this.errorMessage = 'Failed to create board';
+                // this.errorMessage = 'Failed to create board';
                 this.formLoading = false;
 
                 Swal.fire({
@@ -219,8 +213,8 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
             id: id,
             name: boardData.name,
             brandName: boardData.brandName,
-            width: boardData.width,
-            height: boardData.height,
+            width: boardData.width || undefined,
+            height: boardData.height || undefined,
             cost: boardData.cost,
             imageUrl: imageUrlToSend
         };
@@ -359,8 +353,11 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
         return board.imageUrl || '';
     }
 
-    formatDimensions(width: number, height: number): string {
-        return `${width} × ${height}`;
+    formatDimensions(width?: number, height?: number): string {
+        if (width && height) {
+            return `${width} × ${height}`;
+        }
+        return 'Dimensions not specified';
     }
 
     previewImage(board: Board): void {

@@ -50,7 +50,7 @@ export class BrandDashboardComponent implements OnInit, OnDestroy {
         { name: 'Region', icon: 'public', route: '/region', active: false, visible: true },
         { name: 'Vendors', icon: 'business', route: '/vendors', active: false, visible: true },
         { name: 'Distributors', icon: 'local_shipping', route: '/distributors', active: false, visible: true },
-        { name: 'Board Details', icon: 'dashboard', route: '/board-details', active: false, visible: true }
+        { name: 'Banners', icon: 'dashboard', route: '/board-details', active: false, visible: true }
     ];
 
     selectedItem: SidebarItem | null = null;

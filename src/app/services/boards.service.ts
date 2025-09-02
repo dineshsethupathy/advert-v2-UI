@@ -7,8 +7,8 @@ export interface Board {
     id: number;
     name: string;
     brandName: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     cost?: number;
     imageUrl?: string;
     createdAt: string;
@@ -18,8 +18,8 @@ export interface Board {
 export interface CreateBoardRequest {
     name: string;
     brandName: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     cost?: number | string;
     imageUrl?: string;
 }
@@ -28,8 +28,8 @@ export interface UpdateBoardRequest {
     id: number;
     name: string;
     brandName: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     cost?: number | string;
     imageUrl?: string;
 }
@@ -58,8 +58,14 @@ export class BoardsService {
         const formData = new FormData();
         formData.append('name', request.name);
         formData.append('brandName', request.brandName);
-        formData.append('width', request.width.toString());
-        formData.append('height', request.height.toString());
+
+        if (request.width !== undefined && request.width !== null) {
+            formData.append('width', request.width.toString());
+        }
+
+        if (request.height !== undefined && request.height !== null) {
+            formData.append('height', request.height.toString());
+        }
 
         if (request.cost !== undefined && request.cost !== null && request.cost !== '') {
             formData.append('cost', request.cost.toString());
@@ -77,8 +83,14 @@ export class BoardsService {
         formData.append('id', request.id.toString());
         formData.append('name', request.name);
         formData.append('brandName', request.brandName);
-        formData.append('width', request.width.toString());
-        formData.append('height', request.height.toString());
+
+        if (request.width !== undefined && request.width !== null) {
+            formData.append('width', request.width.toString());
+        }
+
+        if (request.height !== undefined && request.height !== null) {
+            formData.append('height', request.height.toString());
+        }
 
         if (request.cost !== undefined && request.cost !== null && request.cost !== '') {
             formData.append('cost', request.cost.toString());

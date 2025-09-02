@@ -3,7 +3,7 @@
     <div class="page-header">
         <div class="header-content">
             <div class="header-title">
-                <h1 class="page-title">Board Details</h1>
+                <h1 class="page-title">Banner Details</h1>
                 <p class="page-description">Manage your advertising boards and their specifications.</p>
             </div>
             <button class="add-btn" (click)="showAddForm()">
@@ -40,14 +40,20 @@
                 </div>
             </div>
             <div class="board-info">
-                <div class="board-name-row">
+                <div class="board-details-row">
                     <div class="board-name">{{ board.name }}</div>
-                    <div class="board-cost" *ngIf="board.cost">₹{{ board.cost }}</div>
+                    <div class="board-brand">{{ board.brandName }}</div>
                 </div>
-                <div class="board-brand">{{ board.brandName }}</div>
-                <div class="board-dimensions">{{ formatDimensions(board.width, board.height) }}</div>
-                <div class="board-created">{{ board.createdBy }}</div>
-                <div class="board-date">{{ board.createdAt | date:'short' }}</div>
+                <div class="board-meta-row">
+                    <div class="board-created">
+                        <!-- <span class="material-icons">person</span> -->
+                        {{ board.createdBy }}
+                    </div>
+                    <div class="board-date">
+                        <!-- <span class="material-icons">schedule</span> -->
+                        {{ board.createdAt | date:'short' }}
+                    </div>
+                </div>
             </div>
             <div class="board-actions">
                 <button class="action-btn edit-btn" (click)="showEditForm(board)" title="Edit">
@@ -77,7 +83,7 @@
     <div *ngIf="showForm" class="modal-overlay">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h3>{{ editingBoard ? 'Edit Board' : 'Add New Board' }}</h3>
+                <h3>{{ editingBoard ? 'Edit Banner' : 'Add New Banner' }}</h3>
                 <button class="close-btn" (click)="closeForm()">
                     <span class="material-icons">close</span>
                 </button>
@@ -86,11 +92,11 @@
             <form [formGroup]="boardForm" (ngSubmit)="onSubmit()" class="board-form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="name">Board Name *</label>
-                        <input type="text" id="name" formControlName="name" placeholder="Enter board name"
+                        <label for="name">Banner Name *</label>
+                        <input type="text" id="name" formControlName="name" placeholder="Enter banner name"
                             [class.error]="formSubmitted && boardForm.get('name')?.invalid">
                         <div *ngIf="formSubmitted && boardForm.get('name')?.invalid" class="error-message">
-                            Board name is required and must be at least 2 characters.
+                            Banner name is required and must be at least 2 characters.
                         </div>
                     </div>
 
@@ -104,38 +110,10 @@
                     </div>
                 </div>
 
-                <div class="form-row two-columns">
-                    <div class="form-group">
-                        <label for="width">Width (in) *</label>
-                        <input type="number" id="width" formControlName="width" step="0.01" min="0.01"
-                            placeholder="Enter width" [class.error]="formSubmitted && boardForm.get('width')?.invalid">
-                        <div *ngIf="formSubmitted && boardForm.get('width')?.invalid" class="error-message">
-                            Width is required and must be greater than 0.
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="height">Height (in) *</label>
-                        <input type="number" id="height" formControlName="height" step="0.01" min="0.01"
-                            placeholder="Enter height"
-                            [class.error]="formSubmitted && boardForm.get('height')?.invalid">
-                        <div *ngIf="formSubmitted && boardForm.get('height')?.invalid" class="error-message">
-                            Height is required and must be greater than 0.
-                        </div>
-                    </div>
-
-                    <!-- <div class="form-group">
-                        <label for="cost">Cost (₹) Per Sq. Ft.*</label>
-                        <input type="number" id="cost" formControlName="cost" step="0.01" min="0"
-                            placeholder="Enter cost" [class.error]="formSubmitted && boardForm.get('cost')?.invalid">
-                        <div *ngIf="formSubmitted && boardForm.get('cost')?.invalid" class="error-message">
-                            Cost must be greater than or equal to 0.
-                        </div>
-                    </div> -->
-                </div>
 
                 <div class="form-group">
-                    <label for="image">Board Image</label>
+                    <label for="image">Banner Image</label>
                     <div class="image-upload-section">
                         <div class="image-preview" *ngIf="imagePreview">
                             <img [src]="imagePreview" alt="Board preview">
@@ -175,13 +153,13 @@
     </div>
 
     <!-- Error Messages -->
-    <div *ngIf="errorMessage" class="error-banner">
+    <!-- <div *ngIf="errorMessage" class="error-banner">
         <span class="material-icons">error</span>
         {{ errorMessage }}
         <button class="close-error" (click)="clearMessages()">
             <span class="material-icons">close</span>
         </button>
-    </div>
+    </div> -->
 
     <!-- Image Preview Modal -->
     <div *ngIf="showImagePreview" class="image-preview-modal">
