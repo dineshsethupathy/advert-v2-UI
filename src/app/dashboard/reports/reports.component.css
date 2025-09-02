@@ -713,106 +713,119 @@
     min-width: 150px;
 }
 
-/* Store Name */
+/* BDE Name */
 .stores-table th:nth-child(3),
 .stores-table td:nth-child(3) {
+    min-width: 120px;
+}
+
+/* BDM Name */
+.stores-table th:nth-child(4),
+.stores-table td:nth-child(4) {
+    min-width: 120px;
+}
+
+/* Store Name */
+.stores-table th:nth-child(5),
+.stores-table td:nth-child(5) {
     min-width: 80px;
 }
 
 /* SAP ID */
-.stores-table th:nth-child(4),
-.stores-table td:nth-child(4) {
-    min-width: 100px;
-}
-
-/* Overall Status */
-.stores-table th:nth-child(5),
-.stores-table td:nth-child(5) {
+.stores-table th:nth-child(6),
+.stores-table td:nth-child(6) {
     min-width: 100px;
 }
 
 /* Vendor Status */
-.stores-table th:nth-child(6),
-.stores-table td:nth-child(6) {
+.stores-table th:nth-child(7),
+.stores-table td:nth-child(7) {
+    min-width: 200px;
+    text-align: center;
+}
+
+/* Approval Status */
+.stores-table th:nth-child(8),
+.stores-table td:nth-child(8) {
     min-width: 200px;
     text-align: center;
 }
 
 /* Location */
-.stores-table th:nth-child(7),
-.stores-table td:nth-child(7) {
+.stores-table th:nth-child(9),
+.stores-table td:nth-child(9) {
     min-width: 150px;
 }
 
 /* GPS Location */
-.stores-table th:nth-child(8),
-.stores-table td:nth-child(8) {
+.stores-table th:nth-child(10),
+.stores-table td:nth-child(10) {
     min-width: 120px;
 }
 
 /* Mobile Number */
-.stores-table th:nth-child(9),
-.stores-table td:nth-child(9) {
+.stores-table th:nth-child(11),
+.stores-table td:nth-child(11) {
     min-width: 120px;
 }
 
 /* Branding Type */
-.stores-table th:nth-child(10),
-.stores-table td:nth-child(10) {
-    min-width: 80px;
-}
-
-/* Height(FT) */
-.stores-table th:nth-child(11),
-.stores-table td:nth-child(11) {
-    min-width: 80px;
-}
-
-/* Width(FT) */
 .stores-table th:nth-child(12),
 .stores-table td:nth-child(12) {
     min-width: 80px;
 }
 
-/* Height(IN) */
+/* Height(FT) */
 .stores-table th:nth-child(13),
 .stores-table td:nth-child(13) {
     min-width: 80px;
 }
 
-/* Width(IN) */
+/* Width(FT) */
 .stores-table th:nth-child(14),
 .stores-table td:nth-child(14) {
+    min-width: 80px;
+}
+
+/* Height(IN) */
+.stores-table th:nth-child(15),
+.stores-table td:nth-child(15) {
+    min-width: 80px;
+}
+
+/* Width(IN) */
+.stores-table th:nth-child(16),
+.stores-table td:nth-child(16) {
     min-width: 60px;
 }
 
 /* QTY */
-.stores-table th:nth-child(15),
-.stores-table td:nth-child(15) {
-    min-width: 120px;
-}
-
-/* Total SQ FT */
-.stores-table th:nth-child(16),
-.stores-table td:nth-child(16) {
-    min-width: 100px;
-}
-
-/* Each Rate */
 .stores-table th:nth-child(17),
 .stores-table td:nth-child(17) {
     min-width: 120px;
 }
 
-/* Gross Amount */
+/* Total SQ FT */
 .stores-table th:nth-child(18),
 .stores-table td:nth-child(18) {
+    min-width: 100px;
+}
+
+/* Each Rate */
+.stores-table th:nth-child(19),
+.stores-table td:nth-child(19) {
+    min-width: 120px;
+}
+
+/* Gross Amount */
+.stores-table th:nth-child(20),
+.stores-table td:nth-child(20) {
     min-width: 80px;
 }
 
 /* NET AMOUNT */
-.stores-table th:nth-child(19),
-.stores-table td:nth-child(19) {
+.stores-table th:nth-child(21),
+.stores-table td:nth-child(21) {
     min-width: 120px;
     border-right: none;
 }
@@ -871,28 +884,28 @@
 }
 
 /* Number formatting for financial columns */
-.stores-table td:nth-child(16),
-.stores-table td:nth-child(17),
 .stores-table td:nth-child(18),
 .stores-table td:nth-child(19),
-.stores-table td:nth-child(20) {
+.stores-table td:nth-child(20),
+.stores-table td:nth-child(21),
+.stores-table td:nth-child(22) {
     text-align: right;
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-weight: 500;
 }
 
-.stores-table td:nth-child(20) {
+.stores-table td:nth-child(22) {
     font-weight: bold;
     background-color: #e5f6ea;
 }
 
 /* Dimension columns - use professional fonts for better number alignment */
-.stores-table td:nth-child(10),
-.stores-table td:nth-child(11),
 .stores-table td:nth-child(12),
 .stores-table td:nth-child(13),
 .stores-table td:nth-child(14),
-.stores-table td:nth-child(15) {
+.stores-table td:nth-child(15),
+.stores-table td:nth-child(16),
+.stores-table td:nth-child(17) {
     text-align: center;
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-weight: 500;
@@ -924,12 +937,12 @@
 }
 
 /* SAP ID column - use professional font for better number readability */
-.stores-table th:nth-child(4),
-.stores-table td:nth-child(4) {
+.stores-table th:nth-child(6),
+.stores-table td:nth-child(6) {
     min-width: 100px;
 }
 
-.stores-table td:nth-child(4) {
+.stores-table td:nth-child(6) {
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
     font-weight: 500;
 }
@@ -1499,7 +1512,7 @@
 }
 
 /* Highlight branding type cell for pole rows */
-.stores-table tbody tr.pole-row td:nth-child(10) {
+.stores-table tbody tr.pole-row td:nth-child(12) {
     /* background-color: #dedede; */
     font-weight: 600;
     color: #000000;

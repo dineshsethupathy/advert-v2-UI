@@ -84,7 +84,8 @@ export class ReportService {
     async getFrontendPdfData(
         tenantId: number,
         assignmentIds?: number[],
-        statuses?: string[],
+        vendorStatuses?: string[],
+        approvalStatuses?: string[],
         startDate?: string,
         endDate?: string
     ): Promise<FrontendPdfResult> {
@@ -95,8 +96,12 @@ export class ReportService {
             params.append('assignmentIds', assignmentIds.join(','));
         }
 
-        if (statuses && statuses.length > 0) {
-            params.append('statuses', statuses.join(','));
+        if (vendorStatuses && vendorStatuses.length > 0) {
+            params.append('vendorStatuses', vendorStatuses.join(','));
+        }
+
+        if (approvalStatuses && approvalStatuses.length > 0) {
+            params.append('approvalStatuses', approvalStatuses.join(','));
         }
 
         if (startDate) {

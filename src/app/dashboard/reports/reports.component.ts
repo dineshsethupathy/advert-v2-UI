@@ -21,14 +21,16 @@ export class ReportsComponent implements OnInit {
     selectedAssignments: any[] = [];
     startDate: string = '';
     endDate: string = '';
-    selectedStatuses: string[] = [];
+    selectedVendorStatuses: string[] = [];
+    selectedApprovalStatuses: string[] = [];
 
     // Filter state
     filtersApplied: boolean = false;
 
     // Dropdown states
     isAssignmentDropdownOpen: boolean = false;
-    isStatusDropdownOpen: boolean = false;
+    isVendorStatusDropdownOpen: boolean = false;
+    isApprovalStatusDropdownOpen: boolean = false;
     isDatePickerOpen: boolean = false;
     isExportDropdownOpen: boolean = false;
 
@@ -41,7 +43,8 @@ export class ReportsComponent implements OnInit {
 
     // Data for dropdowns
     assignments: any[] = [];
-    statuses: string[] = ['Completed', 'In Progress'];
+    vendorStatuses: string[] = ['Not Started', 'In Progress', 'Completed'];
+    approvalStatuses: string[] = ['Pending', 'Approved', 'Rejected', 'Completed'];
 
     // Grid data
     stores: any[] = [];
@@ -71,9 +74,14 @@ export class ReportsComponent implements OnInit {
             this.isAssignmentDropdownOpen = false;
         }
 
-        // Check if click is outside status dropdown
-        if (!target.closest('.custom-select') || !target.closest('.status-dropdown')) {
-            this.isStatusDropdownOpen = false;
+        // Check if click is outside vendor status dropdown
+        if (!target.closest('.custom-select') || !target.closest('.vendor-status-dropdown')) {
+            this.isVendorStatusDropdownOpen = false;
+        }
+
+        // Check if click is outside approval status dropdown
+        if (!target.closest('.custom-select') || !target.closest('.approval-status-dropdown')) {
+            this.isApprovalStatusDropdownOpen = false;
         }
 
         // Check if click is outside date picker
@@ -97,7 +105,8 @@ export class ReportsComponent implements OnInit {
 
             if (response) {
                 this.assignments = response.assignments || [];
-                this.statuses = (response.statuses && response.statuses.map((s: any) => s.status)) || ['Completed', 'In Progress'];
+                this.vendorStatuses = (response.vendorStatuses && response.vendorStatuses.map((s: any) => s.status)) || ['Not Started', 'In Progress', 'Completed'];
+                this.approvalStatuses = (response.approvalStatuses && response.approvalStatuses.map((s: any) => s.status)) || ['Pending', 'Approved', 'Rejected', 'Completed'];
             }
         } catch (error) {
             console.error('Error loading dropdown data:', error);
@@ -111,7 +120,7 @@ export class ReportsComponent implements OnInit {
     }
 
     async applyFilters(): Promise<void> {
-        if (this.selectedAssignments.length === 0 && this.selectedStatuses.length === 0 && !this.startDate && !this.endDate) {
+        if (this.selectedAssignments.length === 0 && this.selectedVendorStatuses.length === 0 && this.selectedApprovalStatuses.length === 0 && !this.startDate && !this.endDate) {
             Swal.fire({
                 icon: 'warning',
                 title: 'No Filters Selected',
@@ -137,9 +146,14 @@ export class ReportsComponent implements OnInit {
                 params.append('assignmentIds', assignmentIds);
             }
 
-            if (this.selectedStatuses.length > 0) {
-                const statusList = this.selectedStatuses.join(',');
-                params.append('statuses', statusList);
+            if (this.selectedVendorStatuses.length > 0) {
+                const vendorStatusList = this.selectedVendorStatuses.join(',');
+                params.append('vendorStatuses', vendorStatusList);
+            }
+
+            if (this.selectedApprovalStatuses.length > 0) {
+                const approvalStatusList = this.selectedApprovalStatuses.join(',');
+                params.append('approvalStatuses', approvalStatusList);
             }
 
             if (this.startDate) {
@@ -201,7 +215,8 @@ export class ReportsComponent implements OnInit {
         this.selectedAssignments = [];
         this.startDate = '';
         this.endDate = '';
-        this.selectedStatuses = [];
+        this.selectedVendorStatuses = [];
+        this.selectedApprovalStatuses = [];
         this.filtersApplied = false;
         this.stores = [];
         this.totalCount = 0;
@@ -213,13 +228,21 @@ export class ReportsComponent implements OnInit {
     toggleAssignmentDropdown(event: Event): void {
         event.stopPropagation();
         this.isAssignmentDropdownOpen = !this.isAssignmentDropdownOpen;
-        this.isStatusDropdownOpen = false;
+
     }
 
-    toggleStatusDropdown(event: Event): void {
+    toggleVendorStatusDropdown(event: Event): void {
         event.stopPropagation();
-        this.isStatusDropdownOpen = !this.isStatusDropdownOpen;
+        this.isVendorStatusDropdownOpen = !this.isVendorStatusDropdownOpen;
         this.isAssignmentDropdownOpen = false;
+        this.isApprovalStatusDropdownOpen = false;
+    }
+
+    toggleApprovalStatusDropdown(event: Event): void {
+        event.stopPropagation();
+        this.isApprovalStatusDropdownOpen = !this.isApprovalStatusDropdownOpen;
+        this.isAssignmentDropdownOpen = false;
+        this.isVendorStatusDropdownOpen = false;
     }
 
     toggleAssignmentSelection(assignment: any, event: Event): void {
@@ -232,13 +255,23 @@ export class ReportsComponent implements OnInit {
         }
     }
 
-    toggleStatusSelection(status: string, event: Event): void {
+    toggleVendorStatusSelection(status: string, event: Event): void {
         event.stopPropagation();
-        const index = this.selectedStatuses.indexOf(status);
+        const index = this.selectedVendorStatuses.indexOf(status);
         if (index > -1) {
-            this.selectedStatuses.splice(index, 1);
+            this.selectedVendorStatuses.splice(index, 1);
         } else {
-            this.selectedStatuses.push(status);
+            this.selectedVendorStatuses.push(status);
+        }
+    }
+
+    toggleApprovalStatusSelection(status: string, event: Event): void {
+        event.stopPropagation();
+        const index = this.selectedApprovalStatuses.indexOf(status);
+        if (index > -1) {
+            this.selectedApprovalStatuses.splice(index, 1);
+        } else {
+            this.selectedApprovalStatuses.push(status);
         }
     }
 
@@ -246,8 +279,12 @@ export class ReportsComponent implements OnInit {
         return this.selectedAssignments.some(a => a.id === assignment.id);
     }
 
-    isStatusSelected(status: string): boolean {
-        return this.selectedStatuses.includes(status);
+    isVendorStatusSelected(status: string): boolean {
+        return this.selectedVendorStatuses.includes(status);
+    }
+
+    isApprovalStatusSelected(status: string): boolean {
+        return this.selectedApprovalStatuses.includes(status);
     }
 
     getSelectedAssignmentsText(): string {
@@ -256,10 +293,16 @@ export class ReportsComponent implements OnInit {
         return `${this.selectedAssignments.length} Assignments Selected`;
     }
 
-    getSelectedStatusesText(): string {
-        if (this.selectedStatuses.length === 0) return 'Select Status';
-        if (this.selectedStatuses.length === 1) return this.selectedStatuses[0];
-        return `${this.selectedStatuses.length} Statuses Selected`;
+    getSelectedVendorStatusesText(): string {
+        if (this.selectedVendorStatuses.length === 0) return 'Select Vendor Status';
+        if (this.selectedVendorStatuses.length === 1) return this.selectedVendorStatuses[0];
+        return `${this.selectedVendorStatuses.length} Vendor Statuses Selected`;
+    }
+
+    getSelectedApprovalStatusesText(): string {
+        if (this.selectedApprovalStatuses.length === 0) return 'Select Approval Status';
+        if (this.selectedApprovalStatuses.length === 1) return this.selectedApprovalStatuses[0];
+        return `${this.selectedApprovalStatuses.length} Approval Statuses Selected`;
     }
 
     // Search button always applies filters
@@ -283,7 +326,7 @@ export class ReportsComponent implements OnInit {
         }
         // Close other dropdowns
         this.isAssignmentDropdownOpen = false;
-        this.isStatusDropdownOpen = false;
+
         this.isExportDropdownOpen = false;
     }
 
@@ -400,7 +443,7 @@ export class ReportsComponent implements OnInit {
         this.isExportDropdownOpen = !this.isExportDropdownOpen;
         // Close other dropdowns
         this.isAssignmentDropdownOpen = false;
-        this.isStatusDropdownOpen = false;
+
         this.isDatePickerOpen = false;
     }
 
@@ -574,9 +617,14 @@ export class ReportsComponent implements OnInit {
                 params.append('assignmentIds', assignmentIds);
             }
 
-            if (this.selectedStatuses.length > 0) {
-                const statusList = this.selectedStatuses.join(',');
-                params.append('statuses', statusList);
+            if (this.selectedVendorStatuses.length > 0) {
+                const vendorStatusList = this.selectedVendorStatuses.join(',');
+                params.append('vendorStatuses', vendorStatusList);
+            }
+
+            if (this.selectedApprovalStatuses.length > 0) {
+                const approvalStatusList = this.selectedApprovalStatuses.join(',');
+                params.append('approvalStatuses', approvalStatusList);
             }
 
             if (this.startDate) {
@@ -602,6 +650,9 @@ export class ReportsComponent implements OnInit {
 
             // Define columns with the exact structure you specified
             const columns = [
+                { header: 'ASSIGNMENT NAME', key: 'assignmentName' },
+                { header: 'BDE NAME', key: 'bdeName' },
+                { header: 'BDM NAME', key: 'bdmName' },
                 { header: 'RETAILER/OUTLET NAME', key: 'storeName' },
                 { header: 'LOCATION', key: 'location' },
                 { header: 'GPS LOCATION', key: 'gpsLocation' },
@@ -674,6 +725,9 @@ export class ReportsComponent implements OnInit {
                     const boardNetAmount = boardGrossAmount * 1.18; // Adding 18% GST (same as branduser-store-view)
 
                     const boardRow = worksheet.addRow({
+                        assignmentName: store.assignmentName || '',
+                        bdeName: store.bdeName || '',
+                        bdmName: store.bdmName || '',
                         storeName: store.storeName || '',
                         location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
                         gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
@@ -720,6 +774,9 @@ export class ReportsComponent implements OnInit {
                     const poleNetAmount = poleGrossAmount * 1.18; // Adding 18% GST (same as branduser-store-view)
 
                     const poleRow = worksheet.addRow({
+                        assignmentName: store.assignmentName || '',
+                        bdeName: store.bdeName || '',
+                        bdmName: store.bdmName || '',
                         storeName: store.storeName || '',
                         location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
                         gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
@@ -752,6 +809,9 @@ export class ReportsComponent implements OnInit {
                 // If neither board nor pole exists, add a single row with default values
                 if ((!boardWidth || !boardHeight) && (!poleQuantity || !poleWidth || !poleHeight)) {
                     const defaultRow = worksheet.addRow({
+                        assignmentName: store.assignmentName || '',
+                        bdeName: store.bdeName || '',
+                        bdmName: store.bdmName || '',
                         storeName: store.storeName || '',
                         location: `${store.storeAddress || ''} ${store.regionName || ''}`.trim(),
                         gpsLocation: createGpsHyperlink(store.gpsLocation, gpsDisplay),
@@ -906,15 +966,20 @@ export class ReportsComponent implements OnInit {
                 ? this.selectedAssignments.map(a => a.id)
                 : undefined;
 
-            const statuses = this.selectedStatuses.length > 0
-                ? this.selectedStatuses
+            const vendorStatuses = this.selectedVendorStatuses.length > 0
+                ? this.selectedVendorStatuses
+                : undefined;
+
+            const approvalStatuses = this.selectedApprovalStatuses.length > 0
+                ? this.selectedApprovalStatuses
                 : undefined;
 
             // Get frontend PDF data from backend
             const frontendPdfData = await this.reportService.getFrontendPdfData(
                 tenantId,
                 assignmentIds,
-                statuses,
+                vendorStatuses,
+                approvalStatuses,
                 this.startDate,
                 this.endDate
             );

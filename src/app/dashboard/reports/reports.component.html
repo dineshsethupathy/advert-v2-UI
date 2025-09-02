@@ -44,24 +44,50 @@
                     </div>
 
                     <div class="filter-group">
-                        <label for="statusFilter" class="filter-label">Status</label>
-                        <div class="custom-select status-dropdown" [class.open]="isStatusDropdownOpen"
-                            (click)="toggleStatusDropdown($event)">
+                        <label for="vendorStatusFilter" class="filter-label">Vendor Status</label>
+                        <div class="custom-select vendor-status-dropdown" [class.open]="isVendorStatusDropdownOpen"
+                            (click)="toggleVendorStatusDropdown($event)">
                             <div class="select-display">
-                                <span class="select-text" [class.placeholder]="selectedStatuses.length === 0">
-                                    {{ getSelectedStatusesText() }}
+                                <span class="select-text" [class.placeholder]="selectedVendorStatuses.length === 0">
+                                    {{ getSelectedVendorStatusesText() }}
                                 </span>
                                 <span class="select-arrow">
                                     <span class="material-icons">keyboard_arrow_down</span>
                                 </span>
                             </div>
-                            <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
-                                <div class="dropdown-option" *ngFor="let status of statuses"
-                                    (click)="toggleStatusSelection(status, $event)">
+                            <div class="select-dropdown" *ngIf="isVendorStatusDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let status of vendorStatuses"
+                                    (click)="toggleVendorStatusSelection(status, $event)">
                                     <div class="checkbox-wrapper">
-                                        <input type="checkbox" [checked]="isStatusSelected(status)"
+                                        <input type="checkbox" [checked]="isVendorStatusSelected(status)"
                                             (click)="$event.stopPropagation()"
-                                            (change)="toggleStatusSelection(status, $event)">
+                                            (change)="toggleVendorStatusSelection(status, $event)">
+                                        <span class="checkbox-label">{{ status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="approvalStatusFilter" class="filter-label">Approval Status</label>
+                        <div class="custom-select approval-status-dropdown" [class.open]="isApprovalStatusDropdownOpen"
+                            (click)="toggleApprovalStatusDropdown($event)">
+                            <div class="select-display">
+                                <span class="select-text" [class.placeholder]="selectedApprovalStatuses.length === 0">
+                                    {{ getSelectedApprovalStatusesText() }}
+                                </span>
+                                <span class="select-arrow">
+                                    <span class="material-icons">keyboard_arrow_down</span>
+                                </span>
+                            </div>
+                            <div class="select-dropdown" *ngIf="isApprovalStatusDropdownOpen">
+                                <div class="dropdown-option" *ngFor="let status of approvalStatuses"
+                                    (click)="toggleApprovalStatusSelection(status, $event)">
+                                    <div class="checkbox-wrapper">
+                                        <input type="checkbox" [checked]="isApprovalStatusSelected(status)"
+                                            (click)="$event.stopPropagation()"
+                                            (change)="toggleApprovalStatusSelection(status, $event)">
                                         <span class="checkbox-label">{{ status }}</span>
                                     </div>
                                 </div>
@@ -184,10 +210,12 @@
                             <tr>
                                 <th class="sno-column">S.No.</th>
                                 <th>Assignment Name</th>
+                                <th>BDE Name</th>
+                                <th>BDM Name</th>
                                 <th>RETAILER/OUTLET NAME</th>
                                 <th>SAP ID</th>
-                                <th>Overall Status</th>
                                 <th>Vendor Status</th>
+                                <th>Approval Status</th>
                                 <th>LOCATION</th>
                                 <th>GPS LOCATION</th>
                                 <th>MOBILE NUMBER</th>
@@ -210,6 +238,8 @@
                                 <tr *ngIf="store.boardWidth && store.boardHeight">
                                     <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
+                                    <td>{{ store.bdeName || '-' }}</td>
+                                    <td>{{ store.bdmName || '-' }}</td>
                                     <td>
                                         <div class="store-info">
                                             <div class="store-name">{{ store.storeName }}</div>
@@ -217,11 +247,15 @@
                                     </td>
                                     <td>{{ store.sapId }}</td>
                                     <td>
-                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
-                                            {{ store.overallStatus }}
+                                        <span class="status-badge" [class]="getStatusClass(store.vendorWorkStatus)">
+                                            {{ store.vendorWorkStatus || '-' }}
                                         </span>
                                     </td>
-                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.approvalStatus)">
+                                            {{ store.approvalStatus || '-' }}
+                                        </span>
+                                    </td>
                                     <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
                                     <td>
                                         <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
@@ -252,6 +286,8 @@
                                     class="pole-row store-with-pole">
                                     <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
+                                    <td>{{ store.bdeName || '-' }}</td>
+                                    <td>{{ store.bdmName || '-' }}</td>
                                     <td>
                                         <div class="store-info">
                                             <div class="store-name">{{ store.storeName }}</div>
@@ -259,11 +295,15 @@
                                     </td>
                                     <td>{{ store.sapId }}</td>
                                     <td>
-                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
-                                            {{ store.overallStatus }}
+                                        <span class="status-badge" [class]="getStatusClass(store.vendorWorkStatus)">
+                                            {{ store.vendorWorkStatus || '-' }}
                                         </span>
                                     </td>
-                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.approvalStatus)">
+                                            {{ store.approvalStatus || '-' }}
+                                        </span>
+                                    </td>
                                     <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
                                     <td>
                                         <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
@@ -294,6 +334,8 @@
                                     *ngIf="(!store.boardWidth || !store.boardHeight) && (!store.poleQuantity || !store.poleWidth || !store.poleHeight)">
                                     <td>{{ i + 1 }}</td>
                                     <td>{{ store.assignmentName }}</td>
+                                    <td>{{ store.bdeName || '-' }}</td>
+                                    <td>{{ store.bdmName || '-' }}</td>
                                     <td>
                                         <div class="store-info">
                                             <div class="store-name">{{ store.storeName }}</div>
@@ -301,11 +343,15 @@
                                     </td>
                                     <td>{{ store.sapId }}</td>
                                     <td>
-                                        <span class="status-badge" [class]="getStatusClass(store.overallStatus)">
-                                            {{ store.overallStatus }}
+                                        <span class="status-badge" [class]="getStatusClass(store.vendorWorkStatus)">
+                                            {{ store.vendorWorkStatus || '-' }}
                                         </span>
                                     </td>
-                                    <td>{{ store.vendorWorkStatus || '-' }}</td>
+                                    <td>
+                                        <span class="status-badge" [class]="getStatusClass(store.approvalStatus)">
+                                            {{ store.approvalStatus || '-' }}
+                                        </span>
+                                    </td>
                                     <td>{{ (store.storeAddress || '') + ' ' + (store.regionName || '') | trim }}</td>
                                     <td>
                                         <a *ngIf="store.gpsLocation" [href]="getGoogleMapsUrl(store.gpsLocation)"
